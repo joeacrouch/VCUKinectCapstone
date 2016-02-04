@@ -255,6 +255,24 @@ namespace Kinect_360_sample
 
         }
 
+        private void btnsetTilt_Click_1(object sender, RoutedEventArgs e)
+        {
+            if (txttilt.Text != string.Empty)
+            {
+                //change the Elevation based on what has been entered in the textbox
+                if (null != sensor && Convert.ToInt32(txttilt.Text) <= 27 && Convert.ToInt32(txttilt.Text) >= -27)
+                    sensor.ElevationAngle = Convert.ToInt32(txttilt.Text);
+            }
+        }
+        private void btnsetTilt_Click_2(object sender, RoutedEventArgs e)
+        {
+            if (txttilt2.Text != string.Empty)
+            {
+                //change the Elevation based on what has been entered in the textbox
+                if (null != sensor2 && Convert.ToInt32(txttilt2.Text) <= 27 && Convert.ToInt32(txttilt2.Text) >= -27)
+                    sensor2.ElevationAngle = Convert.ToInt32(txttilt2.Text);
+            }
+        }
         private void SwitchRGBtoIR1(object sender, RoutedEventArgs e)
         {
             if (this.checkIR1Mode.IsChecked.GetValueOrDefault())
