@@ -59,8 +59,6 @@ namespace Kinect_360_sample
 
         private DrawingGroup drawingGroup;
         private DrawingImage imageSource;
-        private DrawingGroup drawingGroup2;
-        private DrawingImage imageSource2;
 
         public MainWindow()
         {
@@ -122,14 +120,6 @@ namespace Kinect_360_sample
             // Display the drawing using our image control
             skeletonimage.Source = this.imageSource;
 
-            // Create the drawing group we'll use for drawing
-            this.drawingGroup2 = new DrawingGroup();
-
-            // Create an image source that we can use in our image control
-            this.imageSource2 = new DrawingImage(this.drawingGroup2);
-
-            // Display the drawing using our image control
-            skeletonimage2.Source = this.imageSource2;
 
             foreach (var potentialSensor in KinectSensor.KinectSensors)
             {
@@ -244,14 +234,6 @@ namespace Kinect_360_sample
 
                 // Add an event handler to be called whenever there is new color frame data
                 this.sensor2.ColorFrameReady += this.SensorColorFrameReady2;
-
-
-                //skeleton
-                // Turn on the skeleton stream to receive skeleton frames
-                this.sensor2.SkeletonStream.Enable();
-
-                // Add an event handler to be called whenever there is new color frame data
-                this.sensor2.SkeletonFrameReady += this.SensorSkeletonFrameReady;
 
                 // Start the sensor!
                 try

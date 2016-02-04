@@ -26,7 +26,7 @@
         <Image Grid.Column="0" Grid.Row="2" Name="skeletonimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <Image Grid.Column="1" Grid.Row="0" Name="depthimage2" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
         <Image Grid.Column="1" Grid.Row="1" Name="colorimage2" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        <Image Grid.Column="1" Grid.Row="2" Name="skeletonimage2" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <Image Grid.Column="1" Grid.Row="2" Name="image2" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
         <Label Grid.Row="2" Grid.Column="1" Content="VCU Capstone 2016" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontWeight="Bold"/>
         <CheckBox Grid.Row="2" Content="Seated Mode" Height="Auto" VerticalAlignment="Center" Margin="10,248,558,46" Name="checkBoxSeatedMode" Checked="CheckBoxSeatedModeChanged" Unchecked="CheckBoxSeatedModeChanged"/>
