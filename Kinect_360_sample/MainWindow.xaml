@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:k="http://schemas.microsoft.com/kinect/2013"
         Title="Kinect Demo" Height="950" Width="1300" Loaded="Window_Loaded_1" Closing="Window_Closing_1">
-    <Grid Name="mainGrid"> 
+    <Grid Name="mainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition/>
@@ -16,19 +16,21 @@
 
         </Grid.RowDefinitions>
         <StackPanel Name="stack1" Grid.Row="2">
-                    <Label Grid.Row="2" Grid.Column="1" Content="Kinect Is On" HorizontalAlignment="Left" VerticalAlignment="Bottom" Name="kinect_status" Margin="10,10,0,0"/>
+            <Label Grid.Row="2" Grid.Column="1" Content="Kinect Is On" HorizontalAlignment="Left" VerticalAlignment="Bottom" Name="kinect_status" Margin="10,10,0,0"/>
         </StackPanel>
         <k:KinectSensorChooserUI HorizontalAlignment="Left"  VerticalAlignment="Bottom" Name="sensorChooserUI"/>
-        
-       
+
+
         <Image Grid.Column="0"  Name="depthimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <Image Grid.Column="0" Grid.Row="1" Name="colorimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-        <Image Grid.Column="0" Grid.Row="2" Name="infraredimage" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <Image Grid.Column="0" Grid.Row="2" Name="skeletonimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <Image Grid.Column="1" Grid.Row="0" Name="depthimage2" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
         <Image Grid.Column="1" Grid.Row="1" Name="colorimage2" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        
-        
-        <Label Grid.Row="2" Grid.Column="1" Content="VCU Capstone 2016" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontWeight="Bold"/>
+        <Image Grid.Column="1" Grid.Row="2" Name="skeletonimage2" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
+        <Label Grid.Row="2" Grid.Column="1" Content="VCU Capstone 2016" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontWeight="Bold"/>
+        <CheckBox Grid.Row="2" Content="Seated Mode" Height="Auto" VerticalAlignment="Center" Margin="10,248,558,46" Name="checkBoxSeatedMode" Checked="CheckBoxSeatedModeChanged" Unchecked="CheckBoxSeatedModeChanged"/>
+        <CheckBox Grid.Row="2" Content="IR1 Mode" Height="Auto" VerticalAlignment="Center" Margin="10,273,558,21" x:Name="checkIR1Mode" Checked="SwitchRGBtoIR1" Unchecked="SwitchRGBtoIR1"/>
+        <CheckBox Grid.Row="2" Content="IR2 Mode " Height="Auto" VerticalAlignment="Center" Margin="558,273,10,21" x:Name="checkIR2Mode" Checked="SwitchRGBtoIR2" Unchecked="SwitchRGBtoIR2" Grid.Column="1"/>
     </Grid>
 </Window>
