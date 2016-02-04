@@ -29,10 +29,6 @@ namespace Kinect_360_sample
     /// </summary>
     public partial class MainWindow : Window
     {
-        private KinectSensorChooser sensorChooser1;
-        private KinectSensorChooser sensorChooser2;
-        private KinectSensorChooserUI sensorChooserUi1;
-        private KinectSensorChooserUI sensorChooserUi2;
         private KinectSensor sensor;
         private KinectSensor sensor2;
         private WriteableBitmap depthBitmap;
@@ -82,6 +78,7 @@ namespace Kinect_360_sample
 
             if (null != this.sensor)
             {
+  //Depth
                 // Turn on the depth stream to receive depth frames
                 this.sensor.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
 
@@ -100,7 +97,7 @@ namespace Kinect_360_sample
                 // Add an event handler to be called whenever there is new depth frame data
                 this.sensor.DepthFrameReady += this.SensorDepthFrameReady;
 
-
+    //color RGB
 
                 // Turn on the color stream to receive color frames
                 this.sensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
@@ -121,11 +118,11 @@ namespace Kinect_360_sample
                 stack1.Children.Add(deviceText);
                 stack1.Children.Add(deviceIDtext);
 
-                
                 // Start the sensor!
                 try
                 {
                     this.sensor.Start();
+                    this.sensor.ElevationAngle = 0;
                 }
                 catch (IOException)
                 {
@@ -174,6 +171,7 @@ namespace Kinect_360_sample
                 try
                 {
                     this.sensor2.Start();
+                    this.sensor2.ElevationAngle = 0;
                 }
                 catch (IOException)
                 {
