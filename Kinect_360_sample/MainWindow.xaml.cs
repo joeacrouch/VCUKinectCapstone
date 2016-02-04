@@ -60,6 +60,8 @@ namespace Kinect_360_sample
         private DrawingGroup drawingGroup;
         private DrawingImage imageSource;
 
+
+        //RAVIIIIIIIIIIIIII
         public MainWindow()
         {
             InitializeComponent();
