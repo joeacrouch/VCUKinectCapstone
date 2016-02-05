@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:k="http://schemas.microsoft.com/kinect/2013"
         Title="Kinect Demo" Height="950" Width="1300" WindowState="Maximized" Loaded="Window_Loaded_1" Closing="Window_Closing_1">
-    <Grid Name="mainGrid">
+
+    <Grid Name="mainGrid" Background="Black">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition/>
@@ -15,10 +16,21 @@
             <RowDefinition Height="1*"></RowDefinition>
 
         </Grid.RowDefinitions>
-        <StackPanel Name="stack1" Grid.Row="2">
-            <Label Grid.Row="2" Grid.Column="1" Content="Kinect Is On" HorizontalAlignment="Left" VerticalAlignment="Bottom" x:Name="kinect_status" Margin="10,10,0,0"/>
+        <StackPanel Name="stack1" Grid.Row="2" FlowDirection="LeftToRight" Orientation="Vertical" Background="White">
+            
+            <Label Content="Kinect Is On" x:Name="kinect_status" Background="#FF17FF00"/>
+            <StackPanel Name="stack2">
+                <CheckBox Grid.Row="2" Content="IR1 Mode" Height="Auto"  x:Name="checkIR1Mode" Checked="SwitchRGBtoIR1" Unchecked="SwitchRGBtoIR1" />
+                <CheckBox Grid.Row="2" Content="IR2 Mode " Height="Auto"  x:Name="checkIR2Mode" Checked="SwitchRGBtoIR2" Unchecked="SwitchRGBtoIR2" />
+                <TextBlock Text="Adjust Tilt Angle for Sensor 1: "></TextBlock>
+                <Slider Name="tiltSlider1" HorizontalAlignment="Left" Width="60" Height="auto" Maximum="20" Minimum="-20"
+                        TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="true" ValueChanged="tiltSlider_ValueChanged"></Slider>
+                <TextBlock Text="Adjust Tilt Angle for Sensor 2: "></TextBlock>
+                <Slider Name="tiltSlider2" HorizontalAlignment="Left" Width="60" Height="auto" Maximum="20" Minimum="-20"
+                        TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="true" ValueChanged="tiltSlider2_ValueChanged"></Slider>
+            </StackPanel>
         </StackPanel>
-        <k:KinectSensorChooserUI HorizontalAlignment="Left"  VerticalAlignment="Bottom" Name="sensorChooserUI"/>
+        <TextBox Name="textOut" Grid.Row="2"  Grid.Column="1" Width="auto" Height="auto" Background="White"></TextBox>
 
 
         <Image Grid.Column="0"  Name="depthimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center"/>
@@ -30,12 +42,7 @@
 
         <Label Grid.Row="2" Content="VCU Capstone 2016" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontWeight="Bold" Grid.ColumnSpan="2"/>
         <CheckBox Grid.Row="2" Content="Seated Mode" Height="Auto" VerticalAlignment="Center" Margin="10,202,558,92" Name="checkBoxSeatedMode" Checked="CheckBoxSeatedModeChanged" Unchecked="CheckBoxSeatedModeChanged" Visibility="Hidden"/>
-        <CheckBox Grid.Row="2" Content="IR1 Mode" Height="Auto" HorizontalAlignment="Left" VerticalAlignment="Bottom" x:Name="checkIR1Mode" Checked="SwitchRGBtoIR1" Unchecked="SwitchRGBtoIR1" Margin="10,0,0,110"/>
-        <CheckBox Grid.Row="2" Content="IR2 Mode " Height="Auto" HorizontalAlignment="Left" VerticalAlignment="Bottom" x:Name="checkIR2Mode" Checked="SwitchRGBtoIR2" Unchecked="SwitchRGBtoIR2" Margin="10,0,0,90"/>
-
-        <Button Content="Set Tilt" HorizontalAlignment="Left" x:Name="btnsetTilt" Click="btnsetTilt_Click_1" VerticalAlignment="Bottom" Width="44" Height="26" Grid.Row="2" Margin="10,0,0,10"/>
-        <TextBox HorizontalAlignment="Left" Height="30" TextWrapping="Wrap" Text="" x:Name="txttilt" VerticalAlignment="Bottom" Width="44" Grid.Row="2" Margin="10,0,0,39"/>
-        <Button Content="Set Tilt" HorizontalAlignment="Left" VerticalAlignment="Bottom" x:Name="btnsetTilt2" Click="btnsetTilt_Click_2" Width="44" Height="26" Grid.Row="2" Margin="59,0,0,10"/>
-        <TextBox HorizontalAlignment="Left" Height="30" Margin="59,0,0,39" TextWrapping="Wrap" Text="" x:Name="txttilt2" VerticalAlignment="Bottom" Width="44" Grid.Row="2"/>
+        
     </Grid>
+
 </Window>

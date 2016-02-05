@@ -59,8 +59,8 @@ namespace Kinect_360_sample
 
         private DrawingGroup drawingGroup;
         private DrawingImage imageSource;
-
-
+        String currentText = "";
+        TextWriter _writer = null;
         //RAVIIIIIIIIIIIIII
         public MainWindow()
         {
@@ -112,7 +112,9 @@ namespace Kinect_360_sample
             deviceText2.Text = "Device ID 2 : ";
             TextBlock deviceIDtext = new TextBlock();
             TextBlock deviceIDtext2 = new TextBlock();
-
+            _writer = new TextBoxStreamWriter(textOut);
+            // Redirect the out Console stream
+            Console.SetOut(_writer);
             // Create the drawing group we'll use for drawing
             this.drawingGroup = new DrawingGroup();
 
@@ -181,17 +183,18 @@ namespace Kinect_360_sample
                 // Add an event handler to be called whenever there is new color frame data
                 this.sensor.SkeletonFrameReady += this.SensorSkeletonFrameReady;
 
-   
+                
     //device text info
                 deviceIDtext.Text = sensor.UniqueKinectId;
-                stack1.Children.Add(deviceText);
-                stack1.Children.Add(deviceIDtext);
+                stack2.Children.Add(deviceText);
+                stack2.Children.Add(deviceIDtext);
 
                 // Start the sensor!
                 try
                 {
                     this.sensor.Start();
                     this.sensor.ElevationAngle = 0;
+                    Console.WriteLine("Sensor 1 has started");
                 }
                 catch (IOException)
                 {
@@ -200,8 +203,8 @@ namespace Kinect_360_sample
             }
             if (null != this.sensor2) {
                 deviceIDtext2.Text = sensor2.UniqueKinectId;
-                stack1.Children.Add(deviceText2);
-                stack1.Children.Add(deviceIDtext2);
+                stack2.Children.Add(deviceText2);
+                stack2.Children.Add(deviceIDtext2);
                 // Turn on the depth stream to receive depth frames
                 this.sensor2.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
 
@@ -222,7 +225,7 @@ namespace Kinect_360_sample
 
 
 
-                // Turn on the color stream to receive color frames
+                    // Turn on the color stream to receive color frames
                 this.sensor2.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
 
                 // Allocate space to put the pixels we'll receive
@@ -241,6 +244,7 @@ namespace Kinect_360_sample
                 try
                 {
                     this.sensor2.Start();
+                    Console.WriteLine("Sensor 2 has started");
                     this.sensor2.ElevationAngle = 0;
                 }
                 catch (IOException)
@@ -255,24 +259,7 @@ namespace Kinect_360_sample
 
         }
 
-        private void btnsetTilt_Click_1(object sender, RoutedEventArgs e)
-        {
-            if (txttilt.Text != string.Empty)
-            {
-                //change the Elevation based on what has been entered in the textbox
-                if (null != sensor && Convert.ToInt32(txttilt.Text) <= 27 && Convert.ToInt32(txttilt.Text) >= -27)
-                    sensor.ElevationAngle = Convert.ToInt32(txttilt.Text);
-            }
-        }
-        private void btnsetTilt_Click_2(object sender, RoutedEventArgs e)
-        {
-            if (txttilt2.Text != string.Empty)
-            {
-                //change the Elevation based on what has been entered in the textbox
-                if (null != sensor2 && Convert.ToInt32(txttilt2.Text) <= 27 && Convert.ToInt32(txttilt2.Text) >= -27)
-                    sensor2.ElevationAngle = Convert.ToInt32(txttilt2.Text);
-            }
-        }
+
         private void SwitchRGBtoIR1(object sender, RoutedEventArgs e)
         {
             if (this.checkIR1Mode.IsChecked.GetValueOrDefault())
@@ -293,6 +280,7 @@ namespace Kinect_360_sample
 
                     // Add an event handler to be called whenever there is new color frame data
                     this.sensor.ColorFrameReady += this.SensorColorFrameReady;
+
                 }
 
             }
@@ -700,6 +688,35 @@ namespace Kinect_360_sample
                 this.sensor2.Stop();
             }
 
+        }
+
+        private void tiltSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (null != sensor)
+            {
+                try
+                {
+                    sensor.ElevationAngle = (int)tiltSlider1.Value;
+                }
+                catch(Exception ex){
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+
+        private void tiltSlider2_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (null != sensor2)
+            {
+                try
+                {
+                    sensor2.ElevationAngle = (int)tiltSlider2.Value;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
         }
     }
 }
