@@ -19,33 +19,33 @@ using Microsoft.Runtime;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-namespace Kinect_360_sample
-{
 
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+/*This is the main file*/
+
+namespace KinectVision360
+{
+    // Interaction logic for MainWindow.xaml
     public partial class MainWindow : Window
     {
+        // Instantiate the sensors and their bitmaps
         private KinectSensor sensor;
         private KinectSensor sensor2;
         private WriteableBitmap depthBitmap;
         private WriteableBitmap colorBitmap;
         private WriteableBitmap depthBitmap2;
         private WriteableBitmap colorBitmap2;
-        /// <summary>
-        /// Intermediate storage for the depth data received from the camera
-        /// </summary>
+
+        // Intermediate storage for the depth data received from the camera
         private DepthImagePixel[] depthImagePixels;
         private DepthImagePixel[] depthImagePixels2;
-        /// <summary>
-        /// Intermediate storage for the depth data converted to color
-        /// </summary>
+
+        // Intermediate storage for the depth data converted to color
         private byte[] colorPixels;
         private byte[] depthPixels;
         private byte[] colorPixels2;
         private byte[] depthPixels2;
 
+        /* skeletal intialize
         private const float RenderWidth = 640.0f;
         private const float RenderHeight = 480.0f;
         private const double JointThickness = 3;
@@ -55,19 +55,20 @@ namespace Kinect_360_sample
         private readonly Brush trackedJointBrush = new SolidColorBrush(Color.FromArgb(255, 68, 192, 68));
         private readonly Brush inferredJointBrush = Brushes.Yellow;
         private readonly Pen trackedBonePen = new Pen(Brushes.Green, 6);
-        private readonly Pen inferredBonePen = new Pen(Brushes.Gray, 1);
+        private readonly Pen inferredBonePen = new Pen(Brushes.Gray, 1); */
 
-        private DrawingGroup drawingGroup;
-        private DrawingImage imageSource;
-        String currentText = "";
+       // private DrawingGroup drawingGroup;
+       // private DrawingImage imageSource;
+
         TextWriter _writer = null;
-        //RAVIIIIIIIIIIIIII
+        
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private static void RenderClippedEdges(Skeleton skeleton, DrawingContext drawingContext)
+        // This is Skeletal code; not being used right now.
+     /*   private static void RenderClippedEdges(Skeleton skeleton, DrawingContext drawingContext)
         {
             if (skeleton.ClippedEdges.HasFlag(FrameEdges.Bottom))
             {
@@ -100,30 +101,37 @@ namespace Kinect_360_sample
                     null,
                     new Rect(RenderWidth - ClipBoundsThickness, 0, ClipBoundsThickness, RenderHeight));
             }
-        }
+        } */
 
 
         private void Window_Loaded_1(object sender, RoutedEventArgs e)
         {
-            bool connectedSensor = false;
-            TextBlock deviceText = new TextBlock();
-            deviceText.Text = "Device ID : ";
-            TextBlock deviceText2 = new TextBlock();
-            deviceText2.Text = "Device ID 2 : ";
-            TextBlock deviceIDtext = new TextBlock();
-            TextBlock deviceIDtext2 = new TextBlock();
             _writer = new TextBoxStreamWriter(textOut);
+
             // Redirect the out Console stream
             Console.SetOut(_writer);
-            // Create the drawing group we'll use for drawing
-            this.drawingGroup = new DrawingGroup();
+
+            // Set the sensors and their bitmaps
+            setSensors();
+            setSensor1();
+            setSensor2();
+            
+  /* Skeletal
+           // Create the drawing group we'll use for drawing
+           this.drawingGroup = new DrawingGroup();
 
             // Create an image source that we can use in our image control
             this.imageSource = new DrawingImage(this.drawingGroup);
 
             // Display the drawing using our image control
-            skeletonimage.Source = this.imageSource;
+            skeletonimage.Source = this.imageSource;  
+   */
+       }
 
+        // Called from Window_Loaded_1. Used to set the values of the sensor
+        private void setSensors() {
+
+            bool connectedSensor = false;
 
             foreach (var potentialSensor in KinectSensor.KinectSensors)
             {
@@ -132,15 +140,24 @@ namespace Kinect_360_sample
                     this.sensor = potentialSensor;
                     connectedSensor = true;
                 }
-                if (potentialSensor.Status == KinectStatus.Connected && potentialSensor != sensor) {
-                    sensor2 = potentialSensor;
-
+                if (potentialSensor.Status == KinectStatus.Connected && connectedSensor == true)
+                {
+                    this.sensor2 = potentialSensor;
                 }
-            }
+            }        
+        
+        }
+
+        // Called from Window_Loaded_1. Used to set Sensor1 bitmaps for depth,etc.
+        private void setSensor1() {
+
+            TextBlock deviceText = new TextBlock();
+            deviceText.Text = "Device ID : ";
+            TextBlock deviceIDtext = new TextBlock();
 
             if (null != this.sensor)
             {
-  //Depth
+                //Depth
                 // Turn on the depth stream to receive depth frames
                 this.sensor.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
 
@@ -159,32 +176,32 @@ namespace Kinect_360_sample
                 // Add an event handler to be called whenever there is new depth frame data
                 this.sensor.DepthFrameReady += this.SensorDepthFrameReady;
 
-    //color RGB
+                //color RGB
 
                 // Turn on the color stream to receive color frames
                 this.sensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
 
                 // Allocate space to put the pixels we'll receive
                 this.colorPixels = new byte[this.sensor.ColorStream.FramePixelDataLength];
-                
+
                 // This is the bitmap we'll display on-screen
                 this.colorBitmap = new WriteableBitmap(this.sensor.ColorStream.FrameWidth, this.sensor.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Bgr32, null);
-                
+
                 // Set the image we display to point to the bitmap where we'll put the image data
                 this.colorimage.Source = this.colorBitmap;
 
                 // Add an event handler to be called whenever there is new color frame data
                 this.sensor.ColorFrameReady += this.SensorColorFrameReady;
 
-    //skeleton
-                // Turn on the skeleton stream to receive skeleton frames
-                this.sensor.SkeletonStream.Enable();
+                /* //skeleton
+                             // Turn on the skeleton stream to receive skeleton frames
+                             this.sensor.SkeletonStream.Enable();
 
-                // Add an event handler to be called whenever there is new color frame data
-                this.sensor.SkeletonFrameReady += this.SensorSkeletonFrameReady;
+                             // Add an event handler to be called whenever there is new color frame data
+                             this.sensor.SkeletonFrameReady += this.SensorSkeletonFrameReady; */
 
-                
-    //device text info
+
+                //device text info
                 deviceIDtext.Text = sensor.UniqueKinectId;
                 stack2.Children.Add(deviceText);
                 stack2.Children.Add(deviceIDtext);
@@ -201,7 +218,21 @@ namespace Kinect_360_sample
                     this.sensor = null;
                 }
             }
-            if (null != this.sensor2) {
+
+        
+        }
+
+        // Called from Window_Loaded_1. Used to set Sensor2 bitmaps for depth,etc.
+        private void setSensor2() {
+
+
+            TextBlock deviceText2 = new TextBlock();
+            deviceText2.Text = "Device ID 2 : ";
+
+            TextBlock deviceIDtext2 = new TextBlock();
+
+            if (null != this.sensor2)
+            {
                 deviceIDtext2.Text = sensor2.UniqueKinectId;
                 stack2.Children.Add(deviceText2);
                 stack2.Children.Add(deviceIDtext2);
@@ -223,9 +254,7 @@ namespace Kinect_360_sample
                 // Add an event handler to be called whenever there is new depth frame data
                 this.sensor2.DepthFrameReady += this.SensorDepthFrameReady2;
 
-
-
-                    // Turn on the color stream to receive color frames
+                // Turn on the color stream to receive color frames
                 this.sensor2.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
 
                 // Allocate space to put the pixels we'll receive
@@ -252,13 +281,8 @@ namespace Kinect_360_sample
                     this.sensor2 = null;
                 }
             }
-            if (null == this.sensor)
-            {
-               // this.statusBarText.Text = Properties.Resources.NoKinectReady;
-            }
-
+        
         }
-
 
         private void SwitchRGBtoIR1(object sender, RoutedEventArgs e)
         {
@@ -305,7 +329,6 @@ namespace Kinect_360_sample
                 }
             }
         }
-
         private void SwitchRGBtoIR2(object sender, RoutedEventArgs e)
         {
             if (this.checkIR2Mode.IsChecked.GetValueOrDefault())
@@ -350,7 +373,6 @@ namespace Kinect_360_sample
                 }
             }
         }
-
         private void SensorColorFrameReady(object sender, ColorImageFrameReadyEventArgs e)
         {
             using (ColorImageFrame colorFrame = e.OpenColorImageFrame())
@@ -504,6 +526,7 @@ namespace Kinect_360_sample
             }
         }
 
+        /* Skeletal code
         private void SensorSkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
         {
             Skeleton[] skeletons = new Skeleton[0];
@@ -547,10 +570,9 @@ namespace Kinect_360_sample
                 // prevent drawing outside of our render area
                 this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
             }
-        }
+        } */
 
-        /// <summary>
-        /// Draws a skeleton's bones and joints
+        /* /// Draws a skeleton's bones and joints
         /// </summary>
         /// <param name="skeleton">skeleton to draw</param>
         /// <param name="drawingContext">drawing context to draw to</param>
@@ -673,9 +695,7 @@ namespace Kinect_360_sample
                     this.sensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Default;
                 }
             }
-        }
-
-
+        } */
 
         private void Window_Closing_1(object sender, System.ComponentModel.CancelEventArgs e)
         {
