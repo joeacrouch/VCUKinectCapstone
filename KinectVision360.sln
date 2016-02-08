@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2012 for Windows Desktop
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinect_360_sample", "Kinect_360_sample\Kinect_360_sample.csproj", "{61633ED1-68C4-4612-A4CA-03C1DABBBCB7}"
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KinectVision360", "Kinect_360_sample\KinectVision360.csproj", "{61633ED1-68C4-4612-A4CA-03C1DABBBCB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

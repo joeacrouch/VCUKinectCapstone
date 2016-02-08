@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Controls;
  
-namespace Kinect_360_sample
+namespace KinectVision360
 {
     public class TextBoxStreamWriter : TextWriter
     {
