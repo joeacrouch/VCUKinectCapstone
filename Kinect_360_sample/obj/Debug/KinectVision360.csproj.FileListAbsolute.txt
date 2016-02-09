@@ -16,6 +16,7 @@ C:\Users\marwahars\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\Kinec
 C:\Users\marwahars\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\Kinect_360_sample.exe
 C:\Users\marwahars\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\Kinect_360_sample.pdb
 C:\Users\marwahars\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360.Properties.Resources.resources
+<<<<<<< HEAD
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\bin\Debug\KinectVision360.exe.config
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\bin\Debug\KinectVision360.exe
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\bin\Debug\KinectVision360.pdb
@@ -34,3 +35,23 @@ C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVisio
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360.csproj.GenerateResource.Cache
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360.exe
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360.pdb
+=======
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\bin\Debug\Kinect_360_sample.exe.config
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\Kinect_360_sample.exe
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\Kinect_360_sample.pdb
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\bin\Debug\Kinect_360_sample.exe
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\bin\Debug\Kinect_360_sample.pdb
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\bin\Debug\Microsoft.Kinect.Toolkit.BackgroundRemoval.dll
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\bin\Debug\Microsoft.Kinect.Toolkit.Controls.dll
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\bin\Debug\Microsoft.Kinect.Toolkit.dll
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\bin\Debug\Microsoft.Kinect.Toolkit.Fusion.dll
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\bin\Debug\Microsoft.Kinect.Toolkit.Interaction.dll
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360.csprojResolveAssemblyReference.cache
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\MainWindow.baml
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\MainWindow.g.cs
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\App.g.cs
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\Kinect_360_sample_MarkupCompile.cache
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\Kinect_360_sample.g.resources
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360.Properties.Resources.resources
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360.csproj.GenerateResource.Cache
+>>>>>>> 02ca02aa618d6c3fe1ad702bb3f966384a6be85d
