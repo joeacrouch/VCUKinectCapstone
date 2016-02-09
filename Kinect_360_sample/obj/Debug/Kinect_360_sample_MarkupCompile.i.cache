@@ -4,9 +4,8 @@
 winexe
 C#
 .cs
-<<<<<<< HEAD
 C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\
-Kinect_360_sample
+KinectVision360
 none
 false
 DEBUG;TRACE
@@ -15,18 +14,6 @@ C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\App.xaml
 
 101539750265
 181892202038
-=======
-C:\Users\marwahars\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\
-KinectVision360
-none
-false
-DEBUG;TRACE
-C:\Users\marwahars\Documents\VCUKinectCapstone\Kinect_360_sample\App.xaml
-11151548125
-
-101645316935
-18-1915007530
->>>>>>> e43b7d64797e93b60398aee8fcd76b0356cff957
 MainWindow.xaml;
 
 False
