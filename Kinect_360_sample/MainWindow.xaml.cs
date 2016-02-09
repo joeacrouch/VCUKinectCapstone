@@ -566,12 +566,12 @@ namespace KinectVision360
                         }
                     }
                 }
-
+        
                 // prevent drawing outside of our render area
                 this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
             }
         } */
-
+        //
         /* /// Draws a skeleton's bones and joints
         /// </summary>
         /// <param name="skeleton">skeleton to draw</param>
