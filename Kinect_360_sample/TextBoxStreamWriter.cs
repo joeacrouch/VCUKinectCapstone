@@ -22,6 +22,7 @@ namespace KinectVision360
         {
             base.Write(value);
             _output.AppendText(value.ToString()); // When character data is written, append it to the text box.
+            
         }
 
         public override Encoding Encoding

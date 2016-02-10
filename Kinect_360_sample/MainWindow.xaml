@@ -2,11 +2,13 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:k="http://schemas.microsoft.com/kinect/2013"
-        Title="KinectVision360" Height="950" Width="1300" WindowState="Maximized" Loaded="Window_Loaded_1" Closing="Window_Closing_1">
-
+        Title="KinectVision360" Height="950" Width="1300" WindowState="Maximized" Loaded="Window_Loaded_1" Closing="Window_Closing_1"
+        Icon="kv360icon.ico">
     <Grid Name="mainGrid" Background="Black">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="1"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
@@ -17,30 +19,42 @@
 
         </Grid.RowDefinitions>
         <StackPanel Name="stack1" Grid.Row="2" FlowDirection="LeftToRight" Orientation="Vertical" Background="White">
-            
+
             <Label Content="Kinect Is On" x:Name="kinect_status" Background="#FF17FF00"/>
             <StackPanel Name="stack2">
                 <CheckBox Grid.Row="2" Content="IR1 Mode" Height="Auto"  x:Name="checkIR1Mode" Checked="SwitchRGBtoIR1" Unchecked="SwitchRGBtoIR1" />
                 <CheckBox Grid.Row="2" Content="IR2 Mode " Height="Auto"  x:Name="checkIR2Mode" Checked="SwitchRGBtoIR2" Unchecked="SwitchRGBtoIR2" />
+                <CheckBox Grid.Row="2" Content="IR3 Mode " Height="Auto"  x:Name="checkIR3Mode" Checked="SwitchRGBtoIR3" Unchecked="SwitchRGBtoIR3" />
                 <TextBlock Text="Adjust Tilt Angle for Sensor 1: "></TextBlock>
                 <Slider Name="tiltSlider1" HorizontalAlignment="Left" Width="60" Height="auto" Maximum="20" Minimum="-20"
                         TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="true" ValueChanged="tiltSlider_ValueChanged"></Slider>
                 <TextBlock Text="Adjust Tilt Angle for Sensor 2: "></TextBlock>
                 <Slider Name="tiltSlider2" HorizontalAlignment="Left" Width="60" Height="auto" Maximum="20" Minimum="-20"
                         TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="true" ValueChanged="tiltSlider2_ValueChanged"></Slider>
+                <TextBlock Text="Adjust Tilt Angle for Sensor 3: "></TextBlock>
+                <Slider Name="tiltSlider3" HorizontalAlignment="Left" Width="60" Height="auto" Maximum="20" Minimum="-20"
+                        TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="true" ValueChanged="tiltSlider3_ValueChanged"></Slider>
             </StackPanel>
         </StackPanel>
-        <TextBox Name="textOut" Grid.Row="2"  Grid.Column="1" Width="auto" Height="auto" Background="White"></TextBox>
-
+        <ScrollViewer Grid.Row="3" Grid.Column="3" Name="scrollText" >
+            <TextBox Name="textOut" Grid.Row="3"  Grid.Column="3" Width="auto" Height="auto" Background="White" MaxLines="100"
+                     ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" TextChanged="textOut_TextChanged"></TextBox>
+        </ScrollViewer>
 
         <Image Grid.Column="0"  Name="depthimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <Image Grid.Column="0" Grid.Row="1" Name="colorimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <Image Grid.Column="0" Grid.Row="2" Name="skeletonimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Hidden"/>
-        <Image Grid.Column="1" Grid.Row="0" Name="depthimage2" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        <Image Grid.Column="1" Grid.Row="1" Name="colorimage2" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        <Image Grid.Column="1" Grid.Row="2" Name="image2" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <Image Grid.Column="1" Grid.Row="0" Name="depthimage2" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+        <Image Grid.Column="1" Grid.Row="1" Name="colorimage2" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+        <Image Grid.Column="3" Grid.Row="0" Name="depthimage3" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <Image Grid.Column="3" Grid.Row="1" Name="colorimage3" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <Image Grid.Column="3" Grid.Row="2" Name="image2" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
-        <Label Grid.Row="2" Content="VCU Capstone 2016" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontWeight="Bold" Grid.ColumnSpan="2"/>
+
+        <Label Grid.Row="2" Content="VCU Capstone 2016" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontWeight="Bold" Grid.Column="3"/>
+
+        <Image x:Name="KinectLogo" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Source="Kinectvision360_black.png" Visibility="Visible" Width="auto" Height="auto"/>
+
         <!--<CheckBox Grid.Row="2" Content="Seated Mode" Height="Auto" VerticalAlignment="Center" Margin="10,202,558,92" Name="checkBoxSeatedMode" Checked="CheckBoxSeatedModeChanged" Unchecked="CheckBoxSeatedModeChanged" Visibility="Hidden"/> -->
 
     </Grid>

@@ -59,5 +59,15 @@ namespace KinectVision360.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap kinectvision360_black {
+            get {
+                object obj = ResourceManager.GetObject("kinectvision360_black", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }
