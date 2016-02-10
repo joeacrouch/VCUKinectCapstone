@@ -360,92 +360,91 @@ namespace KinectVision360
         }
 
         private void SwitchRGBtoIR1(object sender, RoutedEventArgs e)
-        {
-            if (this.checkIR1Mode.IsChecked.GetValueOrDefault())
-            {
-                if (null != this.sensor)
+        { 
+            if (null != this.sensor)
                 {
-                    // Turn on the color stream to receive color frames
-                    this.sensor.ColorStream.Enable(ColorImageFormat.InfraredResolution640x480Fps30);
+                    if (this.checkIR1Mode.IsChecked.GetValueOrDefault())
+                    {
 
-                    // Allocate space to put the pixels we'll receive
-                    this.colorPixels = new byte[this.sensor.ColorStream.FramePixelDataLength];
+                        // Turn on the color stream to receive color frames
+                        this.sensor.ColorStream.Enable(ColorImageFormat.InfraredResolution640x480Fps30);
 
-                    // This is the bitmap we'll display on-screen
-                    this.colorBitmap = new WriteableBitmap(this.sensor.ColorStream.FrameWidth, this.sensor.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Gray16, null);
+                        // Allocate space to put the pixels we'll receive
+                        this.colorPixels = new byte[this.sensor.ColorStream.FramePixelDataLength];
 
-                    // Set the image we display to point to the bitmap where we'll put the image data
-                    this.colorimage.Source = this.colorBitmap;
+                        // This is the bitmap we'll display on-screen
+                        this.colorBitmap = new WriteableBitmap(this.sensor.ColorStream.FrameWidth, this.sensor.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Gray16, null);
 
-                    // Add an event handler to be called whenever there is new color frame data
-                    this.sensor.ColorFrameReady += this.SensorColorFrameReady;
+                        // Set the image we display to point to the bitmap where we'll put the image data
+                        this.colorimage.Source = this.colorBitmap;
 
-                }
+                        // Add an event handler to be called whenever there is new color frame data
+                        this.sensor.ColorFrameReady += this.SensorColorFrameReady;
 
-            }
-            else
-            {
-                if (null != this.sensor)
-                {
-                    // Turn on the color stream to receive color frames
-                    this.sensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
 
-                    // Allocate space to put the pixels we'll receive
-                    this.colorPixels = new byte[this.sensor.ColorStream.FramePixelDataLength];
 
-                    // This is the bitmap we'll display on-screen
-                    this.colorBitmap = new WriteableBitmap(this.sensor.ColorStream.FrameWidth, this.sensor.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Bgr32, null);
+                    }
+                    else
+                    {
 
-                    // Set the image we display to point to the bitmap where we'll put the image data
-                    this.colorimage.Source = this.colorBitmap;
+                        // Turn on the color stream to receive color frames
+                        this.sensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
 
-                    // Add an event handler to be called whenever there is new color frame data
-                    this.sensor.ColorFrameReady += this.SensorColorFrameReady;
-                }
+                        // Allocate space to put the pixels we'll receive
+                        this.colorPixels = new byte[this.sensor.ColorStream.FramePixelDataLength];
+
+                        // This is the bitmap we'll display on-screen
+                        this.colorBitmap = new WriteableBitmap(this.sensor.ColorStream.FrameWidth, this.sensor.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Bgr32, null);
+
+                        // Set the image we display to point to the bitmap where we'll put the image data
+                        this.colorimage.Source = this.colorBitmap;
+
+                        // Add an event handler to be called whenever there is new color frame data
+                        this.sensor.ColorFrameReady += this.SensorColorFrameReady;
+                    }
             }
         }
         private void SwitchRGBtoIR2(object sender, RoutedEventArgs e)
         {
-            if (this.checkIR2Mode.IsChecked.GetValueOrDefault())
+            if (null != this.sensor2)
             {
-                if (null != this.sensor2)
+                if (this.checkIR2Mode.IsChecked.GetValueOrDefault())
                 {
-                    // Turn on the color stream to receive color frames
-                    this.sensor2.ColorStream.Enable(ColorImageFormat.InfraredResolution640x480Fps30);
 
-                    // Allocate space to put the pixels we'll receive
-                    this.colorPixels2 = new byte[this.sensor2.ColorStream.FramePixelDataLength];
+                        // Turn on the color stream to receive color frames
+                        this.sensor2.ColorStream.Enable(ColorImageFormat.InfraredResolution640x480Fps30);
 
-                    // This is the bitmap we'll display on-screen
-                    this.colorBitmap2 = new WriteableBitmap(this.sensor2.ColorStream.FrameWidth, this.sensor2.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Gray16, null);
+                        // Allocate space to put the pixels we'll receive
+                        this.colorPixels2 = new byte[this.sensor2.ColorStream.FramePixelDataLength];
 
-                    // Set the image we display to point to the bitmap where we'll put the image data
-                    this.colorimage2.Source = this.colorBitmap2;
+                        // This is the bitmap we'll display on-screen
+                        this.colorBitmap2 = new WriteableBitmap(this.sensor2.ColorStream.FrameWidth, this.sensor2.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Gray16, null);
 
-                    // Add an event handler to be called whenever there is new color frame data
-                    this.sensor2.ColorFrameReady += this.SensorColorFrameReady2;
+                        // Set the image we display to point to the bitmap where we'll put the image data
+                        this.colorimage2.Source = this.colorBitmap2;
 
-                }
-            }
-            else
-            {
-                if (null != this.sensor2)
+                        // Add an event handler to be called whenever there is new color frame data
+                        this.sensor2.ColorFrameReady += this.SensorColorFrameReady2;
+
+                 }
+                else
                 {
-                    // Turn on the color stream to receive color frames
-                    this.sensor2.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
 
-                    // Allocate space to put the pixels we'll receive
-                    this.colorPixels2 = new byte[this.sensor2.ColorStream.FramePixelDataLength];
+                        // Turn on the color stream to receive color frames
+                        this.sensor2.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
 
-                    // This is the bitmap we'll display on-screen
-                    this.colorBitmap2 = new WriteableBitmap(this.sensor2.ColorStream.FrameWidth, this.sensor2.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Bgr32, null);
+                        // Allocate space to put the pixels we'll receive
+                        this.colorPixels2 = new byte[this.sensor2.ColorStream.FramePixelDataLength];
 
-                    // Set the image we display to point to the bitmap where we'll put the image data
-                    this.colorimage2.Source = this.colorBitmap2;
+                        // This is the bitmap we'll display on-screen
+                        this.colorBitmap2 = new WriteableBitmap(this.sensor2.ColorStream.FrameWidth, this.sensor2.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Bgr32, null);
 
-                    // Add an event handler to be called whenever there is new color frame data
-                    this.sensor2.ColorFrameReady += this.SensorColorFrameReady2;
-                }
+                        // Set the image we display to point to the bitmap where we'll put the image data
+                        this.colorimage2.Source = this.colorBitmap2;
+
+                        // Add an event handler to be called whenever there is new color frame data
+                        this.sensor2.ColorFrameReady += this.SensorColorFrameReady2;
+                   }
             }
         }
 
@@ -708,7 +707,6 @@ namespace KinectVision360
 
                         // Write out blue byte
                         this.depthPixels3[colorPixelIndex++] = intensity;
-
                         // Write out green byte
                         this.depthPixels3[colorPixelIndex++] = intensity;
 
@@ -719,6 +717,7 @@ namespace KinectVision360
                         // If we were outputting BGRA, we would write alpha here.
                         ++colorPixelIndex;
                     }
+                    
 
                     // Write the pixel data into our bitmap
                     this.depthBitmap3.WritePixels(
@@ -960,5 +959,12 @@ namespace KinectVision360
                 }
             }
         }
+
+        private void textOut_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            scrollText.ScrollToBottom();
+        }
+
+
     }
 }

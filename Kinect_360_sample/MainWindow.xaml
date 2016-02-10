@@ -36,8 +36,10 @@
                         TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="true" ValueChanged="tiltSlider3_ValueChanged"></Slider>
             </StackPanel>
         </StackPanel>
-        <TextBox Name="textOut" Grid.Row="3"  Grid.Column="3" Width="auto" Height="auto" Background="White"></TextBox>
-
+        <ScrollViewer Grid.Row="3" Grid.Column="3" Name="scrollText" >
+            <TextBox Name="textOut" Grid.Row="3"  Grid.Column="3" Width="auto" Height="auto" Background="White" MaxLines="100"
+                     ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" TextChanged="textOut_TextChanged"></TextBox>
+        </ScrollViewer>
 
         <Image Grid.Column="0"  Name="depthimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <Image Grid.Column="0" Grid.Row="1" Name="colorimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center"/>
@@ -51,8 +53,7 @@
 
         <Label Grid.Row="2" Content="VCU Capstone 2016" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontWeight="Bold" Grid.Column="3"/>
 
-        <Image x:Name="KinectLogo" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Images/logo.png" Visibility="Visible" >
-        </Image>
+        <Image x:Name="KinectLogo" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Source="Kinectvision360_black.png" Visibility="Visible" Width="auto" Height="auto"/>
 
         <!--<CheckBox Grid.Row="2" Content="Seated Mode" Height="Auto" VerticalAlignment="Center" Margin="10,202,558,92" Name="checkBoxSeatedMode" Checked="CheckBoxSeatedModeChanged" Unchecked="CheckBoxSeatedModeChanged" Visibility="Hidden"/> -->
 

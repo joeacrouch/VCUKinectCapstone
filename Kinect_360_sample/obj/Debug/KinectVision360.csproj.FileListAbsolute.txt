@@ -15,3 +15,7 @@ C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\Kinect
 C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360.csproj.GenerateResource.Cache
 C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360.exe
 C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360.pdb
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360.csprojResolveAssemblyReference.cache
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\bin\Debug\Resources\KinectVisionLogo.png
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360_Content.g.cs
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\bin\Debug\kinectvision360_black.png
