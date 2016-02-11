@@ -157,8 +157,14 @@ namespace KinectVision360
                 {
                     this.sensor3 = potentialSensor;
                 }
-            }        
-        
+            }
+            if (sensor == null || sensor2 == null || sensor3 == null) { 
+                kinect_status.Background = new SolidColorBrush(Colors.Red); 
+            }
+            else { 
+                Console.Write(" Sensor 1 status: {0} \n Sensor 2 status: {0} \n Sensor 3 status: {0}", sensor.Status, sensor2.Status, sensor3.Status);
+                kinect_status.Background = new SolidColorBrush(Colors.Green);
+                 }
         }
 
         // Called from Window_Loaded_1. Used to set Sensor1 bitmaps for depth,etc.
@@ -218,13 +224,12 @@ namespace KinectVision360
                 deviceIDtext.Text = sensor.UniqueKinectId;
                 stack2.Children.Add(deviceText);
                 stack2.Children.Add(deviceIDtext);
-
+                
                 // Start the sensor!
                 try
                 {
                     this.sensor.Start();
                     this.sensor.ElevationAngle = 0;
-                    Console.WriteLine("Sensor 1 has started");
                 }
                 catch (IOException)
                 {
@@ -286,7 +291,6 @@ namespace KinectVision360
                 try
                 {
                     this.sensor2.Start();
-                    Console.WriteLine("Sensor 2 has started");
                     this.sensor2.ElevationAngle = 0;
                 }
                 catch (IOException)
@@ -348,7 +352,6 @@ namespace KinectVision360
                 try
                 {
                     this.sensor3.Start();
-                    Console.WriteLine("Sensor 3 has started");
                     this.sensor3.ElevationAngle = 0;
                 }
                 catch (IOException)
@@ -508,6 +511,8 @@ namespace KinectVision360
                         this.colorPixels,
                         this.colorBitmap.PixelWidth * colorFrame.BytesPerPixel,
                         0);
+                   // Console.WriteLine(colorPixels[50]);
+
                 }
             }
         }

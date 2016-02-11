@@ -20,7 +20,7 @@
         </Grid.RowDefinitions>
         <StackPanel Name="stack1" Grid.Row="2" FlowDirection="LeftToRight" Orientation="Vertical" Background="White">
 
-            <Label Content="Kinect Is On" x:Name="kinect_status" Background="#FF17FF00"/>
+            <Label Content="KINECT STATUSES" x:Name="kinect_status" Background="#FF17FF00" FontWeight="Bold"/>
             <StackPanel Name="stack2">
                 <CheckBox Grid.Row="2" Content="IR1 Mode" Height="Auto"  x:Name="checkIR1Mode" Checked="SwitchRGBtoIR1" Unchecked="SwitchRGBtoIR1" />
                 <CheckBox Grid.Row="2" Content="IR2 Mode " Height="Auto"  x:Name="checkIR2Mode" Checked="SwitchRGBtoIR2" Unchecked="SwitchRGBtoIR2" />
