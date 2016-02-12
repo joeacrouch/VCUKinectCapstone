@@ -118,7 +118,7 @@ namespace KinectVision360
             Console.SetOut(_writer);
 
             // Set the sensors and their bitmaps
-            setSensors();
+            sensorInit();
             setSensor1();
             setSensor2();
             setSensor3();
@@ -136,7 +136,7 @@ namespace KinectVision360
        }
 
         // Called from Window_Loaded_1. Used to set the values of the sensor
-        private void setSensors() {
+        private void sensorInit() {
 
             int connectedSensor = 0;
 
@@ -159,20 +159,18 @@ namespace KinectVision360
                 }
             }
             if (sensor == null || sensor2 == null || sensor3 == null) { 
-                kinect_status.Background = new SolidColorBrush(Colors.Red); 
+                kinect_status.Background = new SolidColorBrush(Colors.Red);
+                Console.WriteLine("One or more of the three eyes are not kinected");
             }
             else { 
-                Console.Write(" Sensor 1 status: {0} \n Sensor 2 status: {0} \n Sensor 3 status: {0}", sensor.Status, sensor2.Status, sensor3.Status);
+                Console.Write(" Sensor 1 status: {0} \n Sensor 2 status: {1} \n Sensor 3 status: {2} \n", sensor.Status, sensor2.Status, sensor3.Status);
+                Console.Write(" Sensor 1 ID: {0} \n Sensor 2 ID: {1} \n Sensor 3 ID: {2} \n", sensor.UniqueKinectId, sensor2.UniqueKinectId, sensor3.UniqueKinectId);
                 kinect_status.Background = new SolidColorBrush(Colors.Green);
                  }
         }
 
         // Called from Window_Loaded_1. Used to set Sensor1 bitmaps for depth,etc.
         private void setSensor1() {
-
-            TextBlock deviceText = new TextBlock();
-            deviceText.Text = "Device ID : ";
-            TextBlock deviceIDtext = new TextBlock();
 
             if (null != this.sensor)
             {
@@ -221,9 +219,7 @@ namespace KinectVision360
 
 
                 //device text info
-                deviceIDtext.Text = sensor.UniqueKinectId;
-                stack2.Children.Add(deviceText);
-                stack2.Children.Add(deviceIDtext);
+
                 
                 // Start the sensor!
                 try
@@ -243,17 +239,8 @@ namespace KinectVision360
         // Called from Window_Loaded_1. Used to set Sensor2 bitmaps for depth,etc.
         private void setSensor2() {
 
-
-            TextBlock deviceText2 = new TextBlock();
-            deviceText2.Text = "Device ID 2 : ";
-
-            TextBlock deviceIDtext2 = new TextBlock();
-
             if (null != this.sensor2)
             {
-                deviceIDtext2.Text = sensor2.UniqueKinectId;
-                stack2.Children.Add(deviceText2);
-                stack2.Children.Add(deviceIDtext2);
                 // Turn on the depth stream to receive depth frames
                 this.sensor2.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
 
@@ -304,17 +291,8 @@ namespace KinectVision360
         private void setSensor3()
         {
 
-
-            TextBlock deviceText3 = new TextBlock();
-            deviceText3.Text = "Device ID 3 : ";
-
-            TextBlock deviceIDtext3 = new TextBlock();
-
             if (null != this.sensor3)
             {
-                deviceIDtext3.Text = sensor3.UniqueKinectId;
-                stack2.Children.Add(deviceText3);
-                stack2.Children.Add(deviceIDtext3);
                 // Turn on the depth stream to receive depth frames
                 this.sensor3.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
 
