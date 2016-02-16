@@ -19,7 +19,7 @@ using Microsoft.Runtime;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-
+using Microsoft.Kinect.Toolkit.FaceTracking;
 /*This is the main file*/
 
 namespace KinectVision360
@@ -71,6 +71,8 @@ namespace KinectVision360
         public MainWindow()
         {
             InitializeComponent();
+            var faceTrackingViewerBinding = new Binding("Kinect") { Source = sensor };
+            //faceTrackingViewer.SetBinding(FaceTrackingViewer.KinectProperty, faceTrackingViewerBinding);
         }
 
         // This is Skeletal code; not being used right now.
@@ -133,7 +135,8 @@ namespace KinectVision360
             // Display the drawing using our image control
             skeletonimage.Source = this.imageSource;  
    */
-       }
+       
+        }
 
         // Called from Window_Loaded_1. Used to set the values of the sensor
         private void sensorInit() {
@@ -219,17 +222,31 @@ namespace KinectVision360
 
 
                 //device text info
-
-                
+                sensor.SkeletonStream.Enable(
+                    new TransformSmoothParameters()
+                    {
+                        Correction = 0.5f,
+                        JitterRadius = 0.05f,
+                        MaxDeviationRadius = 0.05f,
+                        Prediction = 0.5f,
+                        Smoothing = 0.5f
+                    });
+                    sensor.SkeletonStream.EnableTrackingInNearRange = true;
+                    sensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Seated;
+                    sensor.SkeletonStream.Enable();
+                //faceTracker = new FaceTracker(sensor);
                 // Start the sensor!
                 try
                 {
                     this.sensor.Start();
+
                     this.sensor.ElevationAngle = 0;
                 }
                 catch (IOException)
                 {
                     this.sensor = null;
+                    sensor.SkeletonStream.EnableTrackingInNearRange = false;
+
                 }
             }
 

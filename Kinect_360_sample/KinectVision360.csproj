@@ -47,6 +47,10 @@
     <Reference Include="Microsoft.Kinect.Toolkit.Controls">
       <HintPath>.\Microsoft.Kinect.Toolkit.Controls.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Kinect.Toolkit.FaceTracking, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\Microsoft.Kinect.Toolkit.FaceTracking.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Kinect.Toolkit.Fusion">
       <HintPath>.\Microsoft.Kinect.Toolkit.Fusion.dll</HintPath>
     </Reference>

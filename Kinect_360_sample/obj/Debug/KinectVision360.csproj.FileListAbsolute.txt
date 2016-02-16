@@ -40,3 +40,5 @@ C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVisio
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360.g.resources
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360.Properties.Resources.resources
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360.csproj.GenerateResource.Cache
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360_MarkupCompile.lref
