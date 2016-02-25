@@ -4,7 +4,15 @@
         xmlns:k="http://schemas.microsoft.com/kinect/2013"
         xmlns:local="clr-namespace:KinectVision360"
         Title="KinectVision360" Height="950" Width="1300" WindowState="Maximized" Loaded="Window_Loaded_1" Closing="Window_Closing_1"
-        Icon="kv360icon.ico">
+        Icon="Resources\kv360icon.ico">
+    <Window.Resources>
+        <SolidColorBrush x:Key="MediumGreyBrush" Color="#ff6e6e6e"/>
+        <SolidColorBrush x:Key="KinectPurpleBrush" Color="#ff52318f"/>
+        <SolidColorBrush x:Key="KinectBlueBrush" Color="#ff00BCF2"/>
+        <Style TargetType="{x:Type Image}">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+        </Style>
+    </Window.Resources>
     <TabControl TabStripPlacement="Top" Background="Black" BorderThickness="0">
         <TabItem Header="Streams">
             <Grid Name="mainGrid" Background="Black">
@@ -31,18 +39,28 @@
                 </ScrollViewer>
 
                 <Image Grid.Column="0"  Name="depthimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <Image Grid.Column="0" Grid.Row="1" Name="colorimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+
+                
+                <!--<local:FaceTrackingViewer x:Name="faceTrackingViewer" Grid.Column="0" Grid.Row="1"/>-->
+                <Viewbox Grid.Row="1" Grid.Column="0" Stretch="Uniform" HorizontalAlignment="Right">
+                    <Grid Name="MainGrid" Width="640" Height="480">
+                        <Image Name="colorimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <local:FaceTrackingViewer x:Name="faceTrackingViewer" />
+                    </Grid>
+                </Viewbox>
+
                 <Image Grid.Column="0" Grid.Row="2" Name="skeletonimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Hidden"/>
                 <Image Grid.Column="1" Grid.Row="0" Name="depthimage2" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
                 <Image Grid.Column="1" Grid.Row="1" Name="colorimage2" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
                 <Image Grid.Column="3" Grid.Row="0" Name="depthimage3" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 <Image Grid.Column="3" Grid.Row="1" Name="colorimage3" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 <Image Grid.Column="3" Grid.Row="2" Name="image2" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-
+                <StackPanel Grid.Column="0" Grid.Row="3" Background="White">
+                    <TextBlock Name="depthVal1"></TextBlock>
+                </StackPanel>
                
                 <Label Grid.Row="2" Content="VCU Capstone 2016" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontWeight="Bold" Grid.Column="3"/>
-
-                <Image x:Name="KinectLogo" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Source="Kinectvision360_black.png" Visibility="Visible" Width="auto" Height="auto"/>
+                <Image x:Name="KinectLogo" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Source="Resources\Kinectvision360_black.png" Visibility="Visible" Width="auto" Height="auto"/>
                 <!--<CheckBox Grid.Row="2" Content="Seated Mode" Height="Auto" VerticalAlignment="Center" Margin="10,202,558,92" Name="checkBoxSeatedMode" Checked="CheckBoxSeatedModeChanged" Unchecked="CheckBoxSeatedModeChanged" Visibility="Hidden"/> -->
             </Grid>
         </TabItem>
@@ -65,6 +83,9 @@
                 <TextBlock Text="Adjust Tilt Angle for Sensor 3: "></TextBlock>
                 <Slider Name="tiltSlider3" HorizontalAlignment="Left" Width="60" Height="auto" Maximum="20" Minimum="-20"
                 TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="true" ValueChanged="tiltSlider3_ValueChanged"></Slider>
+                <TextBlock Text="Adjust Sensor Range for Sensor 1: "></TextBlock>
+                <Slider Name="depthSlider1" HorizontalAlignment="Left" Width="60" Height="auto" Maximum="1" Minimum="0"
+                TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="true" ValueChanged="depthSlider1_ValueChanged"></Slider>
             </StackPanel>
 
         </TabItem>

@@ -9,6 +9,5 @@
 //------------------------------------------------------------------------------
 
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/kinectvisionlogo.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("kinectvision360_black.png")]
 
 

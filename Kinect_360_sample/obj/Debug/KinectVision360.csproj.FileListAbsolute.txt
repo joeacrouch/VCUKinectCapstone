@@ -23,7 +23,6 @@ C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\bin\Debug\KinectVisio
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360.exe
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360.pdb
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\bin\Debug\Resources\KinectVisionLogo.png
-C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\bin\Debug\kinectvision360_black.png
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\bin\Debug\KinectVision360.exe
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\bin\Debug\KinectVision360.pdb
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\bin\Debug\Microsoft.Kinect.Toolkit.BackgroundRemoval.dll
@@ -42,3 +41,7 @@ C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVisio
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360.csproj.GenerateResource.Cache
 C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360_MarkupCompile.lref
+C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360_MarkupCompile.lref
+C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\FaceTrackingViewer.baml
+C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\FaceTrackingViewer.g.cs

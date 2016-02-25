@@ -20,6 +20,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using Microsoft.Kinect.Toolkit.FaceTracking;
+using Point = System.Windows.Point;
+using System.Windows.Media.Imaging;
 /*This is the main file*/
 
 namespace KinectVision360
@@ -51,6 +53,22 @@ namespace KinectVision360
         private byte[] colorPixels3;
         private byte[] depthPixels3;
 
+        private static readonly int Bgr32BytesPerPixel = (PixelFormats.Bgr32.BitsPerPixel + 7) / 8;
+        private readonly KinectSensorChooser sensorChooser = new KinectSensorChooser();
+        private readonly KinectSensorChooser sensorChooser2 = new KinectSensorChooser();
+        private readonly KinectSensorChooser sensorChooser3 = new KinectSensorChooser();
+
+        private WriteableBitmap colorImageWritableBitmap;
+        private byte[] colorImageData;
+        private ColorImageFormat currentColorImageFormat = ColorImageFormat.Undefined;
+
+        private WriteableBitmap colorImageWritableBitmap2;
+        private byte[] colorImageData2;
+        private ColorImageFormat currentColorImageFormat2 = ColorImageFormat.Undefined;
+
+        private WriteableBitmap colorImageWritableBitmap3;
+        private byte[] colorImageData3;
+        private ColorImageFormat currentColorImageFormat3 = ColorImageFormat.Undefined;
         /* skeletal intialize
         private const float RenderWidth = 640.0f;
         private const float RenderHeight = 480.0f;
@@ -63,55 +81,270 @@ namespace KinectVision360
         private readonly Pen trackedBonePen = new Pen(Brushes.Green, 6);
         private readonly Pen inferredBonePen = new Pen(Brushes.Gray, 1); */
 
-       // private DrawingGroup drawingGroup;
-       // private DrawingImage imageSource;
+        // private DrawingGroup drawingGroup;
+        // private DrawingImage imageSource;
 
         TextWriter _writer = null;
-        
+
         public MainWindow()
         {
             InitializeComponent();
-            var faceTrackingViewerBinding = new Binding("Kinect") { Source = sensor };
-            //faceTrackingViewer.SetBinding(FaceTrackingViewer.KinectProperty, faceTrackingViewerBinding);
+
+
+            var faceTrackingViewerBinding = new Binding("Kinect") { Source = sensorChooser };
+            faceTrackingViewer.SetBinding(FaceTrackingViewer.KinectProperty, faceTrackingViewerBinding);
+            sensorChooser.KinectChanged += SensorChooserOnKinectChanged;
+            sensorChooser2.KinectChanged += SensorChooserOnKinectChanged2;
+            sensorChooser3.KinectChanged += SensorChooserOnKinectChanged3;
+            sensorChooser.Start();
+            sensorChooser2.Start();
+            sensorChooser3.Start();
         }
 
         // This is Skeletal code; not being used right now.
-     /*   private static void RenderClippedEdges(Skeleton skeleton, DrawingContext drawingContext)
+        /*   private static void RenderClippedEdges(Skeleton skeleton, DrawingContext drawingContext)
+           {
+               if (skeleton.ClippedEdges.HasFlag(FrameEdges.Bottom))
+               {
+                   drawingContext.DrawRectangle(
+                       Brushes.Red,
+                       null,
+                       new Rect(0, RenderHeight - ClipBoundsThickness, RenderWidth, ClipBoundsThickness));
+               }
+
+               if (skeleton.ClippedEdges.HasFlag(FrameEdges.Top))
+               {
+                   drawingContext.DrawRectangle(
+                       Brushes.Red,
+                       null,
+                       new Rect(0, 0, RenderWidth, ClipBoundsThickness));
+               }
+
+               if (skeleton.ClippedEdges.HasFlag(FrameEdges.Left))
+               {
+                   drawingContext.DrawRectangle(
+                       Brushes.Red,
+                       null,
+                       new Rect(0, 0, ClipBoundsThickness, RenderHeight));
+               }
+
+               if (skeleton.ClippedEdges.HasFlag(FrameEdges.Right))
+               {
+                   drawingContext.DrawRectangle(
+                       Brushes.Red,
+                       null,
+                       new Rect(RenderWidth - ClipBoundsThickness, 0, ClipBoundsThickness, RenderHeight));
+               }
+           } */
+
+        private void SensorChooserOnKinectChanged(object sender, KinectChangedEventArgs kinectChangedEventArgs)
         {
-            if (skeleton.ClippedEdges.HasFlag(FrameEdges.Bottom))
+            KinectSensor oldSensor = kinectChangedEventArgs.OldSensor;
+            KinectSensor newSensor = kinectChangedEventArgs.NewSensor;
+
+            if (oldSensor != null)
             {
-                drawingContext.DrawRectangle(
-                    Brushes.Red,
-                    null,
-                    new Rect(0, RenderHeight - ClipBoundsThickness, RenderWidth, ClipBoundsThickness));
+                oldSensor.AllFramesReady -= KinectSensorOnAllFramesReady;
+                oldSensor.ColorStream.Disable();
+                oldSensor.DepthStream.Disable();
+                oldSensor.DepthStream.Range = DepthRange.Default;
+                oldSensor.SkeletonStream.Disable();
+                oldSensor.SkeletonStream.EnableTrackingInNearRange = false;
+                oldSensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Default;
             }
 
-            if (skeleton.ClippedEdges.HasFlag(FrameEdges.Top))
+            if (newSensor != null)
             {
-                drawingContext.DrawRectangle(
-                    Brushes.Red,
-                    null,
-                    new Rect(0, 0, RenderWidth, ClipBoundsThickness));
+                try
+                {
+                    newSensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
+                    newSensor.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
+
+                    //newSensor.DepthStream.Enable(DepthImageFormat.Resolution320x240Fps30);
+                    try
+                    {
+                        // This will throw on non Kinect For Windows devices.
+                        newSensor.DepthStream.Range = DepthRange.Near;
+                        newSensor.SkeletonStream.EnableTrackingInNearRange = true;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        newSensor.DepthStream.Range = DepthRange.Default;
+                        newSensor.SkeletonStream.EnableTrackingInNearRange = false;
+                    }
+
+                    newSensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Seated;
+                    newSensor.SkeletonStream.Enable();
+                    newSensor.AllFramesReady += KinectSensorOnAllFramesReady;
+
+                    // Allocate space to put the depth pixels we'll receive
+                    this.depthImagePixels = new DepthImagePixel[newSensor.DepthStream.FramePixelDataLength];
+
+                    // Allocate space to put the color pixels we'll create
+                    this.depthPixels = new byte[newSensor.DepthStream.FramePixelDataLength * sizeof(int)];
+
+                    // This is the bitmap we'll display on-screen
+                    this.depthBitmap = new WriteableBitmap(newSensor.DepthStream.FrameWidth, newSensor.DepthStream.FrameHeight, 65.0, 65.0, PixelFormats.Bgr32, null);
+
+                    // Set the image we display to point to the bitmap where we'll put the image data
+                    this.depthimage.Source = this.depthBitmap;
+
+                    // Add an event handler to be called whenever there is new depth frame data
+                    newSensor.DepthFrameReady += this.SensorDepthFrameReady;
+                }
+                catch (InvalidOperationException)
+                {
+                    // This exception can be thrown when we are trying to
+                    // enable streams on a device that has gone away.  This
+                    // can occur, say, in app shutdown scenarios when the sensor
+                    // goes away between the time it changed status and the
+                    // time we get the sensor changed notification.
+                    //
+                    // Behavior here is to just eat the exception and assume
+                    // another notification will come along if a sensor
+                    // comes back.
+                }
             }
 
-            if (skeleton.ClippedEdges.HasFlag(FrameEdges.Left))
+        }
+        private void SensorChooserOnKinectChanged2(object sender, KinectChangedEventArgs kinectChangedEventArgs)
+        {
+            KinectSensor oldSensor = kinectChangedEventArgs.OldSensor;
+            KinectSensor newSensor = kinectChangedEventArgs.NewSensor;
+
+            if (oldSensor != null)
             {
-                drawingContext.DrawRectangle(
-                    Brushes.Red,
-                    null,
-                    new Rect(0, 0, ClipBoundsThickness, RenderHeight));
+                oldSensor.AllFramesReady -= KinectSensorOnAllFramesReady;
+                oldSensor.ColorStream.Disable();
+                oldSensor.DepthStream.Disable();
+                oldSensor.DepthStream.Range = DepthRange.Default;
+                oldSensor.SkeletonStream.Disable();
+                oldSensor.SkeletonStream.EnableTrackingInNearRange = false;
+                oldSensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Default;
             }
 
-            if (skeleton.ClippedEdges.HasFlag(FrameEdges.Right))
+            if (newSensor != null)
             {
-                drawingContext.DrawRectangle(
-                    Brushes.Red,
-                    null,
-                    new Rect(RenderWidth - ClipBoundsThickness, 0, ClipBoundsThickness, RenderHeight));
+                try
+                {
+                    newSensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
+                    newSensor.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
+
+                    //newSensor.DepthStream.Enable(DepthImageFormat.Resolution320x240Fps30);
+                    try
+                    {
+                        // This will throw on non Kinect For Windows devices.
+                        newSensor.DepthStream.Range = DepthRange.Near;
+                        newSensor.SkeletonStream.EnableTrackingInNearRange = true;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        newSensor.DepthStream.Range = DepthRange.Default;
+                        newSensor.SkeletonStream.EnableTrackingInNearRange = false;
+                    }
+
+                    newSensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Seated;
+                    newSensor.SkeletonStream.Enable();
+                    newSensor.AllFramesReady += KinectSensorOnAllFramesReady2;
+
+                    // Allocate space to put the depth pixels we'll receive
+                    this.depthImagePixels2 = new DepthImagePixel[newSensor.DepthStream.FramePixelDataLength];
+
+                    // Allocate space to put the color pixels we'll create
+                    this.depthPixels2 = new byte[newSensor.DepthStream.FramePixelDataLength * sizeof(int)];
+
+                    // This is the bitmap we'll display on-screen
+                    this.depthBitmap2 = new WriteableBitmap(newSensor.DepthStream.FrameWidth, newSensor.DepthStream.FrameHeight, 65.0, 65.0, PixelFormats.Bgr32, null);
+
+                    // Set the image we display to point to the bitmap where we'll put the image data
+                    this.depthimage2.Source = this.depthBitmap2;
+
+                    // Add an event handler to be called whenever there is new depth frame data
+                    newSensor.DepthFrameReady += this.SensorDepthFrameReady2;
+                }
+                catch (InvalidOperationException)
+                {
+                    // This exception can be thrown when we are trying to
+                    // enable streams on a device that has gone away.  This
+                    // can occur, say, in app shutdown scenarios when the sensor
+                    // goes away between the time it changed status and the
+                    // time we get the sensor changed notification.
+                    //
+                    // Behavior here is to just eat the exception and assume
+                    // another notification will come along if a sensor
+                    // comes back.
+                }
             }
-        } */
+        }
+        private void SensorChooserOnKinectChanged3(object sender, KinectChangedEventArgs kinectChangedEventArgs)
+        {
+            KinectSensor oldSensor = kinectChangedEventArgs.OldSensor;
+            KinectSensor newSensor = kinectChangedEventArgs.NewSensor;
 
+            if (oldSensor != null)
+            {
+                oldSensor.AllFramesReady -= KinectSensorOnAllFramesReady;
+                oldSensor.ColorStream.Disable();
+                oldSensor.DepthStream.Disable();
+                oldSensor.DepthStream.Range = DepthRange.Default;
+                oldSensor.SkeletonStream.Disable();
+                oldSensor.SkeletonStream.EnableTrackingInNearRange = false;
+                oldSensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Default;
+            }
 
+            if (newSensor != null)
+            {
+                try
+                {
+                    newSensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
+                    newSensor.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
+
+                    //newSensor.DepthStream.Enable(DepthImageFormat.Resolution320x240Fps30);
+                    try
+                    {
+                        // This will throw on non Kinect For Windows devices.
+                        newSensor.DepthStream.Range = DepthRange.Near;
+                        newSensor.SkeletonStream.EnableTrackingInNearRange = true;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        newSensor.DepthStream.Range = DepthRange.Default;
+                        newSensor.SkeletonStream.EnableTrackingInNearRange = false;
+                    }
+
+                    newSensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Seated;
+                    newSensor.SkeletonStream.Enable();
+                    newSensor.AllFramesReady += KinectSensorOnAllFramesReady3;
+
+                    // Allocate space to put the depth pixels we'll receive
+                    this.depthImagePixels3 = new DepthImagePixel[newSensor.DepthStream.FramePixelDataLength];
+
+                    // Allocate space to put the color pixels we'll create
+                    this.depthPixels3 = new byte[newSensor.DepthStream.FramePixelDataLength * sizeof(int)];
+
+                    // This is the bitmap we'll display on-screen
+                    this.depthBitmap3 = new WriteableBitmap(newSensor.DepthStream.FrameWidth, newSensor.DepthStream.FrameHeight, 65.0, 65.0, PixelFormats.Bgr32, null);
+
+                    // Set the image we display to point to the bitmap where we'll put the image data
+                    this.depthimage3.Source = this.depthBitmap3;
+
+                    // Add an event handler to be called whenever there is new depth frame data
+                    newSensor.DepthFrameReady += this.SensorDepthFrameReady3;
+                }
+                catch (InvalidOperationException)
+                {
+                    // This exception can be thrown when we are trying to
+                    // enable streams on a device that has gone away.  This
+                    // can occur, say, in app shutdown scenarios when the sensor
+                    // goes away between the time it changed status and the
+                    // time we get the sensor changed notification.
+                    //
+                    // Behavior here is to just eat the exception and assume
+                    // another notification will come along if a sensor
+                    // comes back.
+                }
+            }
+        }
         private void Window_Loaded_1(object sender, RoutedEventArgs e)
         {
             _writer = new TextBoxStreamWriter(textOut);
@@ -121,31 +354,32 @@ namespace KinectVision360
 
             // Set the sensors and their bitmaps
             sensorInit();
-            setSensor1();
-            setSensor2();
-            setSensor3();
-            
-  /* Skeletal
-           // Create the drawing group we'll use for drawing
-           this.drawingGroup = new DrawingGroup();
+            //setSensor1();
+            //setSensor2();
+            //setSensor3();
 
-            // Create an image source that we can use in our image control
-            this.imageSource = new DrawingImage(this.drawingGroup);
+            /* Skeletal
+                     // Create the drawing group we'll use for drawing
+                     this.drawingGroup = new DrawingGroup();
 
-            // Display the drawing using our image control
-            skeletonimage.Source = this.imageSource;  
-   */
-       
+                      // Create an image source that we can use in our image control
+                      this.imageSource = new DrawingImage(this.drawingGroup);
+
+                      // Display the drawing using our image control
+                      skeletonimage.Source = this.imageSource;  
+             */
+
         }
 
         // Called from Window_Loaded_1. Used to set the values of the sensor
-        private void sensorInit() {
+        private void sensorInit()
+        {
 
             int connectedSensor = 0;
 
             foreach (var potentialSensor in KinectSensor.KinectSensors)
             {
-                
+
                 if (potentialSensor.Status == KinectStatus.Connected && connectedSensor == 0)
                 {
                     this.sensor = potentialSensor;
@@ -161,245 +395,63 @@ namespace KinectVision360
                     this.sensor3 = potentialSensor;
                 }
             }
-            if (sensor == null || sensor2 == null || sensor3 == null) { 
+            if (sensor == null || sensor2 == null || sensor3 == null)
+            {
                 kinect_status.Background = new SolidColorBrush(Colors.Red);
                 Console.WriteLine("One or more of the three eyes are not kinected");
             }
-            else { 
+            else
+            {
                 Console.Write(" Sensor 1 status: {0} \n Sensor 2 status: {1} \n Sensor 3 status: {2} \n", sensor.Status, sensor2.Status, sensor3.Status);
                 Console.Write(" Sensor 1 ID: {0} \n Sensor 2 ID: {1} \n Sensor 3 ID: {2} \n", sensor.UniqueKinectId, sensor2.UniqueKinectId, sensor3.UniqueKinectId);
                 kinect_status.Background = new SolidColorBrush(Colors.Green);
-                 }
-        }
-
-        // Called from Window_Loaded_1. Used to set Sensor1 bitmaps for depth,etc.
-        private void setSensor1() {
-
-            if (null != this.sensor)
-            {
-                //Depth
-                // Turn on the depth stream to receive depth frames
-                this.sensor.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
-
-                // Allocate space to put the depth pixels we'll receive
-                this.depthImagePixels = new DepthImagePixel[this.sensor.DepthStream.FramePixelDataLength];
-
-                // Allocate space to put the color pixels we'll create
-                this.depthPixels = new byte[this.sensor.DepthStream.FramePixelDataLength * sizeof(int)];
-
-                // This is the bitmap we'll display on-screen
-                this.depthBitmap = new WriteableBitmap(this.sensor.DepthStream.FrameWidth, this.sensor.DepthStream.FrameHeight, 65.0, 65.0, PixelFormats.Bgr32, null);
-
-                // Set the image we display to point to the bitmap where we'll put the image data
-                this.depthimage.Source = this.depthBitmap;
-
-                // Add an event handler to be called whenever there is new depth frame data
-                this.sensor.DepthFrameReady += this.SensorDepthFrameReady;
-
-                //color RGB
-
-                // Turn on the color stream to receive color frames
-                this.sensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
-
-                // Allocate space to put the pixels we'll receive
-                this.colorPixels = new byte[this.sensor.ColorStream.FramePixelDataLength];
-
-                // This is the bitmap we'll display on-screen
-                this.colorBitmap = new WriteableBitmap(this.sensor.ColorStream.FrameWidth, this.sensor.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Bgr32, null);
-
-                // Set the image we display to point to the bitmap where we'll put the image data
-                this.colorimage.Source = this.colorBitmap;
-
-                // Add an event handler to be called whenever there is new color frame data
-                this.sensor.ColorFrameReady += this.SensorColorFrameReady;
-
-                /* //skeleton
-                             // Turn on the skeleton stream to receive skeleton frames
-                             this.sensor.SkeletonStream.Enable();
-
-                             // Add an event handler to be called whenever there is new color frame data
-                             this.sensor.SkeletonFrameReady += this.SensorSkeletonFrameReady; */
-
-
-                //device text info
-                sensor.SkeletonStream.Enable(
-                    new TransformSmoothParameters()
-                    {
-                        Correction = 0.5f,
-                        JitterRadius = 0.05f,
-                        MaxDeviationRadius = 0.05f,
-                        Prediction = 0.5f,
-                        Smoothing = 0.5f
-                    });
-                    sensor.SkeletonStream.EnableTrackingInNearRange = true;
-                    sensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Seated;
-                    sensor.SkeletonStream.Enable();
-                //faceTracker = new FaceTracker(sensor);
-                // Start the sensor!
-                try
-                {
-                    this.sensor.Start();
-
-                    this.sensor.ElevationAngle = 0;
-                }
-                catch (IOException)
-                {
-                    this.sensor = null;
-                    sensor.SkeletonStream.EnableTrackingInNearRange = false;
-
-                }
             }
-
-        
         }
 
-        // Called from Window_Loaded_1. Used to set Sensor2 bitmaps for depth,etc.
-        private void setSensor2() {
-
-            if (null != this.sensor2)
-            {
-                // Turn on the depth stream to receive depth frames
-                this.sensor2.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
-
-                // Allocate space to put the depth pixels we'll receive
-                this.depthImagePixels2 = new DepthImagePixel[this.sensor2.DepthStream.FramePixelDataLength];
-
-                // Allocate space to put the color pixels we'll create
-                this.depthPixels2 = new byte[this.sensor2.DepthStream.FramePixelDataLength * sizeof(int)];
-
-                // This is the bitmap we'll display on-screen
-                this.depthBitmap2 = new WriteableBitmap(this.sensor2.DepthStream.FrameWidth, this.sensor.DepthStream.FrameHeight, 65.0, 65.0, PixelFormats.Bgr32, null);
-
-                // Set the image we display to point to the bitmap where we'll put the image data
-                this.depthimage2.Source = this.depthBitmap2;
-
-                // Add an event handler to be called whenever there is new depth frame data
-                this.sensor2.DepthFrameReady += this.SensorDepthFrameReady2;
-
-                // Turn on the color stream to receive color frames
-                this.sensor2.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
-
-                // Allocate space to put the pixels we'll receive
-                this.colorPixels2 = new byte[this.sensor2.ColorStream.FramePixelDataLength];
-
-                // This is the bitmap we'll display on-screen
-                this.colorBitmap2 = new WriteableBitmap(this.sensor2.ColorStream.FrameWidth, this.sensor2.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Bgr32, null);
-
-                // Set the image we display to point to the bitmap where we'll put the image data
-                this.colorimage2.Source = this.colorBitmap2;
-
-                // Add an event handler to be called whenever there is new color frame data
-                this.sensor2.ColorFrameReady += this.SensorColorFrameReady2;
-
-                // Start the sensor!
-                try
-                {
-                    this.sensor2.Start();
-                    this.sensor2.ElevationAngle = 0;
-                }
-                catch (IOException)
-                {
-                    this.sensor2 = null;
-                }
-            }
-        
-        }
-        // Called from Window_Loaded_1. Used to set Sensor2 bitmaps for depth,etc.
-        private void setSensor3()
-        {
-
-            if (null != this.sensor3)
-            {
-                // Turn on the depth stream to receive depth frames
-                this.sensor3.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
-
-                // Allocate space to put the depth pixels we'll receive
-                this.depthImagePixels3 = new DepthImagePixel[this.sensor3.DepthStream.FramePixelDataLength];
-
-                // Allocate space to put the color pixels we'll create
-                this.depthPixels3 = new byte[this.sensor3.DepthStream.FramePixelDataLength * sizeof(int)];
-
-                // This is the bitmap we'll display on-screen
-                this.depthBitmap3 = new WriteableBitmap(this.sensor3.DepthStream.FrameWidth, this.sensor.DepthStream.FrameHeight, 65.0, 65.0, PixelFormats.Bgr32, null);
-
-                // Set the image we display to point to the bitmap where we'll put the image data
-                this.depthimage3.Source = this.depthBitmap3;
-
-                // Add an event handler to be called whenever there is new depth frame data
-                this.sensor3.DepthFrameReady += this.SensorDepthFrameReady3;
-
-                // Turn on the color stream to receive color frames
-                this.sensor3.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
-
-                // Allocate space to put the pixels we'll receive
-                this.colorPixels3 = new byte[this.sensor3.ColorStream.FramePixelDataLength];
-
-                // This is the bitmap we'll display on-screen
-                this.colorBitmap3 = new WriteableBitmap(this.sensor3.ColorStream.FrameWidth, this.sensor3.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Bgr32, null);
-
-                // Set the image we display to point to the bitmap where we'll put the image data
-                this.colorimage3.Source = this.colorBitmap3;
-
-                // Add an event handler to be called whenever there is new color frame data
-                this.sensor3.ColorFrameReady += this.SensorColorFrameReady3;
-
-                // Start the sensor!
-                try
-                {
-                    this.sensor3.Start();
-                    this.sensor3.ElevationAngle = 0;
-                }
-                catch (IOException)
-                {
-                    this.sensor3 = null;
-                }
-            }
-
-        }
 
         private void SwitchRGBtoIR1(object sender, RoutedEventArgs e)
-        { 
+        {
             if (null != this.sensor)
+            {
+                if (this.checkIR1Mode.IsChecked.GetValueOrDefault())
                 {
-                    if (this.checkIR1Mode.IsChecked.GetValueOrDefault())
-                    {
 
-                        // Turn on the color stream to receive color frames
-                        this.sensor.ColorStream.Enable(ColorImageFormat.InfraredResolution640x480Fps30);
+                    // Turn on the color stream to receive color frames
+                    this.sensor.ColorStream.Enable(ColorImageFormat.InfraredResolution640x480Fps30);
 
-                        // Allocate space to put the pixels we'll receive
-                        this.colorPixels = new byte[this.sensor.ColorStream.FramePixelDataLength];
+                    // Allocate space to put the pixels we'll receive
+                    this.colorPixels = new byte[this.sensor.ColorStream.FramePixelDataLength];
 
-                        // This is the bitmap we'll display on-screen
-                        this.colorBitmap = new WriteableBitmap(this.sensor.ColorStream.FrameWidth, this.sensor.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Gray16, null);
+                    // This is the bitmap we'll display on-screen
+                    this.colorBitmap = new WriteableBitmap(this.sensor.ColorStream.FrameWidth, this.sensor.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Gray16, null);
 
-                        // Set the image we display to point to the bitmap where we'll put the image data
-                        this.colorimage.Source = this.colorBitmap;
+                    // Set the image we display to point to the bitmap where we'll put the image data
+                    this.colorimage.Source = this.colorBitmap;
 
-                        // Add an event handler to be called whenever there is new color frame data
-                        this.sensor.ColorFrameReady += this.SensorColorFrameReady;
+                    // Add an event handler to be called whenever there is new color frame data
+                    //this.sensor.ColorFrameReady += this.SensorColorFrameReady;
 
 
 
-                    }
-                    else
-                    {
+                }
+                else
+                {
 
-                        // Turn on the color stream to receive color frames
-                        this.sensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
+                    // Turn on the color stream to receive color frames
+                    this.sensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
 
-                        // Allocate space to put the pixels we'll receive
-                        this.colorPixels = new byte[this.sensor.ColorStream.FramePixelDataLength];
+                    // Allocate space to put the pixels we'll receive
+                    this.colorPixels = new byte[this.sensor.ColorStream.FramePixelDataLength];
 
-                        // This is the bitmap we'll display on-screen
-                        this.colorBitmap = new WriteableBitmap(this.sensor.ColorStream.FrameWidth, this.sensor.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Bgr32, null);
+                    // This is the bitmap we'll display on-screen
+                    this.colorBitmap = new WriteableBitmap(this.sensor.ColorStream.FrameWidth, this.sensor.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Bgr32, null);
 
-                        // Set the image we display to point to the bitmap where we'll put the image data
-                        this.colorimage.Source = this.colorBitmap;
+                    // Set the image we display to point to the bitmap where we'll put the image data
+                    this.colorimage.Source = this.colorBitmap;
 
-                        // Add an event handler to be called whenever there is new color frame data
-                        this.sensor.ColorFrameReady += this.SensorColorFrameReady;
-                    }
+                    // Add an event handler to be called whenever there is new color frame data
+                   // this.sensor.ColorFrameReady += this.SensorColorFrameReady;
+                }
             }
         }
         private void SwitchRGBtoIR2(object sender, RoutedEventArgs e)
@@ -409,43 +461,42 @@ namespace KinectVision360
                 if (this.checkIR2Mode.IsChecked.GetValueOrDefault())
                 {
 
-                        // Turn on the color stream to receive color frames
-                        this.sensor2.ColorStream.Enable(ColorImageFormat.InfraredResolution640x480Fps30);
+                    // Turn on the color stream to receive color frames
+                    this.sensor2.ColorStream.Enable(ColorImageFormat.InfraredResolution640x480Fps30);
 
-                        // Allocate space to put the pixels we'll receive
-                        this.colorPixels2 = new byte[this.sensor2.ColorStream.FramePixelDataLength];
+                    // Allocate space to put the pixels we'll receive
+                    this.colorPixels2 = new byte[this.sensor2.ColorStream.FramePixelDataLength];
 
-                        // This is the bitmap we'll display on-screen
-                        this.colorBitmap2 = new WriteableBitmap(this.sensor2.ColorStream.FrameWidth, this.sensor2.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Gray16, null);
+                    // This is the bitmap we'll display on-screen
+                    this.colorBitmap2 = new WriteableBitmap(this.sensor2.ColorStream.FrameWidth, this.sensor2.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Gray16, null);
 
-                        // Set the image we display to point to the bitmap where we'll put the image data
-                        this.colorimage2.Source = this.colorBitmap2;
+                    // Set the image we display to point to the bitmap where we'll put the image data
+                    this.colorimage2.Source = this.colorBitmap2;
 
-                        // Add an event handler to be called whenever there is new color frame data
-                        this.sensor2.ColorFrameReady += this.SensorColorFrameReady2;
+                    // Add an event handler to be called whenever there is new color frame data
+                   // this.sensor2.ColorFrameReady += this.SensorColorFrameReady2;
 
-                 }
+                }
                 else
                 {
 
-                        // Turn on the color stream to receive color frames
-                        this.sensor2.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
+                    // Turn on the color stream to receive color frames
+                    this.sensor2.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
 
-                        // Allocate space to put the pixels we'll receive
-                        this.colorPixels2 = new byte[this.sensor2.ColorStream.FramePixelDataLength];
+                    // Allocate space to put the pixels we'll receive
+                    this.colorPixels2 = new byte[this.sensor2.ColorStream.FramePixelDataLength];
 
-                        // This is the bitmap we'll display on-screen
-                        this.colorBitmap2 = new WriteableBitmap(this.sensor2.ColorStream.FrameWidth, this.sensor2.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Bgr32, null);
+                    // This is the bitmap we'll display on-screen
+                    this.colorBitmap2 = new WriteableBitmap(this.sensor2.ColorStream.FrameWidth, this.sensor2.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Bgr32, null);
 
-                        // Set the image we display to point to the bitmap where we'll put the image data
-                        this.colorimage2.Source = this.colorBitmap2;
+                    // Set the image we display to point to the bitmap where we'll put the image data
+                    this.colorimage2.Source = this.colorBitmap2;
 
-                        // Add an event handler to be called whenever there is new color frame data
-                        this.sensor2.ColorFrameReady += this.SensorColorFrameReady2;
-                   }
+                    // Add an event handler to be called whenever there is new color frame data
+                    //this.sensor2.ColorFrameReady += this.SensorColorFrameReady2;
+                }
             }
         }
-
         private void SwitchRGBtoIR3(object sender, RoutedEventArgs e)
         {
             if (this.checkIR3Mode.IsChecked.GetValueOrDefault())
@@ -465,7 +516,7 @@ namespace KinectVision360
                     this.colorimage3.Source = this.colorBitmap3;
 
                     // Add an event handler to be called whenever there is new color frame data
-                    this.sensor3.ColorFrameReady += this.SensorColorFrameReady3;
+                    //this.sensor3.ColorFrameReady += this.SensorColorFrameReady3;
 
                 }
             }
@@ -486,84 +537,12 @@ namespace KinectVision360
                     this.colorimage3.Source = this.colorBitmap3;
 
                     // Add an event handler to be called whenever there is new color frame data
-                    this.sensor3.ColorFrameReady += this.SensorColorFrameReady3;
+                   // this.sensor3.ColorFrameReady += this.SensorColorFrameReady3;
                 }
             }
         }
 
-        private void SensorColorFrameReady(object sender, ColorImageFrameReadyEventArgs e)
-        {
-            using (ColorImageFrame colorFrame = e.OpenColorImageFrame())
-            {
-                if (colorFrame != null)
-                {
-                    // Copy the pixel data from the image to a temporary array
-                    colorFrame.CopyPixelDataTo(this.colorPixels);
 
-                    // Write the pixel data into our bitmap
-                    this.colorBitmap.WritePixels(
-                        new Int32Rect(0, 0, this.colorBitmap.PixelWidth, this.colorBitmap.PixelHeight),
-                        this.colorPixels,
-                        this.colorBitmap.PixelWidth * colorFrame.BytesPerPixel,
-                        0);
-                   // Console.WriteLine(colorPixels[50]);
-
-                }
-            }
-        }
-        private void SensorColorFrameReady2(object sender, ColorImageFrameReadyEventArgs e)
-        {
-            using (ColorImageFrame colorFrame = e.OpenColorImageFrame())
-            {
-                if (colorFrame != null)
-                {
-                    // Copy the pixel data from the image to a temporary array
-                    try
-                    {
-                        colorFrame.CopyPixelDataTo(this.colorPixels2);
-                    }
-                    catch
-                    {
-                        System.Console.WriteLine("Failed");
-                        return;
-                    }
-
-                    // Write the pixel data into our bitmap
-                    this.colorBitmap2.WritePixels(
-                        new Int32Rect(0, 0, this.colorBitmap2.PixelWidth, this.colorBitmap2.PixelHeight),
-                        this.colorPixels2,
-                        this.colorBitmap2.PixelWidth * colorFrame.BytesPerPixel,
-                        0);
-                }
-            }
-        }
-
-        private void SensorColorFrameReady3(object sender, ColorImageFrameReadyEventArgs e)
-        {
-            using (ColorImageFrame colorFrame = e.OpenColorImageFrame())
-            {
-                if (colorFrame != null)
-                {
-                    // Copy the pixel data from the image to a temporary array
-                    try
-                    {
-                        colorFrame.CopyPixelDataTo(this.colorPixels3);
-                    }
-                    catch
-                    {
-                        System.Console.WriteLine("Failed");
-                        return;
-                    }
-
-                    // Write the pixel data into our bitmap
-                    this.colorBitmap3.WritePixels(
-                        new Int32Rect(0, 0, this.colorBitmap3.PixelWidth, this.colorBitmap3.PixelHeight),
-                        this.colorPixels3,
-                        this.colorBitmap3.PixelWidth * colorFrame.BytesPerPixel,
-                        0);
-                }
-            }
-        }
 
         private void SensorDepthFrameReady(object sender, DepthImageFrameReadyEventArgs e)
         {
@@ -618,6 +597,7 @@ namespace KinectVision360
                         0);
                 }
             }
+
         }
         private void SensorDepthFrameReady2(object sender, DepthImageFrameReadyEventArgs e)
         {
@@ -717,7 +697,7 @@ namespace KinectVision360
                         // If we were outputting BGRA, we would write alpha here.
                         ++colorPixelIndex;
                     }
-                    
+
 
                     // Write the pixel data into our bitmap
                     this.depthBitmap3.WritePixels(
@@ -729,191 +709,195 @@ namespace KinectVision360
             }
         }
 
-        /* Skeletal code
-        private void SensorSkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
-        {
-            Skeleton[] skeletons = new Skeleton[0];
+        ///* Skeletal code
+        //private void SensorSkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
+        //{
+        //    Skeleton[] skeletons = new Skeleton[0];
 
-            using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
-            {
-                if (skeletonFrame != null)
-                {
-                    skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
-                    skeletonFrame.CopySkeletonDataTo(skeletons);
-                }
-            }
+        //    using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
+        //    {
+        //        if (skeletonFrame != null)
+        //        {
+        //            skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
+        //            skeletonFrame.CopySkeletonDataTo(skeletons);
+        //        }
+        //    }
 
-            using (DrawingContext dc = this.drawingGroup.Open())
-            {
-                // Draw a transparent background to set the render size
-                dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, RenderWidth, RenderHeight));
+        //    using (DrawingContext dc = this.drawingGroup.Open())
+        //    {
+        //        // Draw a transparent background to set the render size
+        //        dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, RenderWidth, RenderHeight));
 
-                if (skeletons.Length != 0)
-                {
-                    foreach (Skeleton skel in skeletons)
-                    {
-                        RenderClippedEdges(skel, dc);
+        //        if (skeletons.Length != 0)
+        //        {
+        //            foreach (Skeleton skel in skeletons)
+        //            {
+        //                RenderClippedEdges(skel, dc);
 
-                        if (skel.TrackingState == SkeletonTrackingState.Tracked)
-                        {
-                            this.DrawBonesAndJoints(skel, dc);
-                        }
-                        else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
-                        {
-                            dc.DrawEllipse(
-                            this.centerPointBrush,
-                            null,
-                            this.SkeletonPointToScreen(skel.Position),
-                            BodyCenterThickness,
-                            BodyCenterThickness);
-                        }
-                    }
-                }
+        //                if (skel.TrackingState == SkeletonTrackingState.Tracked)
+        //                {
+        //                    this.DrawBonesAndJoints(skel, dc);
+        //                }
+        //                else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
+        //                {
+        //                    dc.DrawEllipse(
+        //                    this.centerPointBrush,
+        //                    null,
+        //                    this.SkeletonPointToScreen(skel.Position),
+        //                    BodyCenterThickness,
+        //                    BodyCenterThickness);
+        //                }
+        //            }
+        //        }
         
-                // prevent drawing outside of our render area
-                this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
-            }
-        } */
-        //
-        /* /// Draws a skeleton's bones and joints
-        /// </summary>
-        /// <param name="skeleton">skeleton to draw</param>
-        /// <param name="drawingContext">drawing context to draw to</param>
-        private void DrawBonesAndJoints(Skeleton skeleton, DrawingContext drawingContext)
-        {
-            // Render Torso
-            this.DrawBone(skeleton, drawingContext, JointType.Head, JointType.ShoulderCenter);
-            this.DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.ShoulderLeft);
-            this.DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.ShoulderRight);
-            this.DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.Spine);
-            this.DrawBone(skeleton, drawingContext, JointType.Spine, JointType.HipCenter);
-            this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipLeft);
-            this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipRight);
+        //        // prevent drawing outside of our render area
+        //        this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
+        //    }
+        //} */
+        ////
+        ///* /// Draws a skeleton's bones and joints
+        ///// </summary>
+        ///// <param name="skeleton">skeleton to draw</param>
+        ///// <param name="drawingContext">drawing context to draw to</param>
+        //private void DrawBonesAndJoints(Skeleton skeleton, DrawingContext drawingContext)
+        //{
+        //    // Render Torso
+        //    this.DrawBone(skeleton, drawingContext, JointType.Head, JointType.ShoulderCenter);
+        //    this.DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.ShoulderLeft);
+        //    this.DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.ShoulderRight);
+        //    this.DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.Spine);
+        //    this.DrawBone(skeleton, drawingContext, JointType.Spine, JointType.HipCenter);
+        //    this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipLeft);
+        //    this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipRight);
 
-            // Left Arm
-            this.DrawBone(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft);
-            this.DrawBone(skeleton, drawingContext, JointType.ElbowLeft, JointType.WristLeft);
-            this.DrawBone(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft);
+        //    // Left Arm
+        //    this.DrawBone(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft);
+        //    this.DrawBone(skeleton, drawingContext, JointType.ElbowLeft, JointType.WristLeft);
+        //    this.DrawBone(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft);
 
-            // Right Arm
-            this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight);
-            this.DrawBone(skeleton, drawingContext, JointType.ElbowRight, JointType.WristRight);
-            this.DrawBone(skeleton, drawingContext, JointType.WristRight, JointType.HandRight);
+        //    // Right Arm
+        //    this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight);
+        //    this.DrawBone(skeleton, drawingContext, JointType.ElbowRight, JointType.WristRight);
+        //    this.DrawBone(skeleton, drawingContext, JointType.WristRight, JointType.HandRight);
 
-            // Left Leg
-            this.DrawBone(skeleton, drawingContext, JointType.HipLeft, JointType.KneeLeft);
-            this.DrawBone(skeleton, drawingContext, JointType.KneeLeft, JointType.AnkleLeft);
-            this.DrawBone(skeleton, drawingContext, JointType.AnkleLeft, JointType.FootLeft);
+        //    // Left Leg
+        //    this.DrawBone(skeleton, drawingContext, JointType.HipLeft, JointType.KneeLeft);
+        //    this.DrawBone(skeleton, drawingContext, JointType.KneeLeft, JointType.AnkleLeft);
+        //    this.DrawBone(skeleton, drawingContext, JointType.AnkleLeft, JointType.FootLeft);
 
-            // Right Leg
-            this.DrawBone(skeleton, drawingContext, JointType.HipRight, JointType.KneeRight);
-            this.DrawBone(skeleton, drawingContext, JointType.KneeRight, JointType.AnkleRight);
-            this.DrawBone(skeleton, drawingContext, JointType.AnkleRight, JointType.FootRight);
+        //    // Right Leg
+        //    this.DrawBone(skeleton, drawingContext, JointType.HipRight, JointType.KneeRight);
+        //    this.DrawBone(skeleton, drawingContext, JointType.KneeRight, JointType.AnkleRight);
+        //    this.DrawBone(skeleton, drawingContext, JointType.AnkleRight, JointType.FootRight);
 
-            // Render Joints
-            foreach (Joint joint in skeleton.Joints)
-            {
-                Brush drawBrush = null;
+        //    // Render Joints
+        //    foreach (Joint joint in skeleton.Joints)
+        //    {
+        //        Brush drawBrush = null;
 
-                if (joint.TrackingState == JointTrackingState.Tracked)
-                {
-                    drawBrush = this.trackedJointBrush;
-                }
-                else if (joint.TrackingState == JointTrackingState.Inferred)
-                {
-                    drawBrush = this.inferredJointBrush;
-                }
+        //        if (joint.TrackingState == JointTrackingState.Tracked)
+        //        {
+        //            drawBrush = this.trackedJointBrush;
+        //        }
+        //        else if (joint.TrackingState == JointTrackingState.Inferred)
+        //        {
+        //            drawBrush = this.inferredJointBrush;
+        //        }
 
-                if (drawBrush != null)
-                {
-                    drawingContext.DrawEllipse(drawBrush, null, this.SkeletonPointToScreen(joint.Position), JointThickness, JointThickness);
-                }
-            }
-        }
+        //        if (drawBrush != null)
+        //        {
+        //            drawingContext.DrawEllipse(drawBrush, null, this.SkeletonPointToScreen(joint.Position), JointThickness, JointThickness);
+        //        }
+        //    }
+        //}
 
-        /// <summary>
-        /// Maps a SkeletonPoint to lie within our render space and converts to Point
-        /// </summary>
-        /// <param name="skelpoint">point to map</param>
-        /// <returns>mapped point</returns>
-        private Point SkeletonPointToScreen(SkeletonPoint skelpoint)
-        {
-            // Convert point to depth space.  
-            // We are not using depth directly, but we do want the points in our 640x480 output resolution.
-            DepthImagePoint depthPoint = this.sensor.CoordinateMapper.MapSkeletonPointToDepthPoint(skelpoint, DepthImageFormat.Resolution640x480Fps30);
-            return new Point(depthPoint.X, depthPoint.Y);
-        }
+        ///// <summary>
+        ///// Maps a SkeletonPoint to lie within our render space and converts to Point
+        ///// </summary>
+        ///// <param name="skelpoint">point to map</param>
+        ///// <returns>mapped point</returns>
+        //private Point SkeletonPointToScreen(SkeletonPoint skelpoint)
+        //{
+        //    // Convert point to depth space.  
+        //    // We are not using depth directly, but we do want the points in our 640x480 output resolution.
+        //    DepthImagePoint depthPoint = this.sensor.CoordinateMapper.MapSkeletonPointToDepthPoint(skelpoint, DepthImageFormat.Resolution640x480Fps30);
+        //    return new Point(depthPoint.X, depthPoint.Y);
+        //}
 
-        /// <summary>
-        /// Draws a bone line between two joints
-        /// </summary>
-        /// <param name="skeleton">skeleton to draw bones from</param>
-        /// <param name="drawingContext">drawing context to draw to</param>
-        /// <param name="jointType0">joint to start drawing from</param>
-        /// <param name="jointType1">joint to end drawing at</param>
-        private void DrawBone(Skeleton skeleton, DrawingContext drawingContext, JointType jointType0, JointType jointType1)
-        {
-            Joint joint0 = skeleton.Joints[jointType0];
-            Joint joint1 = skeleton.Joints[jointType1];
+        ///// <summary>
+        ///// Draws a bone line between two joints
+        ///// </summary>
+        ///// <param name="skeleton">skeleton to draw bones from</param>
+        ///// <param name="drawingContext">drawing context to draw to</param>
+        ///// <param name="jointType0">joint to start drawing from</param>
+        ///// <param name="jointType1">joint to end drawing at</param>
+        //private void DrawBone(Skeleton skeleton, DrawingContext drawingContext, JointType jointType0, JointType jointType1)
+        //{
+        //    Joint joint0 = skeleton.Joints[jointType0];
+        //    Joint joint1 = skeleton.Joints[jointType1];
 
-            // If we can't find either of these joints, exit
-            if (joint0.TrackingState == JointTrackingState.NotTracked ||
-                joint1.TrackingState == JointTrackingState.NotTracked)
-            {
-                return;
-            }
+        //    // If we can't find either of these joints, exit
+        //    if (joint0.TrackingState == JointTrackingState.NotTracked ||
+        //        joint1.TrackingState == JointTrackingState.NotTracked)
+        //    {
+        //        return;
+        //    }
 
-            // Don't draw if both points are inferred
-            if (joint0.TrackingState == JointTrackingState.Inferred &&
-                joint1.TrackingState == JointTrackingState.Inferred)
-            {
-                return;
-            }
+        //    // Don't draw if both points are inferred
+        //    if (joint0.TrackingState == JointTrackingState.Inferred &&
+        //        joint1.TrackingState == JointTrackingState.Inferred)
+        //    {
+        //        return;
+        //    }
 
-            // We assume all drawn bones are inferred unless BOTH joints are tracked
-            Pen drawPen = this.inferredBonePen;
-            if (joint0.TrackingState == JointTrackingState.Tracked && joint1.TrackingState == JointTrackingState.Tracked)
-            {
-                drawPen = this.trackedBonePen;
-            }
+        //    // We assume all drawn bones are inferred unless BOTH joints are tracked
+        //    Pen drawPen = this.inferredBonePen;
+        //    if (joint0.TrackingState == JointTrackingState.Tracked && joint1.TrackingState == JointTrackingState.Tracked)
+        //    {
+        //        drawPen = this.trackedBonePen;
+        //    }
 
-            drawingContext.DrawLine(drawPen, this.SkeletonPointToScreen(joint0.Position), this.SkeletonPointToScreen(joint1.Position));
-        }
+        //    drawingContext.DrawLine(drawPen, this.SkeletonPointToScreen(joint0.Position), this.SkeletonPointToScreen(joint1.Position));
+        //}
 
-        /// <summary>
-        /// Handles the checking or unchecking of the seated mode combo box
-        /// </summary>
-        /// <param name="sender">object sending the event</param>
-        /// <param name="e">event arguments</param>
-        private void CheckBoxSeatedModeChanged(object sender, RoutedEventArgs e)
-        {
-            if (null != this.sensor)
-            {
-                if (this.checkBoxSeatedMode.IsChecked.GetValueOrDefault())
-                {
-                    this.sensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Seated;
-                }
-                else
-                {
-                    this.sensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Default;
-                }
-            }
-        } */
+        ///// <summary>
+        ///// Handles the checking or unchecking of the seated mode combo box
+        ///// </summary>
+        ///// <param name="sender">object sending the event</param>
+        ///// <param name="e">event arguments</param>
+        //private void CheckBoxSeatedModeChanged(object sender, RoutedEventArgs e)
+        //{
+        //    if (null != this.sensor)
+        //    {
+        //        if (this.checkBoxSeatedMode.IsChecked.GetValueOrDefault())
+        //        {
+        //            this.sensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Seated;
+        //        }
+        //        else
+        //        {
+        //            this.sensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Default;
+        //        }
+        //    }
+        //} */
 
         private void Window_Closing_1(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (null != this.sensor)
-            {
-                this.sensor.Stop();
-            }
-            if (null != this.sensor2)
-            {
-                this.sensor2.Stop();
-            }
-            if (null != this.sensor3)
-            {
-                this.sensor3.Stop();
-            }
+            //if (null != this.sensor)
+            //{
+            //    this.sensor.Stop();
+            //}
+            //if (null != this.sensor2)
+            //{
+            //    this.sensor2.Stop();
+            //}
+            //if (null != this.sensor3)
+            //{
+            //    this.sensor3.Stop();
+            //}
+            sensorChooser.Stop();
+            sensorChooser2.Stop();
+            sensorChooser3.Stop();
+            faceTrackingViewer.Dispose();
         }
 
         private void tiltSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -924,7 +908,8 @@ namespace KinectVision360
                 {
                     sensor.ElevationAngle = (int)tiltSlider1.Value;
                 }
-                catch(Exception ex){
+                catch (Exception ex)
+                {
                     Console.WriteLine(ex.Message);
                 }
             }
@@ -952,6 +937,7 @@ namespace KinectVision360
                 try
                 {
                     sensor3.ElevationAngle = (int)tiltSlider3.Value;
+
                 }
                 catch (Exception ex)
                 {
@@ -965,6 +951,107 @@ namespace KinectVision360
             scrollText.ScrollToBottom();
         }
 
+        private void depthSlider1_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (null != sensor)
+            {
+                try
+                {
+                    sensor.DepthStream.Range = (DepthRange)depthSlider1.Value;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
 
+        private void KinectSensorOnAllFramesReady(object sender, AllFramesReadyEventArgs allFramesReadyEventArgs)
+        {
+            using (var colorImageFrame = allFramesReadyEventArgs.OpenColorImageFrame())
+            {
+                if (colorImageFrame == null)
+                {
+                    return;
+                }
+
+                // Make a copy of the color frame for displaying.
+                var haveNewFormat = this.currentColorImageFormat != colorImageFrame.Format;
+                if (haveNewFormat)
+                {
+                    this.currentColorImageFormat = colorImageFrame.Format;
+                    this.colorImageData = new byte[colorImageFrame.PixelDataLength];
+                    this.colorImageWritableBitmap = new WriteableBitmap(
+                        colorImageFrame.Width, colorImageFrame.Height, 96, 96, PixelFormats.Bgr32, null);
+                    colorimage.Source = this.colorImageWritableBitmap;
+                }
+
+                colorImageFrame.CopyPixelDataTo(this.colorImageData);
+                this.colorImageWritableBitmap.WritePixels(
+                    new Int32Rect(0, 0, colorImageFrame.Width, colorImageFrame.Height),
+                    this.colorImageData,
+                    colorImageFrame.Width * Bgr32BytesPerPixel,
+                    0);
+            }
+ 
+        }
+        private void KinectSensorOnAllFramesReady2(object sender, AllFramesReadyEventArgs allFramesReadyEventArgs)
+        {
+            using (var colorImageFrame = allFramesReadyEventArgs.OpenColorImageFrame())
+            {
+                if (colorImageFrame == null)
+                {
+                    return;
+                }
+
+                // Make a copy of the color frame for displaying.
+                var haveNewFormat = this.currentColorImageFormat2 != colorImageFrame.Format;
+                if (haveNewFormat)
+                {
+                    this.currentColorImageFormat2 = colorImageFrame.Format;
+                    this.colorImageData2 = new byte[colorImageFrame.PixelDataLength];
+                    this.colorImageWritableBitmap2 = new WriteableBitmap(
+                        colorImageFrame.Width, colorImageFrame.Height, 96, 96, PixelFormats.Bgr32, null);
+                    colorimage2.Source = this.colorImageWritableBitmap2;
+                }
+
+                colorImageFrame.CopyPixelDataTo(this.colorImageData2);
+                this.colorImageWritableBitmap2.WritePixels(
+                    new Int32Rect(0, 0, colorImageFrame.Width, colorImageFrame.Height),
+                    this.colorImageData2,
+                    colorImageFrame.Width * Bgr32BytesPerPixel,
+                    0);
+            }
+
+        }
+        private void KinectSensorOnAllFramesReady3(object sender, AllFramesReadyEventArgs allFramesReadyEventArgs)
+        {
+            using (var colorImageFrame = allFramesReadyEventArgs.OpenColorImageFrame())
+            {
+                if (colorImageFrame == null)
+                {
+                    return;
+                }
+
+                // Make a copy of the color frame for displaying.
+                var haveNewFormat = this.currentColorImageFormat3 != colorImageFrame.Format;
+                if (haveNewFormat)
+                {
+                    this.currentColorImageFormat3 = colorImageFrame.Format;
+                    this.colorImageData3 = new byte[colorImageFrame.PixelDataLength];
+                    this.colorImageWritableBitmap3 = new WriteableBitmap(
+                        colorImageFrame.Width, colorImageFrame.Height, 96, 96, PixelFormats.Bgr32, null);
+                    colorimage3.Source = this.colorImageWritableBitmap3;
+                }
+
+                colorImageFrame.CopyPixelDataTo(this.colorImageData3);
+                this.colorImageWritableBitmap3.WritePixels(
+                    new Int32Rect(0, 0, colorImageFrame.Width, colorImageFrame.Height),
+                    this.colorImageData3,
+                    colorImageFrame.Width * Bgr32BytesPerPixel,
+                    0);
+            }
+
+        }
     }
 }
