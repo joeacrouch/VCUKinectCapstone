@@ -175,7 +175,7 @@ namespace KinectVision360
 
                         // Give each tracker the upated frame.
                         SkeletonFaceTracker skeletonFaceTracker;
-                        if (this.trackedSkeletons.TryGetValue(skeleton.TrackingId, out skeletonFaceTracker))
+                        if (this.trackedSkeletons.TryGetValue(skeleton.TrackingId, out skeletonFaceTracker) && trackedSkeletons.Count == 1)
                         {
                             skeletonFaceTracker.OnFrameReady(this.Kinect, colorImageFormat, colorImage, depthImageFormat, depthImage, skeleton);
                             skeletonFaceTracker.LastTrackedFrame = skeletonFrame.FrameNumber;
@@ -271,12 +271,15 @@ namespace KinectVision360
 
             public int LastTrackedFrame { get; set; }
 
+            int faceExists = 0;
+
             public void Dispose()
             {
                 if (this.faceTracker != null)
                 {
                     this.faceTracker.Dispose();
                     this.faceTracker = null;
+                    faceExists = 0;
                 }
             }
 
@@ -335,6 +338,7 @@ namespace KinectVision360
                     try
                     {
                         this.faceTracker = new FaceTracker(kinectSensor);
+                        faceExists++;
                     }
                     catch (InvalidOperationException)
                     {
@@ -346,7 +350,7 @@ namespace KinectVision360
                     }
                 }
 
-                if (this.faceTracker != null)
+                if (this.faceTracker != null )
                 {
                     FaceTrackFrame frame = this.faceTracker.Track(
                         colorImageFormat, colorImage, depthImageFormat, depthImage, skeletonOfInterest);

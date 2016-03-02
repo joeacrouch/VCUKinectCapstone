@@ -13,20 +13,20 @@
             <Setter Property="SnapsToDevicePixels" Value="True"/>
         </Style>
     </Window.Resources>
-    <TabControl TabStripPlacement="Top" Background="Black" BorderThickness="0">
-        <TabItem Header="Streams">
+    <TabControl Name="tab" TabStripPlacement="Top" Background="Black" BorderThickness="0" SelectionChanged="tab_SelectionChanged">
+        <TabItem Header="Main Stream">
             <Grid Name="mainGrid" Background="Black">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="1"/>
-                    <ColumnDefinition/>
+
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition/>
-                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="2*"/>
+
+                    <RowDefinition Height="*"/>
 
                 </Grid.RowDefinitions>
 
@@ -38,22 +38,19 @@
                      ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" TextChanged="textOut_TextChanged"></TextBox>
                 </ScrollViewer>
 
-                <Image Grid.Column="0"  Name="depthimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center"/>
 
                 
                 <!--<local:FaceTrackingViewer x:Name="faceTrackingViewer" Grid.Column="0" Grid.Row="1"/>-->
-                <Viewbox Grid.Row="1" Grid.Column="0" Stretch="Uniform" HorizontalAlignment="Right">
+                <Viewbox Grid.Row="0" Grid.Column="0" Stretch="Uniform" HorizontalAlignment="Right">
                     <Grid Name="MainGrid" Width="640" Height="480">
                         <Image Name="colorimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                         <local:FaceTrackingViewer x:Name="faceTrackingViewer" />
                     </Grid>
                 </Viewbox>
 
-                <Image Grid.Column="0" Grid.Row="2" Name="skeletonimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Hidden"/>
-                <Image Grid.Column="1" Grid.Row="0" Name="depthimage2" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-                <Image Grid.Column="1" Grid.Row="1" Name="colorimage2" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-                <Image Grid.Column="3" Grid.Row="0" Name="depthimage3" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                <Image Grid.Column="3" Grid.Row="1" Name="colorimage3" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <!--<Image Grid.Column="0" Grid.Row="2" Name="skeletonimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Hidden"/>-->
+                <Image Grid.Column="1" Grid.Row="0" Name="colorimage2" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                <Image Grid.Column="2" Grid.Row="0" Name="colorimage3" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 <Image Grid.Column="3" Grid.Row="2" Name="image2" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 <StackPanel Grid.Column="0" Grid.Row="3" Background="White">
                     <TextBlock Name="depthVal1"></TextBlock>
@@ -64,7 +61,23 @@
                 <!--<CheckBox Grid.Row="2" Content="Seated Mode" Height="Auto" VerticalAlignment="Center" Margin="10,202,558,92" Name="checkBoxSeatedMode" Checked="CheckBoxSeatedModeChanged" Unchecked="CheckBoxSeatedModeChanged" Visibility="Hidden"/> -->
             </Grid>
         </TabItem>
-        <TabItem Header="Settings">
+
+            <TabItem Name="tab2" Header="Secondary Stream" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Image Grid.Column="0"  Name="depthimage" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                <Image Grid.Column="1" Grid.Row="0" Name="depthimage2" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                <Image Grid.Column="2" Grid.Row="0" Name="depthimage3" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+
+            </Grid>
+            </TabItem>
+            <TabItem Header="Settings">
+                
+
             <StackPanel Grid.Column="0" Grid.Row="2" Name="stack1" Orientation="Vertical" Background="White">
                 <Label Content="KINECT STATUSES" x:Name="kinect_status" Background="#FF17FF00" FontWeight="Bold"/>
 

@@ -83,7 +83,7 @@ namespace KinectVision360
 
         // private DrawingGroup drawingGroup;
         // private DrawingImage imageSource;
-
+        private Boolean onDepth = false;
         TextWriter _writer = null;
 
         public MainWindow()
@@ -100,42 +100,6 @@ namespace KinectVision360
             sensorChooser2.Start();
             sensorChooser3.Start();
         }
-
-        // This is Skeletal code; not being used right now.
-        /*   private static void RenderClippedEdges(Skeleton skeleton, DrawingContext drawingContext)
-           {
-               if (skeleton.ClippedEdges.HasFlag(FrameEdges.Bottom))
-               {
-                   drawingContext.DrawRectangle(
-                       Brushes.Red,
-                       null,
-                       new Rect(0, RenderHeight - ClipBoundsThickness, RenderWidth, ClipBoundsThickness));
-               }
-
-               if (skeleton.ClippedEdges.HasFlag(FrameEdges.Top))
-               {
-                   drawingContext.DrawRectangle(
-                       Brushes.Red,
-                       null,
-                       new Rect(0, 0, RenderWidth, ClipBoundsThickness));
-               }
-
-               if (skeleton.ClippedEdges.HasFlag(FrameEdges.Left))
-               {
-                   drawingContext.DrawRectangle(
-                       Brushes.Red,
-                       null,
-                       new Rect(0, 0, ClipBoundsThickness, RenderHeight));
-               }
-
-               if (skeleton.ClippedEdges.HasFlag(FrameEdges.Right))
-               {
-                   drawingContext.DrawRectangle(
-                       Brushes.Red,
-                       null,
-                       new Rect(RenderWidth - ClipBoundsThickness, 0, ClipBoundsThickness, RenderHeight));
-               }
-           } */
 
         private void SensorChooserOnKinectChanged(object sender, KinectChangedEventArgs kinectChangedEventArgs)
         {
@@ -176,21 +140,24 @@ namespace KinectVision360
                     newSensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Seated;
                     newSensor.SkeletonStream.Enable();
                     newSensor.AllFramesReady += KinectSensorOnAllFramesReady;
+                    if (onDepth == true) {
 
-                    // Allocate space to put the depth pixels we'll receive
-                    this.depthImagePixels = new DepthImagePixel[newSensor.DepthStream.FramePixelDataLength];
+                        // Allocate space to put the depth pixels we'll receive
+                        this.depthImagePixels = new DepthImagePixel[newSensor.DepthStream.FramePixelDataLength];
 
-                    // Allocate space to put the color pixels we'll create
-                    this.depthPixels = new byte[newSensor.DepthStream.FramePixelDataLength * sizeof(int)];
+                        // Allocate space to put the color pixels we'll create
+                        this.depthPixels = new byte[newSensor.DepthStream.FramePixelDataLength * sizeof(int)];
 
-                    // This is the bitmap we'll display on-screen
-                    this.depthBitmap = new WriteableBitmap(newSensor.DepthStream.FrameWidth, newSensor.DepthStream.FrameHeight, 65.0, 65.0, PixelFormats.Bgr32, null);
+                        // This is the bitmap we'll display on-screen
+                        this.depthBitmap = new WriteableBitmap(newSensor.DepthStream.FrameWidth, newSensor.DepthStream.FrameHeight, 65.0, 65.0, PixelFormats.Bgr32, null);
 
-                    // Set the image we display to point to the bitmap where we'll put the image data
-                    this.depthimage.Source = this.depthBitmap;
+                        // Set the image we display to point to the bitmap where we'll put the image data
+                        this.depthimage.Source = this.depthBitmap;
 
-                    // Add an event handler to be called whenever there is new depth frame data
-                    newSensor.DepthFrameReady += this.SensorDepthFrameReady;
+                        // Add an event handler to be called whenever there is new depth frame data
+                        newSensor.DepthFrameReady += this.SensorDepthFrameReady;
+                    }
+
                 }
                 catch (InvalidOperationException)
                 {
@@ -247,20 +214,20 @@ namespace KinectVision360
                     newSensor.SkeletonStream.Enable();
                     newSensor.AllFramesReady += KinectSensorOnAllFramesReady2;
 
-                    // Allocate space to put the depth pixels we'll receive
-                    this.depthImagePixels2 = new DepthImagePixel[newSensor.DepthStream.FramePixelDataLength];
+                    //// Allocate space to put the depth pixels we'll receive
+                    //this.depthImagePixels2 = new DepthImagePixel[newSensor.DepthStream.FramePixelDataLength];
 
-                    // Allocate space to put the color pixels we'll create
-                    this.depthPixels2 = new byte[newSensor.DepthStream.FramePixelDataLength * sizeof(int)];
+                    //// Allocate space to put the color pixels we'll create
+                    //this.depthPixels2 = new byte[newSensor.DepthStream.FramePixelDataLength * sizeof(int)];
 
-                    // This is the bitmap we'll display on-screen
-                    this.depthBitmap2 = new WriteableBitmap(newSensor.DepthStream.FrameWidth, newSensor.DepthStream.FrameHeight, 65.0, 65.0, PixelFormats.Bgr32, null);
+                    //// This is the bitmap we'll display on-screen
+                    //this.depthBitmap2 = new WriteableBitmap(newSensor.DepthStream.FrameWidth, newSensor.DepthStream.FrameHeight, 65.0, 65.0, PixelFormats.Bgr32, null);
 
-                    // Set the image we display to point to the bitmap where we'll put the image data
-                    this.depthimage2.Source = this.depthBitmap2;
+                    //// Set the image we display to point to the bitmap where we'll put the image data
+                    //this.depthimage2.Source = this.depthBitmap2;
 
-                    // Add an event handler to be called whenever there is new depth frame data
-                    newSensor.DepthFrameReady += this.SensorDepthFrameReady2;
+                    //// Add an event handler to be called whenever there is new depth frame data
+                    //newSensor.DepthFrameReady += this.SensorDepthFrameReady2;
                 }
                 catch (InvalidOperationException)
                 {
@@ -316,20 +283,20 @@ namespace KinectVision360
                     newSensor.SkeletonStream.Enable();
                     newSensor.AllFramesReady += KinectSensorOnAllFramesReady3;
 
-                    // Allocate space to put the depth pixels we'll receive
-                    this.depthImagePixels3 = new DepthImagePixel[newSensor.DepthStream.FramePixelDataLength];
+                    //// Allocate space to put the depth pixels we'll receive
+                    //this.depthImagePixels3 = new DepthImagePixel[newSensor.DepthStream.FramePixelDataLength];
 
-                    // Allocate space to put the color pixels we'll create
-                    this.depthPixels3 = new byte[newSensor.DepthStream.FramePixelDataLength * sizeof(int)];
+                    //// Allocate space to put the color pixels we'll create
+                    //this.depthPixels3 = new byte[newSensor.DepthStream.FramePixelDataLength * sizeof(int)];
 
-                    // This is the bitmap we'll display on-screen
-                    this.depthBitmap3 = new WriteableBitmap(newSensor.DepthStream.FrameWidth, newSensor.DepthStream.FrameHeight, 65.0, 65.0, PixelFormats.Bgr32, null);
+                    //// This is the bitmap we'll display on-screen
+                    //this.depthBitmap3 = new WriteableBitmap(newSensor.DepthStream.FrameWidth, newSensor.DepthStream.FrameHeight, 65.0, 65.0, PixelFormats.Bgr32, null);
 
-                    // Set the image we display to point to the bitmap where we'll put the image data
-                    this.depthimage3.Source = this.depthBitmap3;
+                    //// Set the image we display to point to the bitmap where we'll put the image data
+                    //this.depthimage3.Source = this.depthBitmap3;
 
-                    // Add an event handler to be called whenever there is new depth frame data
-                    newSensor.DepthFrameReady += this.SensorDepthFrameReady3;
+                    //// Add an event handler to be called whenever there is new depth frame data
+                    //newSensor.DepthFrameReady += this.SensorDepthFrameReady3;
                 }
                 catch (InvalidOperationException)
                 {
@@ -352,61 +319,45 @@ namespace KinectVision360
             // Redirect the out Console stream
             Console.SetOut(_writer);
 
-            // Set the sensors and their bitmaps
-            sensorInit();
-            //setSensor1();
-            //setSensor2();
-            //setSensor3();
-
-            /* Skeletal
-                     // Create the drawing group we'll use for drawing
-                     this.drawingGroup = new DrawingGroup();
-
-                      // Create an image source that we can use in our image control
-                      this.imageSource = new DrawingImage(this.drawingGroup);
-
-                      // Display the drawing using our image control
-                      skeletonimage.Source = this.imageSource;  
-             */
 
         }
 
         // Called from Window_Loaded_1. Used to set the values of the sensor
-        private void sensorInit()
-        {
+        //private void sensorInit()
+        //{
 
-            int connectedSensor = 0;
+        //    int connectedSensor = 0;
 
-            foreach (var potentialSensor in KinectSensor.KinectSensors)
-            {
+        //    foreach (var potentialSensor in KinectSensor.KinectSensors)
+        //    {
 
-                if (potentialSensor.Status == KinectStatus.Connected && connectedSensor == 0)
-                {
-                    this.sensor = potentialSensor;
-                    connectedSensor++;
-                }
-                else if (potentialSensor.Status == KinectStatus.Connected && connectedSensor == 1)
-                {
-                    this.sensor2 = potentialSensor;
-                    connectedSensor++;
-                }
-                else if (potentialSensor.Status == KinectStatus.Connected && connectedSensor == 2)
-                {
-                    this.sensor3 = potentialSensor;
-                }
-            }
-            if (sensor == null || sensor2 == null || sensor3 == null)
-            {
-                kinect_status.Background = new SolidColorBrush(Colors.Red);
-                Console.WriteLine("One or more of the three eyes are not kinected");
-            }
-            else
-            {
-                Console.Write(" Sensor 1 status: {0} \n Sensor 2 status: {1} \n Sensor 3 status: {2} \n", sensor.Status, sensor2.Status, sensor3.Status);
-                Console.Write(" Sensor 1 ID: {0} \n Sensor 2 ID: {1} \n Sensor 3 ID: {2} \n", sensor.UniqueKinectId, sensor2.UniqueKinectId, sensor3.UniqueKinectId);
-                kinect_status.Background = new SolidColorBrush(Colors.Green);
-            }
-        }
+        //        if (potentialSensor.Status == KinectStatus.Connected && connectedSensor == 0)
+        //        {
+        //            this.sensor = potentialSensor;
+        //            connectedSensor++;
+        //        }
+        //        else if (potentialSensor.Status == KinectStatus.Connected && connectedSensor == 1)
+        //        {
+        //            this.sensor2 = potentialSensor;
+        //            connectedSensor++;
+        //        }
+        //        else if (potentialSensor.Status == KinectStatus.Connected && connectedSensor == 2)
+        //        {
+        //            this.sensor3 = potentialSensor;
+        //        }
+        //    }
+        //    if (sensor == null || sensor2 == null || sensor3 == null)
+        //    {
+        //        kinect_status.Background = new SolidColorBrush(Colors.Red);
+        //        Console.WriteLine("One or more of the three eyes are not kinected");
+        //    }
+        //    else
+        //    {
+        //        Console.Write(" Sensor 1 status: {0} \n Sensor 2 status: {1} \n Sensor 3 status: {2} \n", sensor.Status, sensor2.Status, sensor3.Status);
+        //        Console.Write(" Sensor 1 ID: {0} \n Sensor 2 ID: {1} \n Sensor 3 ID: {2} \n", sensor.UniqueKinectId, sensor2.UniqueKinectId, sensor3.UniqueKinectId);
+        //        kinect_status.Background = new SolidColorBrush(Colors.Green);
+        //    }
+        //}
 
 
         private void SwitchRGBtoIR1(object sender, RoutedEventArgs e)
@@ -1053,5 +1004,26 @@ namespace KinectVision360
             }
 
         }
+        private void TabControl1_SelectedIndexChanged(Object sender, EventArgs e)
+        {
+
+            MessageBox.Show("You are in the TabControl.SelectedIndexChanged event.");
+
+        }
+
+        private void tab_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (tab2.IsSelected) {
+                onDepth = true;
+            }
+            else
+            {
+                onDepth = false;
+                sensorChooser.KinectChanged += SensorChooserOnKinectChanged;
+
+            }
+        }
+
+
     }
 }
