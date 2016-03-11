@@ -260,7 +260,6 @@ namespace KinectVision360
         private class SkeletonFaceTracker : IDisposable
         {
             private static FaceTriangle[] faceTriangles;
-
             private EnumIndexableCollection<FeaturePoint, PointF> facePoints;
 
             private FaceTracker faceTracker;
@@ -272,6 +271,7 @@ namespace KinectVision360
             public int LastTrackedFrame { get; set; }
 
             int faceExists = 0;
+            System.Windows.Rect rectangle;
 
             public void Dispose()
             {
@@ -285,39 +285,44 @@ namespace KinectVision360
 
             public void DrawFaceModel(DrawingContext drawingContext)
             {
+               // rect = new System.Windows.Shapes.Rectangle();
+
                 if (!this.lastFaceTrackSucceeded || this.skeletonTrackingState != SkeletonTrackingState.Tracked)
                 {
                     return;
                 }
 
-                var faceModelPts = new List<Point>();
-                var faceModel = new List<FaceModelTriangle>();
+                //var faceModelPts = new List<Point>();
+                //var faceModel = new List<FaceModelTriangle>();
 
-                for (int i = 0; i < this.facePoints.Count; i++)
-                {
-                    faceModelPts.Add(new Point(this.facePoints[i].X + 0.5f, this.facePoints[i].Y + 0.5f));
-                }
 
-                foreach (var t in faceTriangles)
-                {
-                    var triangle = new FaceModelTriangle();
-                    triangle.P1 = faceModelPts[t.First];
-                    triangle.P2 = faceModelPts[t.Second];
-                    triangle.P3 = faceModelPts[t.Third];
-                    faceModel.Add(triangle);
-                }
+                //for (int i = 0; i < this.facePoints.Count; i++)
+                //{
+                //    //faceModelPts.Add(new Point(this.facePoints[i].X + 0.5f, this.facePoints[i].Y + 0.5f));
+                //}
 
-                var faceModelGroup = new GeometryGroup();
-                for (int i = 0; i < faceModel.Count; i++)
-                {
-                    var faceTriangle = new GeometryGroup();
-                    faceTriangle.Children.Add(new LineGeometry(faceModel[i].P1, faceModel[i].P2));
-                    faceTriangle.Children.Add(new LineGeometry(faceModel[i].P2, faceModel[i].P3));
-                    faceTriangle.Children.Add(new LineGeometry(faceModel[i].P3, faceModel[i].P1));
-                    faceModelGroup.Children.Add(faceTriangle);
-                }
+                //foreach (var t in faceTriangles)
+                //{
+                //    //var triangle = new FaceModelTriangle();
+                //    //triangle.P1 = faceModelPts[t.First];
+                //    //triangle.P2 = faceModelPts[t.Second];
+                //    //triangle.P3 = faceModelPts[t.Third];
 
-                drawingContext.DrawGeometry(Brushes.LightYellow, new Pen(Brushes.LightYellow, 1.0), faceModelGroup);
+                    
+                //}
+
+                //var faceModelGroup = new GeometryGroup();
+                //for (int i = 0; i < faceModel2.Count; i++)
+                //{
+                //    var faceTriangle = new GeometryGroup();
+                //    faceTriangle.Children.Add(new LineGeometry(faceModel2[i].P1, faceModel2[i].P2));
+                //    faceTriangle.Children.Add(new LineGeometry(faceModel2[i].P2, faceModel2[i].P3));
+                //    faceTriangle.Children.Add(new LineGeometry(faceModel2[i].P3, faceModel2[i].P1));
+                //    faceModelGroup.Children.Add(faceTriangle);
+                //}
+
+                drawingContext.DrawRectangle(null, new Pen(Brushes.Red, 2.0), rectangle);
+                //drawingContext.DrawGeometry(Brushes.LightYellow, new Pen(Brushes.LightYellow, 1.0), faceModelGroup);
             }
 
             /// <summary>
@@ -358,13 +363,23 @@ namespace KinectVision360
                     this.lastFaceTrackSucceeded = frame.TrackSuccessful;
                     if (this.lastFaceTrackSucceeded)
                     {
-                        if (faceTriangles == null)
-                        {
-                            // only need to get this once.  It doesn't change.
-                            faceTriangles = frame.GetTriangles();
-                        }
+                        //if (faceTriangles == null)
+                        //{
+                        //    // only need to get this once.  It doesn't change.
+                        //    faceTriangles = frame.GetTriangles();
+                            
+                        //}
 
-                        this.facePoints = frame.GetProjected3DShape();
+                        rectangle.Width = frame.FaceRect.Width;
+                        rectangle.Height = frame.FaceRect.Height;
+                        Point rectPt = new Point();
+                        rectPt.X = frame.FaceRect.Left;
+                        rectPt.Y = frame.FaceRect.Top;
+                        rectangle.Location = (Point) rectPt;
+                        
+                        //rectangle.Bottom = frame.FaceRect.Bottom;
+                        //this.facePoints = frame.GetProjected3DShape();
+
                     }
                 }
             }
@@ -375,6 +390,7 @@ namespace KinectVision360
                 public Point P2;
                 public Point P3;
             }
+
         }
     }
 }
