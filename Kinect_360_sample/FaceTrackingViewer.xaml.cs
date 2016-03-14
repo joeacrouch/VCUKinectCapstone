@@ -62,6 +62,7 @@ namespace KinectVision360
         public FaceTrackingViewer()
         {
             this.InitializeComponent();
+            
         }
 
         ~FaceTrackingViewer()
@@ -162,6 +163,7 @@ namespace KinectVision360
                 skeletonFrame.CopySkeletonDataTo(this.skeletonData);
 
                 // Update the list of trackers and the trackers with the current frame information
+
                 foreach (Skeleton skeleton in this.skeletonData)
                 {
                     if (skeleton.TrackingState == SkeletonTrackingState.Tracked
@@ -182,7 +184,8 @@ namespace KinectVision360
                         }
                     }
                 }
-
+                
+                Console.WriteLine("Skeleton Count" + trackedSkeletons.Count);
                 this.RemoveOldTrackers(skeletonFrame.FrameNumber);
 
                 this.InvalidateVisual();
@@ -272,14 +275,14 @@ namespace KinectVision360
 
             int faceExists = 0;
             System.Windows.Rect rectangle;
-
+            
             public void Dispose()
             {
                 if (this.faceTracker != null)
                 {
                     this.faceTracker.Dispose();
                     this.faceTracker = null;
-                    faceExists = 0;
+                    //faceExists = 0;
                 }
             }
 
@@ -291,7 +294,7 @@ namespace KinectVision360
                 {
                     return;
                 }
-
+                
                 //var faceModelPts = new List<Point>();
                 //var faceModel = new List<FaceModelTriangle>();
 
@@ -320,7 +323,7 @@ namespace KinectVision360
                 //    faceTriangle.Children.Add(new LineGeometry(faceModel2[i].P3, faceModel2[i].P1));
                 //    faceModelGroup.Children.Add(faceTriangle);
                 //}
-
+                
                 drawingContext.DrawRectangle(null, new Pen(Brushes.Red, 2.0), rectangle);
                 //drawingContext.DrawGeometry(Brushes.LightYellow, new Pen(Brushes.LightYellow, 1.0), faceModelGroup);
             }
@@ -343,7 +346,8 @@ namespace KinectVision360
                     try
                     {
                         this.faceTracker = new FaceTracker(kinectSensor);
-                        faceExists++;
+                        //faceExists++;
+                        Console.WriteLine("Tracking Face");
                     }
                     catch (InvalidOperationException)
                     {
