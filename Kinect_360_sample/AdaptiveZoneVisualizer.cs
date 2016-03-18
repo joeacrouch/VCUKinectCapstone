@@ -3,9 +3,6 @@
 //     Copyright (c) Microsoft Corporation.  All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
-
-namespace KinectVision360
-{
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -14,8 +11,10 @@ namespace KinectVision360
     using System.Windows.Controls;
     using System.Windows.Media;
     using System.Windows.Media.Media3D;
-
     using Microsoft.Kinect;
+
+namespace KinectVision360
+{
 
     /// <summary>
     /// Displays the adaptive zones, user positions, and sensor and display
@@ -420,6 +419,7 @@ namespace KinectVision360
                             Transforms.TransformSkeletonPoint(this.SensorToScreenPositionTransform, skeleton.Position);
                         var brush = (skeleton.TrackingState == SkeletonTrackingState.Tracked) ? this.TrackedUserBrush : this.NonTrackedUserBrush;
                         this.PlotSkeleton(drawingContext, brush, displayRelativePosition.X, displayRelativePosition.Z);
+
                     }
                 }
             }

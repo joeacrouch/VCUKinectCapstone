@@ -6,7 +6,7 @@
 
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Scope = "member", Target = "KinectVision360.Settings.#.cctor()", Justification = "Complexity is caused by long list of static properties. This is not real complexity.")]
 
-namespace KinectVison360
+namespace KinectVision360
 {
     using System;
     using System.Diagnostics.CodeAnalysis;

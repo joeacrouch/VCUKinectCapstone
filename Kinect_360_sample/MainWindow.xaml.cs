@@ -21,7 +21,7 @@ using System.Globalization;
 using System.IO;
 using Microsoft.Kinect.Toolkit.FaceTracking;
 using Point = System.Windows.Point;
-using System.Windows.Media.Imaging;
+
 /*This is the main file*/
 
 namespace KinectVision360

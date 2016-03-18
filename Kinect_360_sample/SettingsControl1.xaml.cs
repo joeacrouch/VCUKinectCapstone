@@ -7,7 +7,6 @@
 namespace KinectVision360
 {
     using System.Windows;
-
     /// <summary>
     /// Interaction logic for SettingsControl.
     /// </summary>
