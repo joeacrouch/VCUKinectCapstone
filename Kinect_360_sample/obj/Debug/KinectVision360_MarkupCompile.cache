@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\
 KinectVision360
 none
 false
 DEBUG;TRACE
-C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\App.xaml
-2-221725455
+C:\Users\crouchja\Documents\VCUKinectCapstone\Kinect_360_sample\App.xaml
+8-607462689
 1-496339242
-7-406188159
-20-1487375854
-FaceTrackingViewer.xaml;MainWindow.xaml;
+20-336624508
+201347395973
+FaceTrackingViewer.xaml;LabeledSlider1.xaml;MainWindow.xaml;PhysicalSetupVisualizer.xaml;SettingsControl1.xaml;StandardStyles.xaml;Themes\Generic.xaml;UserTrackingControl.xaml;
 
 False
 

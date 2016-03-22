@@ -88,9 +88,5 @@
                 <Button Style="{StaticResource SaveOpenButtonStyle}" Margin="10,0,0,0" Content="OPEN SETTINGS" Command="Open" />
             </StackPanel>
         </StackPanel>
-
-        <Button HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="50" Background="Transparent" FontFamily="Segoe UI Symbol" BorderBrush="{x:Null}" Margin="0,15,24,0"  Foreground="{StaticResource LightGrayBrush}" Command="{x:Static local:MainWindow.HideSettings}">
-            <Image Source="Images\Close-icon.png" Width="33" Height="33"/>
-        </Button>
     </Grid>
 </UserControl>
