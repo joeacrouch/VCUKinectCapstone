@@ -122,10 +122,6 @@ namespace KinectVision360
         {
             InitializeComponent();
             this.SensorTransforms = new SensorTransforms();
-            this.kinect1Tracker.DataContext = this;
-            this.kinect2Tracker.DataContext = this;
-            this.kinect3Tracker.DataContext = this;
-            this.Settings = new Settings();
 
             var faceTrackingViewerBinding = new Binding("Kinect") { Source = sensorChooser };
             faceTrackingViewer.SetBinding(FaceTrackingViewer.KinectProperty, faceTrackingViewerBinding);
@@ -143,20 +139,6 @@ namespace KinectVision360
             sensorChooser2.Start();
             sensorChooser3.Start();
             _writer = new TextBoxStreamWriter(textOut);
-
-            // Bind our KinectSensor property to the one from the sensor chooser
-            var sensorBinding = new Binding("Kinect") { Source = this.sensorChooser };
-            this.SetBinding(KinectSensorProperty, sensorBinding);
-            // Bind our KinectSensor property to the one from the sensor chooser
-            var sensorBinding2 = new Binding("Kinect") { Source = this.sensorChooser2 };
-            this.SetBinding(KinectSensorProperty2, sensorBinding2);
-            // Bind our KinectSensor property to the one from the sensor chooser
-            var sensorBinding3 = new Binding("Kinect") { Source = this.sensorChooser3 };
-            this.SetBinding(KinectSensorProperty3, sensorBinding3);
-            
-            this.adaptiveZoneLogic.PropertyChanged += this.AdaptiveZoneLogicPropertyChanged;
-            // Put the UI into a default state.
-            this.AdaptiveZoneLogicPropertyChanged(null, null);
 
             // Redirect the out Console stream
             Console.SetOut(_writer);
@@ -905,6 +887,27 @@ namespace KinectVision360
                     newSensor3.SkeletonStream.Enable();
                     //sensorChooser.KinectChanged += SensorChooserOnKinectChanged;
 
+                }
+                else if (tab3.IsSelected)
+                {
+                    this.kinect1Tracker.DataContext = this;
+                    this.kinect2Tracker.DataContext = this;
+                    this.kinect3Tracker.DataContext = this;
+                    this.Settings = new Settings();
+
+                    // Bind our KinectSensor property to the one from the sensor chooser
+                    var sensorBinding = new Binding("Kinect") { Source = this.sensorChooser };
+                    this.SetBinding(KinectSensorProperty, sensorBinding);
+                    // Bind our KinectSensor property to the one from the sensor chooser
+                    var sensorBinding2 = new Binding("Kinect") { Source = this.sensorChooser2 };
+                    this.SetBinding(KinectSensorProperty2, sensorBinding2);
+                    // Bind our KinectSensor property to the one from the sensor chooser
+                    var sensorBinding3 = new Binding("Kinect") { Source = this.sensorChooser3 };
+                    this.SetBinding(KinectSensorProperty3, sensorBinding3);
+
+                    this.adaptiveZoneLogic.PropertyChanged += this.AdaptiveZoneLogicPropertyChanged;
+                    // Put the UI into a default state.
+                    this.AdaptiveZoneLogicPropertyChanged(null, null);
                 }
             }
             catch (InvalidOperationException) {
