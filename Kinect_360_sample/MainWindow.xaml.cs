@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +12,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Media.Animation;
@@ -21,7 +24,8 @@ using System.Globalization;
 using System.IO;
 using Microsoft.Kinect.Toolkit.FaceTracking;
 using Point = System.Windows.Point;
-using System.Windows.Media.Imaging;
+
+
 /*This is the main file*/
 
 namespace KinectVision360
@@ -89,10 +93,35 @@ namespace KinectVision360
         KinectSensor newSensor2;
         KinectSensor newSensor3;
 
+        public static readonly DependencyProperty SettingsProperty =
+            DependencyProperty.Register("Settings", typeof(Settings), typeof(MainWindow), new FrameworkPropertyMetadata(null, (o, args) => ((MainWindow)o).OnSettingsChanged((Settings)args.OldValue, (Settings)args.NewValue)));
+
+        public static readonly DependencyProperty SensorTransformsProperty =
+            DependencyProperty.Register("SensorTransforms", typeof(SensorTransforms), typeof(MainWindow), new PropertyMetadata(null));
+
+        public static readonly DependencyProperty SomethingNearSensorProperty =
+            DependencyProperty.Register("SomethingNearSensor", typeof(bool), typeof(MainWindow), new PropertyMetadata(false));
+
+        public static readonly DependencyProperty KinectSensorProperty = DependencyProperty.Register(
+            "KinectSensor", typeof(KinectSensor), typeof(MainWindow), new PropertyMetadata(null));
+
+        public static readonly DependencyProperty KinectSensorProperty2 = DependencyProperty.Register(
+            "KinectSensor2", typeof(KinectSensor), typeof(MainWindow), new PropertyMetadata(null));
+
+        public static readonly DependencyProperty KinectSensorProperty3 = DependencyProperty.Register(
+            "KinectSensor3", typeof(KinectSensor), typeof(MainWindow), new PropertyMetadata(null));
+
+        public static readonly DependencyProperty UserDistanceProperty =
+            DependencyProperty.Register("UserDistance", typeof(UserDistance), typeof(MainWindow), new PropertyMetadata(UserDistance.Unknown));
+
+        private readonly TrackingPolicy trackingPolicy = new TrackingPolicy();
+
+        private readonly AdaptiveZoneLogic adaptiveZoneLogic = new AdaptiveZoneLogic();
+
         public MainWindow()
         {
             InitializeComponent();
-
+            this.SensorTransforms = new SensorTransforms();
 
             var faceTrackingViewerBinding = new Binding("Kinect") { Source = sensorChooser };
             faceTrackingViewer.SetBinding(FaceTrackingViewer.KinectProperty, faceTrackingViewerBinding);
@@ -100,9 +129,12 @@ namespace KinectVision360
             faceTrackingViewer2.SetBinding(FaceTrackingViewer.KinectProperty, faceTrackingViewerBinding2);
             var faceTrackingViewerBinding3 = new Binding("Kinect") { Source = sensorChooser3 };
             faceTrackingViewer3.SetBinding(FaceTrackingViewer.KinectProperty, faceTrackingViewerBinding3);
+
             sensorChooser.KinectChanged += SensorChooserOnKinectChanged;
             sensorChooser2.KinectChanged += SensorChooserOnKinectChanged2;
             sensorChooser3.KinectChanged += SensorChooserOnKinectChanged3;
+            //SensorChooserUi.KinectSensorChooser = sensorChooser;
+            //place this in gui if needed                 <k:KinectSensorChooserUI HorizontalAlignment="Center" VerticalAlignment="Top" Name="SensorChooserUi" />
             sensorChooser.Start();
             sensorChooser2.Start();
             sensorChooser3.Start();
@@ -607,176 +639,6 @@ namespace KinectVision360
             }
         }
 
-        ///* Skeletal code
-        //private void SensorSkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
-        //{
-        //    Skeleton[] skeletons = new Skeleton[0];
-
-        //    using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
-        //    {
-        //        if (skeletonFrame != null)
-        //        {
-        //            skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
-        //            skeletonFrame.CopySkeletonDataTo(skeletons);
-        //        }
-        //    }
-
-        //    using (DrawingContext dc = this.drawingGroup.Open())
-        //    {
-        //        // Draw a transparent background to set the render size
-        //        dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, RenderWidth, RenderHeight));
-
-        //        if (skeletons.Length != 0)
-        //        {
-        //            foreach (Skeleton skel in skeletons)
-        //            {
-        //                RenderClippedEdges(skel, dc);
-
-        //                if (skel.TrackingState == SkeletonTrackingState.Tracked)
-        //                {
-        //                    this.DrawBonesAndJoints(skel, dc);
-        //                }
-        //                else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
-        //                {
-        //                    dc.DrawEllipse(
-        //                    this.centerPointBrush,
-        //                    null,
-        //                    this.SkeletonPointToScreen(skel.Position),
-        //                    BodyCenterThickness,
-        //                    BodyCenterThickness);
-        //                }
-        //            }
-        //        }
-        
-        //        // prevent drawing outside of our render area
-        //        this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
-        //    }
-        //} */
-        ////
-        ///* /// Draws a skeleton's bones and joints
-        ///// </summary>
-        ///// <param name="skeleton">skeleton to draw</param>
-        ///// <param name="drawingContext">drawing context to draw to</param>
-        //private void DrawBonesAndJoints(Skeleton skeleton, DrawingContext drawingContext)
-        //{
-        //    // Render Torso
-        //    this.DrawBone(skeleton, drawingContext, JointType.Head, JointType.ShoulderCenter);
-        //    this.DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.ShoulderLeft);
-        //    this.DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.ShoulderRight);
-        //    this.DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.Spine);
-        //    this.DrawBone(skeleton, drawingContext, JointType.Spine, JointType.HipCenter);
-        //    this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipLeft);
-        //    this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipRight);
-
-        //    // Left Arm
-        //    this.DrawBone(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft);
-        //    this.DrawBone(skeleton, drawingContext, JointType.ElbowLeft, JointType.WristLeft);
-        //    this.DrawBone(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft);
-
-        //    // Right Arm
-        //    this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight);
-        //    this.DrawBone(skeleton, drawingContext, JointType.ElbowRight, JointType.WristRight);
-        //    this.DrawBone(skeleton, drawingContext, JointType.WristRight, JointType.HandRight);
-
-        //    // Left Leg
-        //    this.DrawBone(skeleton, drawingContext, JointType.HipLeft, JointType.KneeLeft);
-        //    this.DrawBone(skeleton, drawingContext, JointType.KneeLeft, JointType.AnkleLeft);
-        //    this.DrawBone(skeleton, drawingContext, JointType.AnkleLeft, JointType.FootLeft);
-
-        //    // Right Leg
-        //    this.DrawBone(skeleton, drawingContext, JointType.HipRight, JointType.KneeRight);
-        //    this.DrawBone(skeleton, drawingContext, JointType.KneeRight, JointType.AnkleRight);
-        //    this.DrawBone(skeleton, drawingContext, JointType.AnkleRight, JointType.FootRight);
-
-        //    // Render Joints
-        //    foreach (Joint joint in skeleton.Joints)
-        //    {
-        //        Brush drawBrush = null;
-
-        //        if (joint.TrackingState == JointTrackingState.Tracked)
-        //        {
-        //            drawBrush = this.trackedJointBrush;
-        //        }
-        //        else if (joint.TrackingState == JointTrackingState.Inferred)
-        //        {
-        //            drawBrush = this.inferredJointBrush;
-        //        }
-
-        //        if (drawBrush != null)
-        //        {
-        //            drawingContext.DrawEllipse(drawBrush, null, this.SkeletonPointToScreen(joint.Position), JointThickness, JointThickness);
-        //        }
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Maps a SkeletonPoint to lie within our render space and converts to Point
-        ///// </summary>
-        ///// <param name="skelpoint">point to map</param>
-        ///// <returns>mapped point</returns>
-        //private Point SkeletonPointToScreen(SkeletonPoint skelpoint)
-        //{
-        //    // Convert point to depth space.  
-        //    // We are not using depth directly, but we do want the points in our 640x480 output resolution.
-        //    DepthImagePoint depthPoint = this.sensor.CoordinateMapper.MapSkeletonPointToDepthPoint(skelpoint, DepthImageFormat.Resolution640x480Fps30);
-        //    return new Point(depthPoint.X, depthPoint.Y);
-        //}
-
-        ///// <summary>
-        ///// Draws a bone line between two joints
-        ///// </summary>
-        ///// <param name="skeleton">skeleton to draw bones from</param>
-        ///// <param name="drawingContext">drawing context to draw to</param>
-        ///// <param name="jointType0">joint to start drawing from</param>
-        ///// <param name="jointType1">joint to end drawing at</param>
-        //private void DrawBone(Skeleton skeleton, DrawingContext drawingContext, JointType jointType0, JointType jointType1)
-        //{
-        //    Joint joint0 = skeleton.Joints[jointType0];
-        //    Joint joint1 = skeleton.Joints[jointType1];
-
-        //    // If we can't find either of these joints, exit
-        //    if (joint0.TrackingState == JointTrackingState.NotTracked ||
-        //        joint1.TrackingState == JointTrackingState.NotTracked)
-        //    {
-        //        return;
-        //    }
-
-        //    // Don't draw if both points are inferred
-        //    if (joint0.TrackingState == JointTrackingState.Inferred &&
-        //        joint1.TrackingState == JointTrackingState.Inferred)
-        //    {
-        //        return;
-        //    }
-
-        //    // We assume all drawn bones are inferred unless BOTH joints are tracked
-        //    Pen drawPen = this.inferredBonePen;
-        //    if (joint0.TrackingState == JointTrackingState.Tracked && joint1.TrackingState == JointTrackingState.Tracked)
-        //    {
-        //        drawPen = this.trackedBonePen;
-        //    }
-
-        //    drawingContext.DrawLine(drawPen, this.SkeletonPointToScreen(joint0.Position), this.SkeletonPointToScreen(joint1.Position));
-        //}
-
-        ///// <summary>
-        ///// Handles the checking or unchecking of the seated mode combo box
-        ///// </summary>
-        ///// <param name="sender">object sending the event</param>
-        ///// <param name="e">event arguments</param>
-        //private void CheckBoxSeatedModeChanged(object sender, RoutedEventArgs e)
-        //{
-        //    if (null != this.sensor)
-        //    {
-        //        if (this.checkBoxSeatedMode.IsChecked.GetValueOrDefault())
-        //        {
-        //            this.sensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Seated;
-        //        }
-        //        else
-        //        {
-        //            this.sensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Default;
-        //        }
-        //    }
-        //} */
 
         private void Window_Closing_1(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -1026,12 +888,168 @@ namespace KinectVision360
                     //sensorChooser.KinectChanged += SensorChooserOnKinectChanged;
 
                 }
+                else if (tab3.IsSelected)
+                {
+                    this.kinect1Tracker.DataContext = this;
+                    this.kinect2Tracker.DataContext = this;
+                    this.kinect3Tracker.DataContext = this;
+                    this.Settings = new Settings();
+
+                    // Bind our KinectSensor property to the one from the sensor chooser
+                    var sensorBinding = new Binding("Kinect") { Source = this.sensorChooser };
+                    this.SetBinding(KinectSensorProperty, sensorBinding);
+                    // Bind our KinectSensor property to the one from the sensor chooser
+                    var sensorBinding2 = new Binding("Kinect") { Source = this.sensorChooser2 };
+                    this.SetBinding(KinectSensorProperty2, sensorBinding2);
+                    // Bind our KinectSensor property to the one from the sensor chooser
+                    var sensorBinding3 = new Binding("Kinect") { Source = this.sensorChooser3 };
+                    this.SetBinding(KinectSensorProperty3, sensorBinding3);
+
+                    this.adaptiveZoneLogic.PropertyChanged += this.AdaptiveZoneLogicPropertyChanged;
+                    // Put the UI into a default state.
+                    this.AdaptiveZoneLogicPropertyChanged(null, null);
+                }
             }
             catch (InvalidOperationException) {
                 Console.WriteLine("Null Exception Error for Kinect Sensor(s). Is a kinect unplugged?");
             }
         }
 
+
+        /////////////
+        /////////////
+        /////////////
+
+        /// <summary>
+        /// Settings for the application.
+        /// </summary>
+        public Settings Settings
+        {
+            get
+            {
+                return (Settings)this.GetValue(SettingsProperty);
+            }
+
+            set
+            {
+                this.SetValue(SettingsProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Object that transforms sensor skeleton space coordinates
+        /// to display-relative coordinates.
+        /// </summary>
+        public SensorTransforms SensorTransforms
+        {
+            get
+            {
+                return (SensorTransforms)this.GetValue(SensorTransformsProperty);
+            }
+
+            set
+            {
+                this.SetValue(SensorTransformsProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Whether something is detected near the sensor.  Used when
+        /// user is too close for skeletal tracking to work.
+        /// </summary>
+        public bool SomethingNearSensor
+        {
+            get
+            {
+                return (bool)this.GetValue(SomethingNearSensorProperty);
+            }
+
+            set
+            {
+                this.SetValue(SomethingNearSensorProperty, value);
+            }
+        }
+
+
+        /// <summary>
+        /// The current interaction zone of the user.
+        /// </summary>
+        public UserDistance UserDistance
+        {
+            get
+            {
+                return (UserDistance)this.GetValue(UserDistanceProperty);
+            }
+
+            set
+            {
+                this.SetValue(UserDistanceProperty, value);
+            }
+        }
+
+        private void OnSettingsChanged(Settings oldValue, Settings newValue)
+        {
+            if (oldValue != null)
+            {
+                oldValue.ParameterChanged -= this.OnSettingsParameterChanged;
+            }
+
+            if (newValue != null)
+            {
+                newValue.ParameterChanged += this.OnSettingsParameterChanged;
+                this.OnSettingsParameterChanged(null, null);
+            }
+
+            this.trackingPolicy.Settings = newValue;
+        }
+
+        /// <summary>
+        /// Gets called when any property in Settings changes.
+        /// </summary>
+        /// <param name="sender">the sender</param>
+        /// <param name="eventArgs">event arguments</param>
+        /// <remarks>
+        /// Note that this code could be more efficient by only copying things that
+        /// actually changed.  Settings don't change often enough for this to be a problem
+        /// in this application.
+        /// </remarks>
+        private void OnSettingsParameterChanged(object sender, EventArgs eventArgs)
+        {
+            if (this.Settings.FullScreen
+                && (this.WindowState != WindowState.Maximized || this.WindowStyle != WindowStyle.None))
+            {
+                this.WindowState = WindowState.Maximized;
+                this.WindowStyle = WindowStyle.None;
+            }
+
+            if (!this.Settings.FullScreen && this.WindowStyle == WindowStyle.None)
+            {
+                this.WindowStyle = WindowStyle.SingleBorderWindow;
+            }
+
+            this.adaptiveZoneLogic.NearBoundary = this.Settings.NearBoundary;
+            this.adaptiveZoneLogic.NearBoundaryHysteresis = this.Settings.BoundaryHysteresis;
+            this.adaptiveZoneLogic.FarBoundary = this.Settings.FarBoundary;
+            this.adaptiveZoneLogic.FarBoundaryHysteresis = this.Settings.BoundaryHysteresis;
+            this.adaptiveZoneLogic.NoUserTimeout = this.Settings.NoUserTimeout;
+            this.adaptiveZoneLogic.NoUserWarningTimeout = this.Settings.NoUserWarningTimeout;
+
+            this.SensorTransforms.UseFixedSensorElevationAngle = this.Settings.UseFixedSensorElevationAngle;
+            this.SensorTransforms.FixedSensorElevationAngle = this.Settings.FixedSensorElevationAngle;
+            this.SensorTransforms.SensorOffsetFromScreenCenter = new Vector3D(this.Settings.SensorOffsetX, this.Settings.SensorOffsetY, this.Settings.SensorOffsetZ);
+            this.SensorTransforms.DisplayWidthInMeters = this.Settings.DisplayWidthInMeters;
+            this.SensorTransforms.DisplayHeightInMeters = this.Settings.DisplayHeightInMeters;
+            this.SensorTransforms.DisplayWidthInPixels = this.Settings.DisplayWidthInPixels;
+            this.SensorTransforms.DisplayHeightInPixels = this.Settings.DisplayHeightInPixels;
+
+        }
+
+
+        private void AdaptiveZoneLogicPropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            this.UserDistance = this.adaptiveZoneLogic.UserDistance;
+            this.SomethingNearSensor = this.adaptiveZoneLogic.SomethingNearSensor;
+        }
 
     }
 }

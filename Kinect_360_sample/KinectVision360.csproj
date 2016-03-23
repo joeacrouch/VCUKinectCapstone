@@ -93,9 +93,30 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AdaptiveUIPlacementHelper.cs" />
+    <Compile Include="AdaptiveZoneLogic.cs" />
+    <Compile Include="AdaptiveZoneVisualizer.cs" />
+    <Compile Include="LabeledSlider1.xaml.cs">
+      <DependentUpon>LabeledSlider1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PhysicalSetupVisualizer.xaml.cs" />
+    <Compile Include="ProjectedSkeletonVisualizer.cs" />
+    <Compile Include="SensorTransforms.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="SettingsControl1.xaml.cs">
+      <DependentUpon>SettingsControl1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsManager.cs" />
+    <Compile Include="TrackingPolicy.cs" />
+    <Compile Include="Transforms.cs" />
+    <Compile Include="UserTrackingControl.xaml.cs" />
     <Page Include="FaceTrackingViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LabeledSlider1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -114,6 +135,26 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="PhysicalSetupVisualizer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SettingsControl1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="StandardStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserTrackingControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

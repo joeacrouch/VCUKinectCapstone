@@ -39,7 +39,7 @@
                 </ScrollViewer>
 
 
-                
+
                 <!--<local:FaceTrackingViewer x:Name="faceTrackingViewer" Grid.Column="0" Grid.Row="1"/>-->
                 <Viewbox Grid.Row="0" Grid.Column="0" Stretch="Uniform" HorizontalAlignment="Right">
                     <Grid Name="MainGrid" Width="640" Height="480">
@@ -61,20 +61,20 @@
                         <local:FaceTrackingViewer x:Name="faceTrackingViewer3" />
                     </Grid>
                 </Viewbox>
-                
+
                 <!--<Image Grid.Column="0" Grid.Row="2" Name="skeletonimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Hidden"/>-->
                 <Image Grid.Column="3" Grid.Row="2" Name="image2" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 <StackPanel Grid.Column="0" Grid.Row="3" Background="White">
                     <TextBlock Name="depthVal1"></TextBlock>
                 </StackPanel>
-               
+
                 <Label Grid.Row="2" Content="VCU Capstone 2016" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontWeight="Bold" Grid.Column="3"/>
                 <Image x:Name="KinectLogo" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Source="Resources\Kinectvision360_black.png" Visibility="Visible" Width="auto" Height="auto"/>
                 <!--<CheckBox Grid.Row="2" Content="Seated Mode" Height="Auto" VerticalAlignment="Center" Margin="10,202,558,92" Name="checkBoxSeatedMode" Checked="CheckBoxSeatedModeChanged" Unchecked="CheckBoxSeatedModeChanged" Visibility="Hidden"/> -->
             </Grid>
         </TabItem>
 
-            <TabItem Name="tab2" Header="Secondary Stream" >
+        <TabItem Name="tab2" Header="Secondary Stream" >
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -86,33 +86,75 @@
                 <Image Grid.Column="2" Grid.Row="0" Name="depthimage3" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
 
             </Grid>
-            </TabItem>
-            <TabItem Header="Settings">
-                
+        </TabItem>
+        <TabItem Name="tab3" Header="Field View" >
+            <Grid Margin="0,-3,0,3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid x:Name="kinect1Tracker" Grid.Column="0" Grid.Row="0">
 
-            <StackPanel Grid.Column="0" Grid.Row="2" Name="stack1" Orientation="Vertical" Background="White">
-                <Label Content="KINECT STATUSES" x:Name="kinect_status" Background="#FF17FF00" FontWeight="Bold"/>
+                    <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="10" SnapsToDevicePixels="True" Background="{StaticResource MainWindowZoneVisualizerBackgroundBrush}" BorderBrush="{StaticResource MainWindowZoneVisualizerBackgroundBrush}">
+                        <local:AdaptiveZoneVisualizer x:Name="UserStateVisualizer" SensorToScreenPositionTransform="{Binding SensorTransforms.SensorToScreenPositionTransform}" FieldOfViewBrush="{StaticResource MainWindowZoneVisualizerFieldOfViewBrush}" KinectSensor="{Binding KinectSensor}" Settings="{Binding Settings}" SomethingNearSensor="{Binding SomethingNearSensor}" />
+                    </Border>
 
-                <StackPanel Name="stack2" Orientation="Horizontal">
-                    <CheckBox Grid.Row="2" Content="IR1 Mode" Height="Auto"  x:Name="checkIR1Mode" Checked="SwitchRGBtoIR1" Unchecked="SwitchRGBtoIR1" />
-                    <CheckBox Grid.Row="2" Content="IR2 Mode " Height="Auto"  x:Name="checkIR2Mode" Checked="SwitchRGBtoIR2" Unchecked="SwitchRGBtoIR2" />
-                    <CheckBox Grid.Row="2" Content="IR3 Mode " Height="Auto"  x:Name="checkIR3Mode" Checked="SwitchRGBtoIR3" Unchecked="SwitchRGBtoIR3" />
+                </Grid>
+                <Grid x:Name="kinect2Tracker" Grid.Column="1" Grid.Row="0">
 
+                    <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="10" SnapsToDevicePixels="True" Background="{StaticResource MainWindowZoneVisualizerBackgroundBrush}" BorderBrush="{StaticResource MainWindowZoneVisualizerBackgroundBrush}">
+                        <local:AdaptiveZoneVisualizer x:Name="UserStateVisualizer2" SensorToScreenPositionTransform="{Binding SensorTransforms.SensorToScreenPositionTransform}" FieldOfViewBrush="{StaticResource MainWindowZoneVisualizerFieldOfViewBrush}" KinectSensor="{Binding KinectSensor2}" Settings="{Binding Settings}" SomethingNearSensor="{Binding SomethingNearSensor}" />
+                    </Border>
+
+                </Grid>
+                <Grid x:Name="kinect3Tracker" Grid.Column="2" Grid.Row="0">
+
+                    <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  BorderThickness="10" SnapsToDevicePixels="True" Background="{StaticResource MainWindowZoneVisualizerBackgroundBrush}" BorderBrush="{StaticResource MainWindowZoneVisualizerBackgroundBrush}">
+                        <local:AdaptiveZoneVisualizer x:Name="UserStateVisualizer3" SensorToScreenPositionTransform="{Binding SensorTransforms.SensorToScreenPositionTransform}" FieldOfViewBrush="{StaticResource MainWindowZoneVisualizerFieldOfViewBrush}" KinectSensor="{Binding KinectSensor3}" Settings="{Binding Settings}" SomethingNearSensor="{Binding SomethingNearSensor}" />
+                    </Border>
+
+                </Grid>
+
+                <Image x:Name="KinectLogoField" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Source="Resources\Kinectvision360_black.png" Visibility="Visible" Width="auto" Height="auto"/>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Settings">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <local:SettingsControl x:Name="SettingsControl" HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.Column="1"/>
+
+                <StackPanel Grid.Column="0" Grid.Row="2" Name="stack1" Orientation="Vertical" Background="White">
+                    <Label Content="KINECT STATUSES" x:Name="kinect_status" Background="#FF17FF00" FontWeight="Bold"/>
+
+                    <StackPanel Name="stack2" Orientation="Horizontal">
+                        <CheckBox Grid.Row="2" Content="IR1 Mode" Height="Auto"  x:Name="checkIR1Mode" Checked="SwitchRGBtoIR1" Unchecked="SwitchRGBtoIR1" />
+                        <CheckBox Grid.Row="2" Content="IR2 Mode " Height="Auto"  x:Name="checkIR2Mode" Checked="SwitchRGBtoIR2" Unchecked="SwitchRGBtoIR2" />
+                        <CheckBox Grid.Row="2" Content="IR3 Mode " Height="Auto"  x:Name="checkIR3Mode" Checked="SwitchRGBtoIR3" Unchecked="SwitchRGBtoIR3" />
+
+                    </StackPanel>
+                    <TextBlock Text="Adjust Tilt Angle for Sensor 1: "></TextBlock>
+                    <Slider Name="tiltSlider1" HorizontalAlignment="Left" Width="60" Height="auto" Maximum="20" Minimum="-20"
+                    TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="true" ValueChanged="tiltSlider_ValueChanged"></Slider>
+                    <TextBlock Text="Adjust Tilt Angle for Sensor 2: "></TextBlock>
+                    <Slider Name="tiltSlider2" HorizontalAlignment="Left" Width="60" Height="auto" Maximum="20" Minimum="-20"
+                    TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="true" ValueChanged="tiltSlider2_ValueChanged"></Slider>
+                    <TextBlock Text="Adjust Tilt Angle for Sensor 3: "></TextBlock>
+                    <Slider Name="tiltSlider3" HorizontalAlignment="Left" Width="60" Height="auto" Maximum="20" Minimum="-20"
+                    TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="true" ValueChanged="tiltSlider3_ValueChanged"></Slider>
+                    <TextBlock Text="Adjust Sensor Range for Sensor 1: "></TextBlock>
+                    <Slider Name="depthSlider1" HorizontalAlignment="Left" Width="60" Height="auto" Maximum="1" Minimum="0"
+                    TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="true" ValueChanged="depthSlider1_ValueChanged"></Slider>
                 </StackPanel>
-                <TextBlock Text="Adjust Tilt Angle for Sensor 1: "></TextBlock>
-                <Slider Name="tiltSlider1" HorizontalAlignment="Left" Width="60" Height="auto" Maximum="20" Minimum="-20"
-                TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="true" ValueChanged="tiltSlider_ValueChanged"></Slider>
-                <TextBlock Text="Adjust Tilt Angle for Sensor 2: "></TextBlock>
-                <Slider Name="tiltSlider2" HorizontalAlignment="Left" Width="60" Height="auto" Maximum="20" Minimum="-20"
-                TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="true" ValueChanged="tiltSlider2_ValueChanged"></Slider>
-                <TextBlock Text="Adjust Tilt Angle for Sensor 3: "></TextBlock>
-                <Slider Name="tiltSlider3" HorizontalAlignment="Left" Width="60" Height="auto" Maximum="20" Minimum="-20"
-                TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="true" ValueChanged="tiltSlider3_ValueChanged"></Slider>
-                <TextBlock Text="Adjust Sensor Range for Sensor 1: "></TextBlock>
-                <Slider Name="depthSlider1" HorizontalAlignment="Left" Width="60" Height="auto" Maximum="1" Minimum="0"
-                TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="true" ValueChanged="depthSlider1_ValueChanged"></Slider>
-            </StackPanel>
-
+            </Grid>
         </TabItem>
     </TabControl>
 </Window>

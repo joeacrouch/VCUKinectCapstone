@@ -59,7 +59,73 @@ namespace KinectVision360.Properties {
                 resourceCulture = value;
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to AdaptiveUI-WPF error.
+        /// </summary>
+        internal static string ErrorMessageCaption
+        {
+            get
+            {
+                return ResourceManager.GetString("ErrorMessageCaption", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Settings XML files (.xml)|*.xml.
+        /// </summary>
+        internal static string FileDialogFilter
+        {
+            get
+            {
+                return ResourceManager.GetString("FileDialogFilter", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Hide Settings.
+        /// </summary>
+        internal static string HideSettingsCaption
+        {
+            get
+            {
+                return ResourceManager.GetString("HideSettingsCaption", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to load settings file: {0}.
+        /// </summary>
+        internal static string OpenErrorMessage
+        {
+            get
+            {
+                return ResourceManager.GetString("OpenErrorMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to save settings to file: {0}.
+        /// </summary>
+        internal static string SaveErrorMessage
+        {
+            get
+            {
+                return ResourceManager.GetString("SaveErrorMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Show Settings.
+        /// </summary>
+        internal static string ShowSettingsCaption
+        {
+            get
+            {
+                return ResourceManager.GetString("ShowSettingsCaption", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
