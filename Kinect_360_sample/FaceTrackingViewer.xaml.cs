@@ -62,13 +62,14 @@ namespace KinectVision360
         private DepthImageFormat depthImageFormat = DepthImageFormat.Undefined;
 
         private bool disposed;
-
+        KinectSensor sensor1;
         private Skeleton[] skeletonData;
+        List<Faces> faceList = new List<Faces>();
 
         public FaceTrackingViewer()
         {
             this.InitializeComponent();
-            
+            faceList.Add(new Faces { sensor = this.Kinect, skeleton = skeletonData });
         }
 
         ~FaceTrackingViewer()
@@ -191,7 +192,8 @@ namespace KinectVision360
                     }
                 }
                 
-                //Console.WriteLine("Skeleton Count" + trackedSkeletons.Count);
+               //Console.WriteLine("Skeleton Count" + trackedSkeletons.Count);
+
                 this.RemoveOldTrackers(skeletonFrame.FrameNumber);
 
                 this.InvalidateVisual();
