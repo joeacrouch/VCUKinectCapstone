@@ -69,7 +69,6 @@ namespace KinectVision360
         public FaceTrackingViewer()
         {
             this.InitializeComponent();
-            faceList.Add(new Faces { sensor = this.Kinect, skeleton = skeletonData });
         }
 
         ~FaceTrackingViewer()

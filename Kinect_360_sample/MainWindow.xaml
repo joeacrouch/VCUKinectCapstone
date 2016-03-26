@@ -16,27 +16,14 @@
     <TabControl Name="tabctrl" TabStripPlacement="Top" Background="Black" BorderThickness="0" SelectionChanged="tabctrl_SelectionChanged">
         <TabItem Header="Main Stream" Name="tab1">
             <Grid Name="mainGrid" Background="Black">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
 
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="2*"/>
-
-                    <RowDefinition Height="*"/>
-
-                </Grid.RowDefinitions>
-
-
-
-
-                <ScrollViewer Grid.Row="1" Grid.Column="2" Name="scrollText" >
-                    <TextBox Name="textOut" Width="auto" Height="auto" Background="White" MaxLines="100"
-                     ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" TextChanged="textOut_TextChanged"></TextBox>
-                </ScrollViewer>
 
 
 
@@ -61,15 +48,11 @@
                         <local:FaceTrackingViewer x:Name="faceTrackingViewer3" />
                     </Grid>
                 </Viewbox>
-
+                <Image Grid.Column="2" Grid.Row="1" Name="kinectlogo" Source="Resources/kinectvision360_black.png" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="200" Height="70"/>
                 <!--<Image Grid.Column="0" Grid.Row="2" Name="skeletonimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Hidden"/>-->
-                <Image Grid.Column="3" Grid.Row="2" Name="image2" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                <StackPanel Grid.Column="0" Grid.Row="3" Background="Black">
-                    <TextBlock Name="depthVal1"></TextBlock>
-                </StackPanel>
 
-                <Label Grid.Row="2" Content="VCU Capstone 2016" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontWeight="Bold" Grid.Column="3"/>
-                <Image x:Name="KinectLogo" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Source="Resources\Kinectvision360_black.png" Visibility="Visible" Width="auto" Height="auto"/>
+
+               
                 <!--<CheckBox Grid.Row="2" Content="Seated Mode" Height="Auto" VerticalAlignment="Center" Margin="10,202,558,92" Name="checkBoxSeatedMode" Checked="CheckBoxSeatedModeChanged" Unchecked="CheckBoxSeatedModeChanged" Visibility="Hidden"/> -->
             </Grid>
         </TabItem>
@@ -84,6 +67,7 @@
                 <Image Grid.Column="0"  Name="depthimage" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
                 <Image Grid.Column="1" Grid.Row="0" Name="depthimage2" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
                 <Image Grid.Column="2" Grid.Row="0" Name="depthimage3" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                <Image Grid.Column="2" Grid.Row="1" Name="kinectlogo2" Source="Resources/kinectvision360_black.png" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="200" Height="70"/>
 
             </Grid>
         </TabItem>
@@ -134,10 +118,17 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-                <local:SettingsControl x:Name="SettingsControl" HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.Column="1"/>
-
-                <StackPanel Grid.Column="0" Grid.Row="2" Name="stack1" Orientation="Vertical" Background="White">
+                <local:SettingsControl x:Name="SettingsControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1"/>
+                <ScrollViewer Name="scrollText" Grid.Column="0" Grid.Row="0">
+                    <TextBox Name="textOut" Width="auto" Height="auto" Background="White" MaxLines="100"
+                     ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" TextChanged="textOut_TextChanged"></TextBox>
+                </ScrollViewer>
+                <StackPanel Grid.Column="0" Grid.Row="1" Name="stack1" Orientation="Vertical" Background="White">
                     <Label Content="KINECT STATUSES" x:Name="kinect_status" Background="#FF17FF00" FontWeight="Bold"/>
 
                     <StackPanel Name="stack2" Orientation="Horizontal">
@@ -159,6 +150,7 @@
                     <Slider Name="depthSlider1" HorizontalAlignment="Left" Width="60" Height="auto" Maximum="1" Minimum="0"
                     TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="true" ValueChanged="depthSlider1_ValueChanged"></Slider>
                     <CheckBox x:Name="ConsoleButton" Content="Console Enable/Disable" Height="Auto" Checked="ShowConsole" Unchecked="ShowConsole" />
+
                 </StackPanel>
             </Grid>
         </TabItem>

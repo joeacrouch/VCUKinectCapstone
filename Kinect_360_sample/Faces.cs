@@ -10,8 +10,8 @@ namespace KinectVision360
 {
     class Faces
     {
-        public KinectSensor sensor { get; set; }
-        public Skeleton[] skeleton { get; set; }
+        public static KinectSensor sensor { get; set; }
+        public static Skeleton[] skeleton { get; set; }
 
     }
 }
