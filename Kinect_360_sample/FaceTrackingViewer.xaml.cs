@@ -14,6 +14,10 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Kinect;
 using Microsoft.Kinect.Toolkit.FaceTracking;
+// activate the GlobalVariables NameSpace
+using GlobalVariables;
+ 
+
 namespace KinectVision360
 {
     /// <summary>
@@ -36,6 +40,8 @@ namespace KinectVision360
     /// </summary>
     public partial class FaceTrackingViewer : UserControl, IDisposable
     {
+
+
         public static readonly DependencyProperty KinectProperty = DependencyProperty.Register(
             "Kinect",
             typeof(KinectSensor),
@@ -186,7 +192,8 @@ namespace KinectVision360
                     }
                 }
                 
-                Console.WriteLine("Skeleton Count: " + trackedSkeletons.Count);
+               //Console.WriteLine("Skeleton Count" + trackedSkeletons.Count);
+
                 this.RemoveOldTrackers(skeletonFrame.FrameNumber);
 
                 this.InvalidateVisual();
@@ -274,7 +281,6 @@ namespace KinectVision360
 
             public int LastTrackedFrame { get; set; }
 
-            int faceExists = 0;
             System.Windows.Rect rectangle;
             
             public void Dispose()
@@ -283,7 +289,6 @@ namespace KinectVision360
                 {
                     this.faceTracker.Dispose();
                     this.faceTracker = null;
-                    //faceExists = 0;
                 }
             }
 
@@ -347,8 +352,12 @@ namespace KinectVision360
                     try
                     {
                         this.faceTracker = new FaceTracker(kinectSensor);
-                        //faceExists++;
-                        Console.WriteLine("Tracking Face");
+                        // accessing the global variable
+                        Globals.IncrementGlobalCount();
+                        // setting the global variable
+                        int x = Globals.GlobalCount;
+                                // parameterless constructor required for static class
+                        Console.WriteLine("Tracking Face : " + x);
                     }
                     catch (InvalidOperationException)
                     {

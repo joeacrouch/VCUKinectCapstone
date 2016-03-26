@@ -24,9 +24,29 @@ using System.Globalization;
 using System.IO;
 using Microsoft.Kinect.Toolkit.FaceTracking;
 using Point = System.Windows.Point;
-
-
+using GlobalVariables;
 /*This is the main file*/
+using KinectVision360;
+
+namespace GlobalVariables
+{
+    public static class Globals
+    {
+        // parameterless constructor required for static class
+        static Globals() { GlobalCount = 0; } // default value
+
+        // public get, and private set for strict access control
+        public static int GlobalCount { get; private set; }
+
+        // GlobalInt can be changed only via this method
+        public static void IncrementGlobalCount()
+        {
+            GlobalCount++;
+        }
+
+    }
+}
+
 
 namespace KinectVision360
 {
@@ -89,6 +109,7 @@ namespace KinectVision360
         // private DrawingImage imageSource;
         private Boolean onDepth = false;
         TextWriter _writer = null;
+        TextWriter _writer2 = null;
         KinectSensor newSensor1;
         KinectSensor newSensor2;
         KinectSensor newSensor3;
@@ -118,10 +139,10 @@ namespace KinectVision360
 
         private readonly AdaptiveZoneLogic adaptiveZoneLogic = new AdaptiveZoneLogic();
 
+
         public MainWindow()
         {
             InitializeComponent();
-            this.SensorTransforms = new SensorTransforms();
 
             var faceTrackingViewerBinding = new Binding("Kinect") { Source = sensorChooser };
             faceTrackingViewer.SetBinding(FaceTrackingViewer.KinectProperty, faceTrackingViewerBinding);
@@ -138,11 +159,36 @@ namespace KinectVision360
             sensorChooser.Start();
             sensorChooser2.Start();
             sensorChooser3.Start();
+
             _writer = new TextBoxStreamWriter(textOut);
 
             // Redirect the out Console stream
             Console.SetOut(_writer);
 
+            PeopleCountTxt.Selection.Text = "Broke Total Tracked: "+Globals.GlobalCount.ToString();
+
+        }
+
+        public void updateCount()
+        {
+            PeopleCountTxt.Selection.Text = "Total Tracked: "+Globals.GlobalCount.ToString();
+        }
+        
+        private void ShowConsole(object sender, RoutedEventArgs e)
+        {
+            if (textOut.Visibility == Visibility.Visible && textOut2.Visibility == Visibility.Visible)
+            {
+                textOut.Visibility = Visibility.Hidden;
+                textOut2.Visibility = Visibility.Hidden;
+                scrollText.Visibility = Visibility.Hidden;
+                scrollText2.Visibility = Visibility.Hidden;
+            }
+            else{
+                textOut2.Visibility = Visibility.Visible;
+                textOut.Visibility = Visibility.Visible; 
+                scrollText.Visibility = Visibility.Visible;
+                scrollText2.Visibility = Visibility.Visible;
+            }    
         }
 
         private void SensorChooserOnKinectChanged(object sender, KinectChangedEventArgs kinectChangedEventArgs)
@@ -208,6 +254,7 @@ namespace KinectVision360
             }
 
         }
+
         private void SensorChooserOnKinectChanged2(object sender, KinectChangedEventArgs kinectChangedEventArgs)
         {
             KinectSensor oldSensor = kinectChangedEventArgs.OldSensor;
@@ -250,7 +297,6 @@ namespace KinectVision360
                     newSensor.SkeletonStream.Enable();
                     newSensor.AllFramesReady += KinectSensorOnAllFramesReady2;
                     Console.WriteLine("Sensor 2 started tracking");
-
 
                     //// Add an event handler to be called whenever there is new depth frame data
                     //newSensor.DepthFrameReady += this.SensorDepthFrameReady2;
@@ -875,6 +921,9 @@ namespace KinectVision360
                 }
                 else if (tab1.IsSelected)
                 {
+                    // Redirect the out Console stream
+                    Console.SetOut(_writer);
+
                     newSensor1.DepthFrameReady -= this.SensorDepthFrameReady;
                     newSensor2.DepthFrameReady -= this.SensorDepthFrameReady2;
                     newSensor3.DepthFrameReady -= this.SensorDepthFrameReady3;
@@ -887,9 +936,17 @@ namespace KinectVision360
                     newSensor3.SkeletonStream.Enable();
                     //sensorChooser.KinectChanged += SensorChooserOnKinectChanged;
 
+
                 }
                 else if (tab3.IsSelected)
                 {
+                    _writer2 = new TextBoxStreamWriter(textOut2);
+
+                    // Redirect the out Console stream
+                    Console.SetOut(_writer2);
+
+                    this.SensorTransforms = new SensorTransforms();
+
                     this.kinect1Tracker.DataContext = this;
                     this.kinect2Tracker.DataContext = this;
                     this.kinect3Tracker.DataContext = this;
