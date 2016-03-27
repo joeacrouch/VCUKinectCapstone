@@ -8,10 +8,21 @@ using Microsoft.Kinect.Toolkit.FaceTracking;
 
 namespace KinectVision360
 {
-    class Faces
+    public class Faces
     {
-        public static KinectSensor sensor { get; set; }
-        public static Skeleton[] skeleton { get; set; }
+        public KinectSensor kinect;
+        public int Id; 
+        public KinectSensor kinectSensor
+        {
+            get { return kinect; }
+            set { kinect = value; }
+        }
+        public int skeletonId
+        {
+            get { return Id; }
+            set { Id = value; }
+        }
+        //public static Skeleton[] skeleton { get; set; }
 
     }
 }
