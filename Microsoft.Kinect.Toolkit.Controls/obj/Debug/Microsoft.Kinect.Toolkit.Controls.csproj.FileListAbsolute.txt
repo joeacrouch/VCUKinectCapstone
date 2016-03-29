@@ -9,3 +9,15 @@ C:\Users\har\Documents\VCUKinectCapstone\Microsoft.Kinect.Toolkit.Controls\obj\D
 C:\Users\har\Documents\VCUKinectCapstone\Microsoft.Kinect.Toolkit.Controls\obj\Debug\Microsoft.Kinect.Toolkit.Controls.g.resources
 C:\Users\har\Documents\VCUKinectCapstone\Microsoft.Kinect.Toolkit.Controls\obj\Debug\Microsoft.Kinect.Toolkit.Controls.dll
 C:\Users\har\Documents\VCUKinectCapstone\Microsoft.Kinect.Toolkit.Controls\obj\Debug\Microsoft.Kinect.Toolkit.Controls.pdb
+C:\Users\marwahars\Documents\VCUKinectCapstone\.Debug\KinectInteraction180_32.dll
+C:\Users\marwahars\Documents\VCUKinectCapstone\.Debug\KinectInteraction180_64.dll
+C:\Users\marwahars\Documents\VCUKinectCapstone\.Debug\Microsoft.Kinect.Toolkit.Controls.dll
+C:\Users\marwahars\Documents\VCUKinectCapstone\.Debug\Microsoft.Kinect.Toolkit.Controls.pdb
+C:\Users\marwahars\Documents\VCUKinectCapstone\Microsoft.Kinect.Toolkit.Controls\obj\Debug\Microsoft.Kinect.Toolkit.Controls.csprojResolveAssemblyReference.cache
+C:\Users\marwahars\Documents\VCUKinectCapstone\Microsoft.Kinect.Toolkit.Controls\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\marwahars\Documents\VCUKinectCapstone\Microsoft.Kinect.Toolkit.Controls\obj\Debug\Microsoft.Kinect.Toolkit.Controls_MarkupCompile.cache
+C:\Users\marwahars\Documents\VCUKinectCapstone\Microsoft.Kinect.Toolkit.Controls\obj\Debug\Microsoft.Kinect.Toolkit.Controls_MarkupCompile.lref
+C:\Users\marwahars\Documents\VCUKinectCapstone\Microsoft.Kinect.Toolkit.Controls\obj\Debug\Themes\Generic.baml
+C:\Users\marwahars\Documents\VCUKinectCapstone\Microsoft.Kinect.Toolkit.Controls\obj\Debug\Microsoft.Kinect.Toolkit.Controls.g.resources
+C:\Users\marwahars\Documents\VCUKinectCapstone\Microsoft.Kinect.Toolkit.Controls\obj\Debug\Microsoft.Kinect.Toolkit.Controls.dll
+C:\Users\marwahars\Documents\VCUKinectCapstone\Microsoft.Kinect.Toolkit.Controls\obj\Debug\Microsoft.Kinect.Toolkit.Controls.pdb

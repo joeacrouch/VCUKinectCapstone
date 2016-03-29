@@ -223,14 +223,16 @@ namespace KinectVision360
                                 //    }
                                 //}
                                 //if (foundMult == false) 
-                                { 
-                                    Faces newFace = new Faces();
-                                    newFace.kinect = this.Kinect;
-                                    //newFace.skeleData = skeletonData;
-                                    newFace.skeleton = skeleton;
-                                    newFace.trackingId = skeleton.TrackingId;
-                                    faceList.Add(newFace);
-                                }
+                                //{ 
+                                //    Faces newFace = new Faces();
+                                //    newFace.kinect = this.Kinect;
+                                //    //newFace.skeleData = skeletonData;
+
+                                //    newFace.skeleton = skeleton;
+                                //    newFace.trackingId = skeleton.TrackingId;
+
+                                //    faceList.Add(newFace);
+                                //}
                             }
 
 
@@ -368,7 +370,7 @@ namespace KinectVision360
             System.Windows.Rect rectangle2;
             System.Windows.Rect rectangle3;
             int drawNum = 0;
-            int count = 0;
+            int colorCount = 0;
             public void Dispose()
             {
                 if (this.faceTracker != null)
@@ -450,63 +452,60 @@ namespace KinectVision360
                 {
                     FaceTrackFrame frame = this.faceTracker.Track(
                         colorImageFormat, colorImage, depthImageFormat, depthImage, skeletonOfInterest);
-
                     this.lastFaceTrackSucceeded = frame.TrackSuccessful;
                     if (this.lastFaceTrackSucceeded)
                     {
-                        
-                        //foreach (Faces face in faceList)
-                        //{
-                        //    if (face.kinectSensor == tempsensor)
-                        //    {
-                        //        break;
-                        //    }
 
-                        //    count++;
-                        //}
-                        foreach (Faces face in faceList) {
-                            if (count < 3) 
-                            { 
-                                if (face.skeleton == skeletonOfInterest) {
-                                    count = 0;
-                                    break;
-                                }
-                                else { 
-                                    count++;
 
-                                }
-                            }
-                            else { count = 0; }
-                        }
-                        switch (count)
+                        foreach (Faces kinects in faceList) 
                         {
-                        case 0:
-                            rectangle.Width = frame.FaceRect.Width;
-                            rectangle.Height = frame.FaceRect.Height;
-                            Point rectPt = new Point();
-                            rectPt.X = frame.FaceRect.Left;
-                            rectPt.Y = frame.FaceRect.Top;
-                            rectangle.Location = (Point) rectPt;
-                            drawNum = 0;
-                            break;
-                        case 1:
-                            rectangle2.Width = frame.FaceRect.Width;
-                            rectangle2.Height = frame.FaceRect.Height;
-                            Point rectPt2 = new Point();
-                            rectPt2.X = frame.FaceRect.Left;
-                            rectPt2.Y = frame.FaceRect.Top;
-                            rectangle2.Location = (Point) rectPt2;
-                            drawNum = 1;
-                            break;
-                        case 2:
-                            rectangle3.Width = frame.FaceRect.Width;
-                            rectangle3.Height = frame.FaceRect.Height;
-                            Point rectPt3 = new Point();
-                            rectPt3.X = frame.FaceRect.Left;
-                            rectPt3.Y = frame.FaceRect.Top;
-                            rectangle3.Location = (Point) rectPt3;
-                            drawNum = 2;
-                            break;
+                            if (colorCount < 3)
+                            {
+                                if (kinectSensor == kinects.kinect)
+                                {
+
+                                    break;
+
+                                }
+
+                                
+                            }
+                            else
+                                colorCount = 0;
+                            
+                            colorCount++;
+                        }
+
+
+                        switch (colorCount)
+                        {
+                            case 0:
+                                rectangle.Width = frame.FaceRect.Width;
+                                rectangle.Height = frame.FaceRect.Height;
+                                Point rectPt = new Point();
+                                rectPt.X = frame.FaceRect.Left;
+                                rectPt.Y = frame.FaceRect.Top;
+                                rectangle.Location = (Point)rectPt;
+                                drawNum = 0;
+                                break;
+                            case 1:
+                                rectangle2.Width = frame.FaceRect.Width;
+                                rectangle2.Height = frame.FaceRect.Height;
+                                Point rectPt2 = new Point();
+                                rectPt2.X = frame.FaceRect.Left;
+                                rectPt2.Y = frame.FaceRect.Top;
+                                rectangle2.Location = (Point)rectPt2;
+                                drawNum = 1;
+                                break;
+                            case 2:
+                                rectangle3.Width = frame.FaceRect.Width;
+                                rectangle3.Height = frame.FaceRect.Height;
+                                Point rectPt3 = new Point();
+                                rectPt3.X = frame.FaceRect.Left;
+                                rectPt3.Y = frame.FaceRect.Top;
+                                rectangle3.Location = (Point)rectPt3;
+                                drawNum = 2;
+                                break;
                         }
 
                         //this.facePoints = frame.GetProjected3DShape();

@@ -36,7 +36,7 @@ namespace KinectVision360
         {
             this.InitializeComponent();
             this.LayoutRoot.DataContext = this;
-            updateCount();
+           // updateCount();
         }
         public void updateCount()
         {
