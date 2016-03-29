@@ -52,7 +52,7 @@
                 <!--<Image Grid.Column="0" Grid.Row="2" Name="skeletonimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Hidden"/>-->
 
 
-               
+
                 <!--<CheckBox Grid.Row="2" Content="Seated Mode" Height="Auto" VerticalAlignment="Center" Margin="10,202,558,92" Name="checkBoxSeatedMode" Checked="CheckBoxSeatedModeChanged" Unchecked="CheckBoxSeatedModeChanged" Visibility="Hidden"/> -->
             </Grid>
         </TabItem>
@@ -77,6 +77,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
+
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
@@ -103,13 +104,8 @@
                     </Border>
 
                 </Grid>
-
-                <Image x:Name="KinectLogoField" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Source="Resources\Kinectvision360_black.png" Visibility="Visible" Width="auto" Height="auto"/>
-                <ScrollViewer Grid.Row="1" Grid.Column="2" Name="scrollText2" >
-                    <TextBox Name="textOut2" Width="auto" Height="auto" Background="White" MaxLines="100"
-                     ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" TextChanged="textOut_TextChanged"></TextBox>
-                </ScrollViewer>
-                <RichTextBox x:Name="PeopleCountTxt" Grid.Row="1" Grid.Column="0"  VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="72" Background="Black" Opacity="0.985" Foreground="White" SelectionBrush="White" />
+                <local:PeopleCount x:Name="PeopleCount" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="1"/> 
+                <Image x:Name="KinectLogoField" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Source="Resources\Kinectvision360_black.png" Visibility="Visible" Width="auto" Height="auto" Margin="0,150"/>
             </Grid>
         </TabItem>
         <TabItem Header="Settings">
@@ -149,7 +145,7 @@
                     <TextBlock Text="Adjust Sensor Range for Sensor 1: "></TextBlock>
                     <Slider Name="depthSlider1" HorizontalAlignment="Left" Width="60" Height="auto" Maximum="1" Minimum="0"
                     TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="true" ValueChanged="depthSlider1_ValueChanged"></Slider>
-                    <CheckBox x:Name="ConsoleButton" Content="Console Enable/Disable" Height="Auto" Checked="ShowConsole" Unchecked="ShowConsole" />
+
 
                 </StackPanel>
             </Grid>

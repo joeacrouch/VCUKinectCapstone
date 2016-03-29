@@ -12,6 +12,7 @@
     using System.Windows.Media;
     using System.Windows.Media.Media3D;
     using Microsoft.Kinect;
+    using GlobalVariables;
 
 namespace KinectVision360
 {
@@ -579,7 +580,15 @@ namespace KinectVision360
                 {
                     if (this.skeletons == null || this.skeletons.Length != skeletonFrame.SkeletonArrayLength)
                     {
+                        //// accessing the global variable
+                        //Globals.IncrementGlobalCount();
+                        ////// setting the global variable
+                        //int x = Globals.GlobalCount;
+
+                        //Console.WriteLine("Tracking Face : " + x);
+
                         this.skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
+                        
                     }
 
                     skeletonFrame.CopySkeletonDataTo(this.skeletons);

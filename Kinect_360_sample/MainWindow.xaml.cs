@@ -34,9 +34,8 @@ namespace GlobalVariables
     {
         // parameterless constructor required for static class
         static Globals() { GlobalCount = 0; } // default value
-
         // public get, and private set for strict access control
-        public static int GlobalCount { get; private set; }
+        public static int GlobalCount { get; set; }
 
         // GlobalInt can be changed only via this method
         public static void IncrementGlobalCount()
@@ -109,7 +108,6 @@ namespace KinectVision360
         // private DrawingImage imageSource;
         private Boolean onDepth = false;
         TextWriter _writer = null;
-        TextWriter _writer2 = null;
         KinectSensor newSensor1;
         KinectSensor newSensor2;
         KinectSensor newSensor3;
@@ -151,6 +149,18 @@ namespace KinectVision360
             var faceTrackingViewerBinding3 = new Binding("Kinect") { Source = sensorChooser3 };
             faceTrackingViewer3.SetBinding(FaceTrackingViewer.KinectProperty, faceTrackingViewerBinding3);
 
+
+            // Bind our KinectSensor property to the one from the sensor chooser
+            var sensorBinding = new Binding("Kinect") { Source = this.sensorChooser };
+            this.SetBinding(KinectSensorProperty, sensorBinding);
+            // Bind our KinectSensor property to the one from the sensor chooser
+            var sensorBinding2 = new Binding("Kinect") { Source = this.sensorChooser2 };
+            this.SetBinding(KinectSensorProperty2, sensorBinding2);
+            // Bind our KinectSensor property to the one from the sensor chooser
+            var sensorBinding3 = new Binding("Kinect") { Source = this.sensorChooser3 };
+            this.SetBinding(KinectSensorProperty3, sensorBinding3);
+
+
             sensorChooser.KinectChanged += SensorChooserOnKinectChanged;
             sensorChooser2.KinectChanged += SensorChooserOnKinectChanged2;
             sensorChooser3.KinectChanged += SensorChooserOnKinectChanged3;
@@ -165,31 +175,10 @@ namespace KinectVision360
             // Redirect the out Console stream
             Console.SetOut(_writer);
 
-            PeopleCountTxt.Selection.Text = "Broke Total Tracked: "+Globals.GlobalCount.ToString();
+            this.PeopleCount = new PeopleCount();
 
-        }
-
-        public void updateCount()
-        {
-            PeopleCountTxt.Selection.Text = "Total Tracked: "+Globals.GlobalCount.ToString();
         }
         
-        private void ShowConsole(object sender, RoutedEventArgs e)
-        {
-            if (textOut.Visibility == Visibility.Visible && textOut2.Visibility == Visibility.Visible)
-            {
-                textOut.Visibility = Visibility.Hidden;
-                textOut2.Visibility = Visibility.Hidden;
-                scrollText.Visibility = Visibility.Hidden;
-                scrollText2.Visibility = Visibility.Hidden;
-            }
-            else{
-                textOut2.Visibility = Visibility.Visible;
-                textOut.Visibility = Visibility.Visible; 
-                scrollText.Visibility = Visibility.Visible;
-                scrollText2.Visibility = Visibility.Visible;
-            }    
-        }
 
         private void SensorChooserOnKinectChanged(object sender, KinectChangedEventArgs kinectChangedEventArgs)
         {
@@ -934,33 +923,21 @@ namespace KinectVision360
                     newSensor1.SkeletonStream.Enable();
                     newSensor2.SkeletonStream.Enable();
                     newSensor3.SkeletonStream.Enable();
+                    
                     //sensorChooser.KinectChanged += SensorChooserOnKinectChanged;
 
 
                 }
                 else if (tab3.IsSelected)
                 {
-                    _writer2 = new TextBoxStreamWriter(textOut2);
-
-                    // Redirect the out Console stream
-                    Console.SetOut(_writer2);
-
                     this.SensorTransforms = new SensorTransforms();
 
                     this.kinect1Tracker.DataContext = this;
                     this.kinect2Tracker.DataContext = this;
                     this.kinect3Tracker.DataContext = this;
                     this.Settings = new Settings();
+                    
 
-                    // Bind our KinectSensor property to the one from the sensor chooser
-                    var sensorBinding = new Binding("Kinect") { Source = this.sensorChooser };
-                    this.SetBinding(KinectSensorProperty, sensorBinding);
-                    // Bind our KinectSensor property to the one from the sensor chooser
-                    var sensorBinding2 = new Binding("Kinect") { Source = this.sensorChooser2 };
-                    this.SetBinding(KinectSensorProperty2, sensorBinding2);
-                    // Bind our KinectSensor property to the one from the sensor chooser
-                    var sensorBinding3 = new Binding("Kinect") { Source = this.sensorChooser3 };
-                    this.SetBinding(KinectSensorProperty3, sensorBinding3);
 
                     this.adaptiveZoneLogic.PropertyChanged += this.AdaptiveZoneLogicPropertyChanged;
                     // Put the UI into a default state.
@@ -1106,6 +1083,11 @@ namespace KinectVision360
         {
             this.UserDistance = this.adaptiveZoneLogic.UserDistance;
             this.SomethingNearSensor = this.adaptiveZoneLogic.SomethingNearSensor;
+        }
+
+        private void PeopleCountTxt_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
 
     }

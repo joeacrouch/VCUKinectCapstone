@@ -10,7 +10,7 @@ namespace KinectVision360
     using System.ComponentModel;
     using System.IO;
     using System.Windows.Media.Media3D;
-
+    using GlobalVariables;
     using Microsoft.Kinect;
     using Microsoft.Kinect.Toolkit.Interaction;
 
@@ -278,6 +278,7 @@ namespace KinectVision360
                     if (this.skeletons == null || this.skeletons.Length != skeletonFrame.SkeletonArrayLength)
                     {
                         this.skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
+
                     }
 
                     skeletonFrame.CopySkeletonDataTo(this.skeletons);

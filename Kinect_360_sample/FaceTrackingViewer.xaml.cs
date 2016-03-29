@@ -41,11 +41,13 @@ namespace KinectVision360
     public partial class FaceTrackingViewer : UserControl, IDisposable
     {
 
-        public static KinectSensor sensor1 { get; set; }
+        enum COLORS { FIRST, SECOND, THIRD };
+        public static KinectSensor tempsensor;
         public static KinectSensor sensor2 { get; set; }
         public static KinectSensor sensor3 { get; set; }
+        public static int colorinc = 0;
         public static List<Faces> faceList = new List<Faces>();
-
+        public static List<int> trackNum = new List<int>();
         public static readonly DependencyProperty KinectProperty = DependencyProperty.Register(
             "Kinect",
             typeof(KinectSensor),
@@ -91,6 +93,7 @@ namespace KinectVision360
             {
                 this.SetValue(KinectProperty, value);
             }
+
         }
 
         public void Dispose()
@@ -125,20 +128,7 @@ namespace KinectVision360
             SkeletonFrame skeletonFrame = null;
             idFound = false;
             existsInOther = false;
-            foreach (Faces face in faceList)
-            {
-                if (face.kinect.UniqueKinectId == this.Kinect.UniqueKinectId)
-                {
-                    idFound = true;
-                }
-            }
-            if (idFound == false)
-            {
-                Faces newFace = new Faces();
-                newFace.kinect = this.Kinect;
-                faceList.Add(newFace);
-                Console.WriteLine("new face object created with id: " + this.Kinect.UniqueKinectId);
-            }
+            tempsensor = this.Kinect;
 
             try
             {
@@ -187,60 +177,88 @@ namespace KinectVision360
                 colorImageFrame.CopyPixelDataTo(this.colorImage);
                 depthImageFrame.CopyPixelDataTo(this.depthImage);
                 skeletonFrame.CopySkeletonDataTo(this.skeletonData);
+                skeleCount = 0;
 
                 // Update the list of trackers and the trackers with the current frame information
+                //foreach (Faces face in faceList)
+                //{
+                //    if (face.kinect == this.Kinect)
+                //    {
+                //        face.skeleData = this.skeletonData;
+                //        //Console.WriteLine("Added this skeleton to : " + face.kinect.UniqueKinectId);
 
+                //        break;
+                //    }
+                //}
+                
+                //foreach (Faces face in faceList)
+                //{
+                //    if (face.skeleData == skeletonData)
+                //    {
+                //        skeleCount++;
+                //    }
+                //}
+
+                {
                 foreach (Skeleton skeleton in this.skeletonData)
                 {
                     existsInOther = false;
-                    foreach (Faces face in faceList)
-                    {
-                        if (face.kinect == this.Kinect)
-                        {
-                            face.Id = skeleton.TrackingId;
-                        }
-                    }
-                    foreach (Faces face in faceList)
-                    {
-                        if (face.skeletonId == skeleton.TrackingId)
-                        {
-                            existsInOther = true;
-                        }
-                    }
-
+                    //nsole.WriteLine("skeleton count:" + skeleCount);
                     if (skeleton.TrackingState == SkeletonTrackingState.Tracked
                         || skeleton.TrackingState == SkeletonTrackingState.PositionOnly)
                     {
                         // We want keep a record of any skeleton, tracked or untracked.
-                        if (!this.trackedSkeletons.ContainsKey(skeleton.TrackingId) )
+                        if (!this.trackedSkeletons.ContainsKey(skeleton.TrackingId))
                         {
-                            
+
                             this.trackedSkeletons.Add(skeleton.TrackingId, new SkeletonFaceTracker());
+                            if (!trackNum.Contains(skeleton.TrackingId))
+                            {
+                                //Boolean foundMult = false;
+                                trackNum.Add(skeleton.TrackingId);
+                                //foreach (Faces face in faceList) {
+                                //    if (face.trackingId == skeleton.TrackingId && face.kinect == this.Kinect) {
+                                //        foundMult = true;
+                                    
+                                //    }
+                                //}
+                                //if (foundMult == false) 
+                                { 
+                                    Faces newFace = new Faces();
+                                    newFace.kinect = this.Kinect;
+                                    //newFace.skeleData = skeletonData;
+                                    newFace.skeleton = skeleton;
+                                    newFace.trackingId = skeleton.TrackingId;
+                                    faceList.Add(newFace);
+                                }
+                            }
+
 
                         }
                         //Produces a tracking ID. that is relative to the class instance so each kinect makes its own tracking number for the person
                         //needs to access the same dictionary..
-                        skeleCount = 0;
-                        foreach (Faces face in faceList)
-                        {
-                            if (face.Id == skeleton.TrackingId)
-                            {
-                                skeleCount++;
-                                //Console.WriteLine("Kinect" + face.kinect.UniqueKinectId + " : " + face.Id);
-                            }
-                        }
+
+                        //foreach (Faces face in faceList)
+                        //{
+                        //    if (face.Id == skeleton.TrackingId)
+                        //    {
+                        //        skeleCount++;
+                        //        //Console.WriteLine("Kinect" + face.kinect.UniqueKinectId + " : " + face.Id);
+                        //    }
+                        //}
                         // Give each tracker the upated frame.
                         SkeletonFaceTracker skeletonFaceTracker;
                         if (this.trackedSkeletons.TryGetValue(skeleton.TrackingId, out skeletonFaceTracker) && trackedSkeletons.Count == 1)
                         {
-                            
 
-                            if (skeleCount == 1) 
-                            { 
+
+
                             skeletonFaceTracker.OnFrameReady(this.Kinect, colorImageFormat, colorImage, depthImageFormat, depthImage, skeleton);
                             skeletonFaceTracker.LastTrackedFrame = skeletonFrame.FrameNumber;
-                            }
+
+
                         }
+                    }
                     }
                 }
                 
@@ -279,7 +297,22 @@ namespace KinectVision360
 
             if (newSensor != null)
             {
+                foreach (Faces face in faceList)
+                {
+                    if (face.kinect.UniqueKinectId == this.Kinect.UniqueKinectId)
+                    {
+                        idFound = true;
+                    }
+                }
+                if (idFound == false)
+                {
+                    Faces newFace = new Faces();
+                    newFace.kinect = this.Kinect;
+                    faceList.Add(newFace);
+                    Console.WriteLine("new face object created with id: " + this.Kinect.UniqueKinectId);
+                }
                 newSensor.AllFramesReady += this.OnAllFramesReady;
+
             }
         }
 
@@ -332,7 +365,10 @@ namespace KinectVision360
             public int LastTrackedFrame { get; set; }
 
             System.Windows.Rect rectangle;
-            
+            System.Windows.Rect rectangle2;
+            System.Windows.Rect rectangle3;
+            int drawNum = 0;
+            int count = 0;
             public void Dispose()
             {
                 if (this.faceTracker != null)
@@ -350,8 +386,25 @@ namespace KinectVision360
                 {
                     return;
                 }
-                
-                drawingContext.DrawRectangle(null, new Pen(Brushes.Red, 2.0), rectangle);
+                switch (drawNum)
+                {
+                    case 0:
+                        drawingContext.DrawRectangle(null, new Pen(Brushes.Blue, 3.0), rectangle);
+
+                        break;
+                    case 1:
+                        drawingContext.DrawRectangle(null, new Pen(Brushes.Red, 3.0), rectangle2);
+
+                        break;
+                    case 2:
+                        drawingContext.DrawRectangle(null, new Pen(Brushes.Green, 3.0), rectangle3);
+                        break;
+                    default:
+                        drawingContext.DrawRectangle(null, null, rectangle);
+
+                        break;
+                }
+               
             }
 
             /// <summary>
@@ -372,13 +425,16 @@ namespace KinectVision360
                 {
                     try
                     {
-                        this.faceTracker = new FaceTracker(kinectSensor);
+                        Console.WriteLine("Here");
                         // accessing the global variable
                         Globals.IncrementGlobalCount();
-                        // setting the global variable
+                        //// setting the global variable
                         int x = Globals.GlobalCount;
-                                // parameterless constructor required for static class
+
+                        //mainWindow.updateCount();
                         Console.WriteLine("Tracking Face : " + x);
+                        this.faceTracker = new FaceTracker(kinectSensor);
+
                     }
                     catch (InvalidOperationException)
                     {
@@ -398,14 +454,61 @@ namespace KinectVision360
                     this.lastFaceTrackSucceeded = frame.TrackSuccessful;
                     if (this.lastFaceTrackSucceeded)
                     {
-
-                        rectangle.Width = frame.FaceRect.Width;
-                        rectangle.Height = frame.FaceRect.Height;
-                        Point rectPt = new Point();
-                        rectPt.X = frame.FaceRect.Left;
-                        rectPt.Y = frame.FaceRect.Top;
-                        rectangle.Location = (Point) rectPt;
                         
+                        //foreach (Faces face in faceList)
+                        //{
+                        //    if (face.kinectSensor == tempsensor)
+                        //    {
+                        //        break;
+                        //    }
+
+                        //    count++;
+                        //}
+                        foreach (Faces face in faceList) {
+                            if (count < 3) 
+                            { 
+                                if (face.skeleton == skeletonOfInterest) {
+                                    count = 0;
+                                    break;
+                                }
+                                else { 
+                                    count++;
+
+                                }
+                            }
+                            else { count = 0; }
+                        }
+                        switch (count)
+                        {
+                        case 0:
+                            rectangle.Width = frame.FaceRect.Width;
+                            rectangle.Height = frame.FaceRect.Height;
+                            Point rectPt = new Point();
+                            rectPt.X = frame.FaceRect.Left;
+                            rectPt.Y = frame.FaceRect.Top;
+                            rectangle.Location = (Point) rectPt;
+                            drawNum = 0;
+                            break;
+                        case 1:
+                            rectangle2.Width = frame.FaceRect.Width;
+                            rectangle2.Height = frame.FaceRect.Height;
+                            Point rectPt2 = new Point();
+                            rectPt2.X = frame.FaceRect.Left;
+                            rectPt2.Y = frame.FaceRect.Top;
+                            rectangle2.Location = (Point) rectPt2;
+                            drawNum = 1;
+                            break;
+                        case 2:
+                            rectangle3.Width = frame.FaceRect.Width;
+                            rectangle3.Height = frame.FaceRect.Height;
+                            Point rectPt3 = new Point();
+                            rectPt3.X = frame.FaceRect.Left;
+                            rectPt3.Y = frame.FaceRect.Top;
+                            rectangle3.Location = (Point) rectPt3;
+                            drawNum = 2;
+                            break;
+                        }
+
                         //this.facePoints = frame.GetProjected3DShape();
 
                     }

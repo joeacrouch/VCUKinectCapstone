@@ -81,8 +81,6 @@
 
             <Separator />
 
-            <Separator/>
-
             <StackPanel Margin="30,15,0,10" Orientation="Horizontal">
                 <Button Style="{StaticResource SaveOpenButtonStyle}" Content="SAVE SETTINGS" Command="Save" />
                 <Button Style="{StaticResource SaveOpenButtonStyle}" Margin="10,0,0,0" Content="OPEN SETTINGS" Command="Open" />
