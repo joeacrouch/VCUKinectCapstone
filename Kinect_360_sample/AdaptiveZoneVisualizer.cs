@@ -91,6 +91,7 @@ namespace KinectVision360
         private double pixelWidth;
 
         private double pixelHeight;
+        static int countPeople = 0; 
 
         [SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline", Justification = "OverrideMetadata cannot be done inline.")]
         static AdaptiveZoneVisualizer()
@@ -513,6 +514,7 @@ namespace KinectVision360
                 this.MeterToPixel(new Point(x + (MeterWidth / 2.0), y)),
                 MeterToPixel(this.pixelWidth, MeterWidth, SkeletonIndicatorWidthInMeters),
                 MeterToPixel(this.pixelHeight, MeterHeight, SkeletonIndicatorWidthInMeters));
+
         }
 
         private Rect MeterToPixel(Rect rect)
@@ -588,7 +590,7 @@ namespace KinectVision360
                         //Console.WriteLine("Tracking Face : " + x);
 
                         this.skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
-                        
+
                     }
 
                     skeletonFrame.CopySkeletonDataTo(this.skeletons);

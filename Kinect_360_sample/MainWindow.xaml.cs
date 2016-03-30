@@ -759,7 +759,9 @@ namespace KinectVision360
                 {
                     return;
                 }
+                Faces p = new Faces();
 
+                pcount1.Content= "Count: " + p.people;
                 // Make a copy of the color frame for displaying.
                 var haveNewFormat = this.currentColorImageFormat != colorImageFrame.Format;
                 if (haveNewFormat)
@@ -789,6 +791,8 @@ namespace KinectVision360
                     return;
                 }
 
+                Faces p2 = new Faces();
+                pcount2.Content = "Count: " + p2.people2;
                 // Make a copy of the color frame for displaying.
                 var haveNewFormat = this.currentColorImageFormat2 != colorImageFrame.Format;
                 if (haveNewFormat)
@@ -817,7 +821,9 @@ namespace KinectVision360
                 {
                     return;
                 }
+                Faces p3 = new Faces();
 
+                pcount3.Content = "Count: " + p3.people3;
                 // Make a copy of the color frame for displaying.
                 var haveNewFormat = this.currentColorImageFormat3 != colorImageFrame.Format;
                 if (haveNewFormat)

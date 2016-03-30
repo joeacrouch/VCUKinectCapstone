@@ -16,6 +16,9 @@ namespace KinectVision360
         public int color;
         public Skeleton[] skeletonData;
         public Skeleton skeleton;
+        public static int peopleCount;
+        public static int peopleCount2;
+        public static int peopleCount3;
         public KinectSensor kinectSensor
         {
             get { return kinect; }
@@ -25,6 +28,21 @@ namespace KinectVision360
         {
             get { return Id; }
             set { Id = value; }
+        }
+        public int people
+        {
+            get { return peopleCount; }
+            set { peopleCount = value; }
+        }
+        public int people2
+        {
+            get { return peopleCount2; }
+            set { peopleCount2 = value; }
+        }
+        public int people3
+        {
+            get { return peopleCount3; }
+            set { peopleCount3 = value; }
         }
         public int trackId
         {
