@@ -14,8 +14,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Kinect;
 using Microsoft.Kinect.Toolkit.FaceTracking;
-// activate the GlobalVariables NameSpace
-using GlobalVariables;
  
 
 namespace KinectVision360
@@ -458,14 +456,6 @@ namespace KinectVision360
                 {
                     try
                     {
-                        Console.WriteLine("Here");
-                        // accessing the global variable
-                        Globals.IncrementGlobalCount();
-                        //// setting the global variable
-                        int x = Globals.GlobalCount;
-
-                        //mainWindow.updateCount();
-                        Console.WriteLine("Tracking Face : " + x);
                         this.faceTracker = new FaceTracker(kinectSensor);
 
                     }

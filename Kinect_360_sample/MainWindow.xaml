@@ -50,6 +50,7 @@
                 </Viewbox>
                 <Image Grid.Column="2" Grid.Row="1" Name="kinectlogo" Source="Resources/kinectvision360_black.png" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="200" Height="70"/>
                 <!--<Image Grid.Column="0" Grid.Row="2" Name="skeletonimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Hidden"/>-->
+                <Label Name="pcount_tot" Grid.Column="0" VerticalAlignment="Top" FontSize="20" Foreground="White" Content="Total Count:" />
                 <Label Name="pcount1" Grid.Column="0" VerticalAlignment="Bottom" FontSize="20" Foreground="White" Content="Count:" />
                 <Label Name="pcount2" Grid.Column="1" VerticalAlignment="Bottom" FontSize="20" Foreground="White" Content="Count:"/>
                 <Label Name="pcount3" Grid.Column="2" VerticalAlignment="Bottom" FontSize="20" Foreground="White" Content="Count:"/>
@@ -106,7 +107,6 @@
                     </Border>
 
                 </Grid>
-                <local:PeopleCount x:Name="PeopleCount" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="1"/> 
                 <Image x:Name="KinectLogoField" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Source="Resources\Kinectvision360_black.png" Visibility="Visible" Width="auto" Height="auto" Margin="0,150"/>
             </Grid>
         </TabItem>
@@ -130,9 +130,6 @@
                     <Label Content="KINECT STATUSES" x:Name="kinect_status" Background="#FF17FF00" FontWeight="Bold"/>
 
                     <StackPanel Name="stack2" Orientation="Horizontal">
-                        <CheckBox Grid.Row="2" Content="IR1 Mode" Height="Auto"  x:Name="checkIR1Mode" Checked="SwitchRGBtoIR1" Unchecked="SwitchRGBtoIR1" />
-                        <CheckBox Grid.Row="2" Content="IR2 Mode " Height="Auto"  x:Name="checkIR2Mode" Checked="SwitchRGBtoIR2" Unchecked="SwitchRGBtoIR2" />
-                        <CheckBox Grid.Row="2" Content="IR3 Mode " Height="Auto"  x:Name="checkIR3Mode" Checked="SwitchRGBtoIR3" Unchecked="SwitchRGBtoIR3" />
 
                     </StackPanel>
                     <TextBlock Text="Adjust Tilt Angle for Sensor 1: "></TextBlock>
@@ -147,6 +144,7 @@
                     <TextBlock Text="Adjust Sensor Range for Sensor 1: "></TextBlock>
                     <Slider Name="depthSlider1" HorizontalAlignment="Left" Width="60" Height="auto" Maximum="1" Minimum="0"
                     TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="true" ValueChanged="depthSlider1_ValueChanged"></Slider>
+                    <Button x:Name="CountResetBtn" Content="Reset Count" Click="ResetAllCount" Width="70" HorizontalAlignment="Left"/>
 
 
                 </StackPanel>
