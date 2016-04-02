@@ -14,8 +14,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Kinect;
 using Microsoft.Kinect.Toolkit.FaceTracking;
-// activate the GlobalVariables NameSpace
-using GlobalVariables;
  
 
 namespace KinectVision360
@@ -42,6 +40,11 @@ namespace KinectVision360
     {
 
         enum COLORS { FIRST, SECOND, THIRD };
+        public static int peopleCount = 0;
+        public static int peopleCount2 = 0;
+
+        public static int peopleCount3 = 0;
+
         public static KinectSensor tempsensor;
         public static KinectSensor sensor2 { get; set; }
         public static KinectSensor sensor3 { get; set; }
@@ -76,7 +79,11 @@ namespace KinectVision360
         {
             this.InitializeComponent();
         }
-
+        public List<Faces> list
+        {
+            get { return faceList; }
+            set { faceList = value; }
+        }
         ~FaceTrackingViewer()
         {
             this.Dispose(false);
@@ -129,7 +136,7 @@ namespace KinectVision360
             idFound = false;
             existsInOther = false;
             tempsensor = this.Kinect;
-
+            int sensorCount = 0;
             try
             {
                 colorImageFrame = allFramesReadyEventArgs.OpenColorImageFrame();
@@ -215,7 +222,29 @@ namespace KinectVision360
                             if (!trackNum.Contains(skeleton.TrackingId))
                             {
                                 //Boolean foundMult = false;
+                                sensorCount = 0;
+                                foreach (Faces face in faceList) {
+                                    if(face.kinect == tempsensor && sensorCount == 0){
+                                        peopleCount++;
+                                        face.people = peopleCount;
+                                    }
+                                    else if(face.kinect == tempsensor && sensorCount == 1)
+                                    {
+                                        peopleCount2++;
+                                        face.people2 = peopleCount2;
+                                    }
+                                    else if (face.kinect == tempsensor && sensorCount == 2)
+                                    {
+                                        peopleCount3++;
+                                        face.people3 = peopleCount3;
+                                    }
+                                    sensorCount++;
+                                }
                                 trackNum.Add(skeleton.TrackingId);
+                
+                                Console.WriteLine("People Count:" + peopleCount);
+                                Console.WriteLine("People Count2:" + peopleCount2);
+                                Console.WriteLine("People Count3:" + peopleCount3);
                                 //foreach (Faces face in faceList) {
                                 //    if (face.trackingId == skeleton.TrackingId && face.kinect == this.Kinect) {
                                 //        foundMult = true;
@@ -427,14 +456,6 @@ namespace KinectVision360
                 {
                     try
                     {
-                        Console.WriteLine("Here");
-                        // accessing the global variable
-                        Globals.IncrementGlobalCount();
-                        //// setting the global variable
-                        int x = Globals.GlobalCount;
-
-                        //mainWindow.updateCount();
-                        Console.WriteLine("Tracking Face : " + x);
                         this.faceTracker = new FaceTracker(kinectSensor);
 
                     }

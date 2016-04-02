@@ -40,7 +40,6 @@ C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\StandardSty
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\UserTrackingControl.baml
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\FaceTrackingViewer.g.cs
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\LabeledSlider1.g.cs
-C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\PeopleCount.g.cs
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\PhysicalSetupVisualizer.g.cs
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\SettingsControl1.g.cs
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\UserTrackingControl.g.cs
@@ -61,7 +60,6 @@ C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\bin\Debug\Microsoft.K
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\MainWindow.g.cs
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\App.baml
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\MainWindow.baml
-C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\PeopleCount.baml
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\SettingsControl1.baml
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\Themes\Generic.baml
 C:\Users\har\Documents\VCUKinectCapstone\Kinect_360_sample\obj\Debug\KinectVision360.g.resources

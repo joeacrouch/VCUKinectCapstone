@@ -12,7 +12,6 @@
     using System.Windows.Media;
     using System.Windows.Media.Media3D;
     using Microsoft.Kinect;
-    using GlobalVariables;
 
 namespace KinectVision360
 {
@@ -91,6 +90,7 @@ namespace KinectVision360
         private double pixelWidth;
 
         private double pixelHeight;
+        static int countPeople = 0; 
 
         [SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline", Justification = "OverrideMetadata cannot be done inline.")]
         static AdaptiveZoneVisualizer()
@@ -513,6 +513,7 @@ namespace KinectVision360
                 this.MeterToPixel(new Point(x + (MeterWidth / 2.0), y)),
                 MeterToPixel(this.pixelWidth, MeterWidth, SkeletonIndicatorWidthInMeters),
                 MeterToPixel(this.pixelHeight, MeterHeight, SkeletonIndicatorWidthInMeters));
+
         }
 
         private Rect MeterToPixel(Rect rect)
@@ -580,15 +581,7 @@ namespace KinectVision360
                 {
                     if (this.skeletons == null || this.skeletons.Length != skeletonFrame.SkeletonArrayLength)
                     {
-                        //// accessing the global variable
-                        //Globals.IncrementGlobalCount();
-                        ////// setting the global variable
-                        //int x = Globals.GlobalCount;
-
-                        //Console.WriteLine("Tracking Face : " + x);
-
                         this.skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
-                        
                     }
 
                     skeletonFrame.CopySkeletonDataTo(this.skeletons);

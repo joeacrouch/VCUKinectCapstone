@@ -10,7 +10,6 @@ namespace KinectVision360
     using System.ComponentModel;
     using System.IO;
     using System.Windows.Media.Media3D;
-    using GlobalVariables;
     using Microsoft.Kinect;
     using Microsoft.Kinect.Toolkit.Interaction;
 
