@@ -746,8 +746,8 @@ namespace KinectVision360
                     return;
                 }
                 Faces p = new Faces();
-
-                pcount1.Content= "Count: " + p.people;
+                humanMapping fMap = new humanMapping();
+                pcount1.Content= "newFace: " + fMap.newFace + "  oldFace: " + fMap.oldFace;
                 // Make a copy of the color frame for displaying.
                 var haveNewFormat = this.currentColorImageFormat != colorImageFrame.Format;
                 if (haveNewFormat)
@@ -1091,6 +1091,12 @@ namespace KinectVision360
         private void PeopleCountTxt_TextChanged(object sender, TextChangedEventArgs e)
         {
 
+        }
+
+        private void saveFace_Click(object sender, RoutedEventArgs e)
+        {
+            FaceTrackingViewer faceTracker = new FaceTrackingViewer();
+            faceTracker.saveface = true;
         }
 
     }

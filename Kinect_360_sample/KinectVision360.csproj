@@ -96,6 +96,7 @@
     <Compile Include="AdaptiveUIPlacementHelper.cs" />
     <Compile Include="AdaptiveZoneLogic.cs" />
     <Compile Include="AdaptiveZoneVisualizer.cs" />
+    <Compile Include="FaceMapping.cs" />
     <Compile Include="LabeledSlider1.xaml.cs">
       <DependentUpon>LabeledSlider1.xaml</DependentUpon>
     </Compile>

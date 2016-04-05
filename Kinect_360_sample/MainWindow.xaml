@@ -51,6 +51,7 @@
                 <Image Grid.Column="2" Grid.Row="1" Name="kinectlogo" Source="Resources/kinectvision360_black.png" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="200" Height="70"/>
                 <!--<Image Grid.Column="0" Grid.Row="2" Name="skeletonimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Hidden"/>-->
                 <Label Name="pcount_tot" Grid.Column="0" VerticalAlignment="Top" FontSize="20" Foreground="White" Content="Total Count:" />
+                <Button Name="saveFace" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" Content="Save Face" Click="saveFace_Click" />
                 <Label Name="pcount1" Grid.Column="0" VerticalAlignment="Bottom" FontSize="20" Foreground="White" Content="Count:" />
                 <Label Name="pcount2" Grid.Column="1" VerticalAlignment="Bottom" FontSize="20" Foreground="White" Content="Count:"/>
                 <Label Name="pcount3" Grid.Column="2" VerticalAlignment="Bottom" FontSize="20" Foreground="White" Content="Count:"/>

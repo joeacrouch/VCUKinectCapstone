@@ -42,7 +42,7 @@ namespace KinectVision360
         enum COLORS { FIRST, SECOND, THIRD };
         public static int peopleCount = 0;
         public static int peopleCount2 = 0;
-
+        public static Boolean saveFace = false;
         public static int peopleCount3 = 0;
 
         public static KinectSensor tempsensor;
@@ -51,6 +51,10 @@ namespace KinectVision360
         public static int colorinc = 0;
         public static List<Faces> faceList = new List<Faces>();
         public static List<int> trackNum = new List<int>();
+        public static List<Skeleton> saveSkeleList = new List<Skeleton>();
+        public static List<int> saveTrackList = new List<int>();
+        public static List<List<Point>> saveFaceList = new List<List<Point>>();
+        public static humanMapping fMap = new humanMapping();
         public static readonly DependencyProperty KinectProperty = DependencyProperty.Register(
             "Kinect",
             typeof(KinectSensor),
@@ -61,6 +65,7 @@ namespace KinectVision360
         private const uint MaxMissedFrames = 100;
 
         private readonly Dictionary<int, SkeletonFaceTracker> trackedSkeletons = new Dictionary<int, SkeletonFaceTracker>();
+        private static readonly Dictionary<int, SkeletonFaceTracker> trackedSkeletonsSave = new Dictionary<int, SkeletonFaceTracker>();
 
         private byte[] colorImage;
 
@@ -78,6 +83,10 @@ namespace KinectVision360
         public FaceTrackingViewer()
         {
             this.InitializeComponent();
+        }
+        public Boolean saveface{
+            get { return saveFace; }
+            set { saveFace = value; }
         }
         public List<Faces> list
         {
@@ -286,7 +295,7 @@ namespace KinectVision360
 
                             skeletonFaceTracker.OnFrameReady(this.Kinect, colorImageFormat, colorImage, depthImageFormat, depthImage, skeleton);
                             skeletonFaceTracker.LastTrackedFrame = skeletonFrame.FrameNumber;
-
+                            
 
                         }
                     }
@@ -357,7 +366,7 @@ namespace KinectVision360
             foreach (var tracker in this.trackedSkeletons)
             {
                 uint missedFrames = (uint)currentFrameNumber - (uint)tracker.Value.LastTrackedFrame;
-                if (missedFrames > MaxMissedFrames)
+                if (missedFrames > MaxMissedFrames && !trackedSkeletonsSave.Contains(tracker))
                 {
                     // There have been too many frames since we last saw this skeleton
                     trackersToRemove.Add(tracker.Key);
@@ -388,7 +397,10 @@ namespace KinectVision360
         {
             private static FaceTriangle[] faceTriangles;
             private EnumIndexableCollection<FeaturePoint, PointF> facePoints;
-
+            private EnumIndexableCollection<FeaturePoint, PointF> facePoints2;
+            static List<Point> faceModelPts = new List<Point>();
+            private static double shoulderDist = 0.0;
+            private static double headhipDist = 0.0;
             private FaceTracker faceTracker;
 
             private bool lastFaceTrackSucceeded;
@@ -398,6 +410,7 @@ namespace KinectVision360
             System.Windows.Rect rectangle;
             System.Windows.Rect rectangle2;
             System.Windows.Rect rectangle3;
+            System.Windows.Rect rectangle4;
             int drawNum = 0;
             int colorCount = 0;
             public void Dispose()
@@ -417,6 +430,7 @@ namespace KinectVision360
                 {
                     return;
                 }
+
                 switch (drawNum)
                 {
                     case 0:
@@ -429,6 +443,9 @@ namespace KinectVision360
                         break;
                     case 2:
                         drawingContext.DrawRectangle(null, new Pen(Brushes.Green, 3.0), rectangle3);
+                        break;
+                    case 3:
+                        drawingContext.DrawRectangle(null, new Pen(Brushes.Pink, 3.0), rectangle4);
                         break;
                     default:
                         drawingContext.DrawRectangle(null, null, rectangle);
@@ -444,6 +461,7 @@ namespace KinectVision360
             internal void OnFrameReady(KinectSensor kinectSensor, ColorImageFormat colorImageFormat, byte[] colorImage, DepthImageFormat depthImageFormat, short[] depthImage, Skeleton skeletonOfInterest)
             {
                 this.skeletonTrackingState = skeletonOfInterest.TrackingState;
+                List<Point> faceModelPtsCompare = new List<Point>();
 
 
                 if (this.skeletonTrackingState != SkeletonTrackingState.Tracked)
@@ -471,9 +489,37 @@ namespace KinectVision360
 
                 if (this.faceTracker != null )
                 {
+
                     FaceTrackFrame frame = this.faceTracker.Track(
                         colorImageFormat, colorImage, depthImageFormat, depthImage, skeletonOfInterest);
+                    this.facePoints2 = frame.GetProjected3DShape();
+
+                    for (int i = 0; i < this.facePoints2.Count; i++)
+                    {
+                        faceModelPtsCompare.Add(new Point(this.facePoints2[i].X + 0.5f, this.facePoints2[i].Y + 0.5f));
+                    }
+
                     this.lastFaceTrackSucceeded = frame.TrackSuccessful;
+                    if (saveFace == true) 
+                    {
+                       // trackedSkeletonsSave.Add(skeletonOfInterest.TrackingId, this);
+                        this.facePoints = frame.GetProjected3DShape();
+
+                        for (int i = 0; i < this.facePoints.Count; i++)
+                        {
+                            faceModelPts.Add(new Point(this.facePoints[i].X + 0.5f, this.facePoints[i].Y + 0.5f));
+                        }
+                        double shoulderLeft = (double)skeletonOfInterest.Joints[JointType.ShoulderLeft].Position.X;
+                        double shoulderRight = (double)skeletonOfInterest.Joints[JointType.ShoulderRight].Position.X;
+                        double head = (double)skeletonOfInterest.Joints[JointType.Head].Position.Y;
+                        double hip = (double)skeletonOfInterest.Joints[JointType.HipCenter].Position.Y;
+                        shoulderDist = shoulderLeft + shoulderRight;
+                        headhipDist = hip + head;
+                        saveFaceList.Add(faceModelPts);
+                        saveSkeleList.Add(skeletonOfInterest);
+                        saveTrackList.Add(skeletonOfInterest.TrackingId);
+                        saveFace = false;
+                    }
                     if (this.lastFaceTrackSucceeded)
                     {
 
@@ -495,6 +541,36 @@ namespace KinectVision360
                                 colorCount = 0;
                             
                             colorCount++;
+                        }
+                        int countPt = 0;
+                        double pointxDiff = 0;
+                        double pointyDiff = 0;
+                        double pointsNew = 0;
+                        double pointsSaved = 0;
+                        if (faceModelPts.Count > 0)
+                        {
+                            foreach (Point pointNew in faceModelPtsCompare)
+                            {
+                                pointsNew = pointNew.X + pointNew.Y;
+
+                            }
+                            foreach (Point pointSave in faceModelPts)
+                            {
+                                //pointxDiff = (pointNew.X - pointSave.X);
+                                //pointyDiff = (pointNew.Y - pointSave.Y);
+
+                                pointsSaved = pointSave.X + pointSave.Y;
+                            }
+                         //   Debug.WriteLine("x diff: " + pointxDiff + " y diff: " + pointyDiff);
+                            Debug.WriteLine("new: " + pointsNew + " old: " + pointsSaved);
+
+                            fMap.newFace = pointsNew;
+                            fMap.oldFace = pointsSaved;
+
+                            if (pointxDiff < 20 && pointyDiff < 20)
+                            {
+                                colorCount = 3;
+                            }
                         }
 
 
@@ -527,9 +603,17 @@ namespace KinectVision360
                                 rectangle3.Location = (Point)rectPt3;
                                 drawNum = 2;
                                 break;
+                            case 3:
+                                rectangle4.Width = frame.FaceRect.Width;
+                                rectangle4.Height = frame.FaceRect.Height;
+                                Point rectPt4 = new Point();
+                                rectPt4.X = frame.FaceRect.Left;
+                                rectPt4.Y = frame.FaceRect.Top;
+                                rectangle4.Location = (Point)rectPt4;
+                                drawNum = 3;
+                                break;
                         }
 
-                        //this.facePoints = frame.GetProjected3DShape();
 
                     }
                 }

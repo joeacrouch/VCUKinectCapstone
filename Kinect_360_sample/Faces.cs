@@ -19,6 +19,8 @@ namespace KinectVision360
         public static int peopleCount;
         public static int peopleCount2;
         public static int peopleCount3;
+        public static double xDiff;
+        public static double yDiff;
         public KinectSensor kinectSensor
         {
             get { return kinect; }
@@ -44,6 +46,7 @@ namespace KinectVision360
             get { return peopleCount3; }
             set { peopleCount3 = value; }
         }
+
         public int trackId
         {
             get { return Id; }
