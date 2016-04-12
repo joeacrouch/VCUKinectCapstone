@@ -120,9 +120,22 @@ namespace KinectVision360
 
         private readonly AdaptiveZoneLogic adaptiveZoneLogic = new AdaptiveZoneLogic();
 
+        public static DateTime startTime;
+
+        public static DateTime currentTime;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            _writer = new TextBoxStreamWriter(textOut);
+
+            // Redirect the out Console stream
+            Console.SetOut(_writer);
+
+            startTime = DateTime.Now;
+            var culture = new CultureInfo("en-US");
+            Console.WriteLine("Start Time: " + startTime.ToString(culture));
 
             var faceTrackingViewerBinding = new Binding("Kinect") { Source = sensorChooser };
             faceTrackingViewer.SetBinding(FaceTrackingViewer.KinectProperty, faceTrackingViewerBinding);
@@ -151,11 +164,6 @@ namespace KinectVision360
             sensorChooser.Start();
             sensorChooser2.Start();
             sensorChooser3.Start();
-
-            _writer = new TextBoxStreamWriter(textOut);
-
-            // Redirect the out Console stream
-            Console.SetOut(_writer);
 
         }
 
@@ -356,6 +364,8 @@ namespace KinectVision360
             p.people = 0;
             p.people2 = 0;
             p.people3 = 0;
+            //set runtime back to 0
+            startTime = DateTime.Now;
         }
  
 
@@ -744,6 +754,14 @@ namespace KinectVision360
                 {
                     return;
                 }
+
+                currentTime = DateTime.Now;
+
+                long elapsedTicks = currentTime.Ticks - startTime.Ticks;
+                TimeSpan elapsedSpan = new TimeSpan(elapsedTicks);
+
+                runtime.Content = elapsedSpan.Days +" days, "+ elapsedSpan.Hours +" hours, "+ elapsedSpan.Minutes +" minutes, "+ elapsedSpan.Seconds + " seconds";
+
                 Faces p = new Faces();
                 humanMapping fMap = new humanMapping();
                 //pcount1.Content= "newFace: " + fMap.newFace + "  oldFace: " + fMap.oldFace;
