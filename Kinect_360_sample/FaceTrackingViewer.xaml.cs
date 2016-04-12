@@ -399,8 +399,12 @@ namespace KinectVision360
             private EnumIndexableCollection<FeaturePoint, PointF> facePoints;
             private EnumIndexableCollection<FeaturePoint, PointF> facePoints2;
             static List<Point> faceModelPts = new List<Point>();
-            private static double shoulderDist = 0.0;
-            private static double headhipDist = 0.0;
+            private static double shoulderDistX = 0.0;
+            private static double headhipDistY = 0.0; 
+            private static double headDistZ = 0.0;
+            private double shoulderDistXNew = 0.0;
+            private double headhipDistYNew = 0.0;
+            private double headDistZNew = 0.0;
             private FaceTracker faceTracker;
 
             private bool lastFaceTrackSucceeded;
@@ -489,7 +493,16 @@ namespace KinectVision360
 
                 if (this.faceTracker != null )
                 {
-
+                    double shoulderLeft = (double)skeletonOfInterest.Joints[JointType.ShoulderLeft].Position.X;
+                    double shoulderRight = (double)skeletonOfInterest.Joints[JointType.ShoulderRight].Position.X;
+                    double head = (double)skeletonOfInterest.Joints[JointType.Head].Position.Y;
+                    double hip = (double)skeletonOfInterest.Joints[JointType.HipCenter].Position.Y;
+                    double headDistZ = (double)skeletonOfInterest.Joints[JointType.Head].Position.Z;
+                    shoulderLeft = Math.Abs(shoulderLeft);
+                    shoulderRight = Math.Abs(shoulderRight);
+                    head = Math.Abs(head);
+                    hip = Math.Abs(hip);
+                    headDistZ = Math.Abs(headDistZ);
                     FaceTrackFrame frame = this.faceTracker.Track(
                         colorImageFormat, colorImage, depthImageFormat, depthImage, skeletonOfInterest);
                     this.facePoints2 = frame.GetProjected3DShape();
@@ -509,12 +522,8 @@ namespace KinectVision360
                         {
                             faceModelPts.Add(new Point(this.facePoints[i].X + 0.5f, this.facePoints[i].Y + 0.5f));
                         }
-                        double shoulderLeft = (double)skeletonOfInterest.Joints[JointType.ShoulderLeft].Position.X;
-                        double shoulderRight = (double)skeletonOfInterest.Joints[JointType.ShoulderRight].Position.X;
-                        double head = (double)skeletonOfInterest.Joints[JointType.Head].Position.Y;
-                        double hip = (double)skeletonOfInterest.Joints[JointType.HipCenter].Position.Y;
-                        shoulderDist = shoulderLeft + shoulderRight;
-                        headhipDist = hip + head;
+                        shoulderDistX = (shoulderLeft + shoulderRight) * 100;
+                        headhipDistY = (hip +head) * 100;
                         saveFaceList.Add(faceModelPts);
                         saveSkeleList.Add(skeletonOfInterest);
                         saveTrackList.Add(skeletonOfInterest.TrackingId);
@@ -547,11 +556,15 @@ namespace KinectVision360
                         double pointyDiff = 0;
                         double pointsNew = 0;
                         double pointsSaved = 0;
+                        double shoulderDistDiff = 0;
+                        double headhipDistDiff = 0;
+                        double pointsDiff = 0;
+
                         if (faceModelPts.Count > 0)
                         {
                             foreach (Point pointNew in faceModelPtsCompare)
                             {
-                                pointsNew = pointNew.X + pointNew.Y;
+                                pointsNew = (pointNew.X + pointNew.Y) / headDistZ ;
 
                             }
                             foreach (Point pointSave in faceModelPts)
@@ -559,15 +572,24 @@ namespace KinectVision360
                                 //pointxDiff = (pointNew.X - pointSave.X);
                                 //pointyDiff = (pointNew.Y - pointSave.Y);
 
-                                pointsSaved = pointSave.X + pointSave.Y;
+                                pointsSaved = (pointSave.X + pointSave.Y) / headDistZ ;
                             }
+                            shoulderDistXNew = (shoulderLeft + shoulderRight) ;
+                            headhipDistYNew = (hip + head);
+                            
                          //   Debug.WriteLine("x diff: " + pointxDiff + " y diff: " + pointyDiff);
-                            Debug.WriteLine("new: " + pointsNew + " old: " + pointsSaved);
-
+                            //Debug.WriteLine("new: " + pointsNew + " old: " + pointsSaved);
+                            shoulderDistDiff = Math.Abs(shoulderDistXNew - shoulderDistX) *10 /headDistZ;
+                            headhipDistDiff = Math.Abs(headhipDistYNew - headhipDistY)*10 /headDistZ;
+                            pointsSaved = Math.Abs(pointsNew - pointsSaved) *10;
                             fMap.newFace = pointsNew;
                             fMap.oldFace = pointsSaved;
 
-                            if (pointxDiff < 20 && pointyDiff < 20)
+                            Debug.WriteLine("Shoulder Dist diff: " + shoulderDistDiff / headDistZ);
+                            Debug.WriteLine("Head dist diff: " + headhipDistDiff / headDistZ);
+                            Debug.WriteLine("face points diff: " + pointsSaved / headDistZ);
+
+                            if (pointsSaved < (50 / headDistZ) )
                             {
                                 colorCount = 3;
                             }

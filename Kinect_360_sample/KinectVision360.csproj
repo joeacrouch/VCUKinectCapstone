@@ -187,6 +187,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\kinectvision360_black.png" />
+    <Resource Include="Resources\kinectvision360_trans.png" />
     <Content Include="Resources\KinectVisionLogo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

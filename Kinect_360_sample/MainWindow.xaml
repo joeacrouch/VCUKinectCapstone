@@ -48,19 +48,18 @@
                         <local:FaceTrackingViewer x:Name="faceTrackingViewer3" />
                     </Grid>
                 </Viewbox>
-                <Image Grid.Column="2" Grid.Row="1" Name="kinectlogo" Source="Resources/kinectvision360_black.png" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="200" Height="70"/>
+                <Image Grid.Column="2" Grid.Row="0" Name="kinectlogo" Source="Resources/kinectvision360_trans.png" HorizontalAlignment="Right" VerticalAlignment="Top" Width="200" Height="70"/>
                 <!--<Image Grid.Column="0" Grid.Row="2" Name="skeletonimage" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Hidden"/>-->
-                <Label Name="pcount_tot" Grid.Column="0" VerticalAlignment="Top" FontSize="20" Foreground="White" Content="Total Count:" />
-                <Button Name="saveFace" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" Content="Save Face" Click="saveFace_Click" />
-                <Label Name="pcount1" Grid.Column="0" VerticalAlignment="Bottom" FontSize="20" Foreground="White" Content="Count:" />
-                <Label Name="pcount2" Grid.Column="1" VerticalAlignment="Bottom" FontSize="20" Foreground="White" Content="Count:"/>
-                <Label Name="pcount3" Grid.Column="2" VerticalAlignment="Bottom" FontSize="20" Foreground="White" Content="Count:"/>
+                <Label Name="pcount_tot" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="55" Foreground="White" Content="Total Count:" />
+                <Button Name="saveFace" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Content="Save Face" Click="saveFace_Click" />
+                <Label Name="pcount1" Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="50" Foreground="White" Content="Count:" />
+                <Label Name="pcount2" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="50" Foreground="White" Content="Count:"/>
+                <Label Name="pcount3" Grid.Column="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="50" Foreground="White" Content="Count:"/>
 
 
                 <!--<CheckBox Grid.Row="2" Content="Seated Mode" Height="Auto" VerticalAlignment="Center" Margin="10,202,558,92" Name="checkBoxSeatedMode" Checked="CheckBoxSeatedModeChanged" Unchecked="CheckBoxSeatedModeChanged" Visibility="Hidden"/> -->
             </Grid>
         </TabItem>
-
         <TabItem Name="tab2" Header="Secondary Stream" >
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -71,10 +70,11 @@
                 <Image Grid.Column="0"  Name="depthimage" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
                 <Image Grid.Column="1" Grid.Row="0" Name="depthimage2" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
                 <Image Grid.Column="2" Grid.Row="0" Name="depthimage3" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-                <Image Grid.Column="2" Grid.Row="1" Name="kinectlogo2" Source="Resources/kinectvision360_black.png" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="200" Height="70"/>
+                <Image Grid.Column="2" Grid.Row="1" Name="kinectlogo2" Source="Resources/kinectvision360_trans.png" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="200" Height="70"/>
 
             </Grid>
         </TabItem>
+
         <TabItem Name="tab3" Header="Field View" >
             <Grid Margin="0,-3,0,3">
                 <Grid.ColumnDefinitions>
@@ -108,9 +108,14 @@
                     </Border>
 
                 </Grid>
-                <Image x:Name="KinectLogoField" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Source="Resources\Kinectvision360_black.png" Visibility="Visible" Width="auto" Height="auto" Margin="0,150"/>
+                <Image x:Name="KinectLogoField" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Source="Resources\Kinectvision360_trans.png" Visibility="Visible" Width="auto" Height="auto" Margin="0,150"/>
+                <Label Name="pcount_tot_Field" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"  HorizontalAlignment="Center" FontSize="50" Foreground="White" Content="Total Count:" Margin="72,55,74,0" />
+                <Label Name="pcount1_Field" Grid.Column="0" Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="50" Foreground="White" Content="Count:" />
+                <Label Name="pcount2_Field" Grid.Column="1" Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="50" Foreground="White" Content="Count:"/>
+                <Label Name="pcount3_Field" Grid.Column="2" Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="50" Foreground="White" Content="Count:"/>
             </Grid>
         </TabItem>
+        
         <TabItem Header="Settings">
             <Grid>
                 <Grid.ColumnDefinitions>

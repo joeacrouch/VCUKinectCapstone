@@ -24,6 +24,7 @@ using System.Globalization;
 using System.IO;
 using Microsoft.Kinect.Toolkit.FaceTracking;
 using Point = System.Windows.Point;
+using System.Timers;
 /*This is the main file*/
 using KinectVision360;
 
@@ -119,7 +120,6 @@ namespace KinectVision360
 
         private readonly AdaptiveZoneLogic adaptiveZoneLogic = new AdaptiveZoneLogic();
 
-
         public MainWindow()
         {
             InitializeComponent();
@@ -158,7 +158,6 @@ namespace KinectVision360
             Console.SetOut(_writer);
 
         }
-        
 
         private void SensorChooserOnKinectChanged(object sender, KinectChangedEventArgs kinectChangedEventArgs)
         {
@@ -747,7 +746,9 @@ namespace KinectVision360
                 }
                 Faces p = new Faces();
                 humanMapping fMap = new humanMapping();
-                pcount1.Content= "newFace: " + fMap.newFace + "  oldFace: " + fMap.oldFace;
+                //pcount1.Content= "newFace: " + fMap.newFace + "  oldFace: " + fMap.oldFace;
+                pcount1.Content = "Count: " + p.people;
+                pcount1_Field.Content = "Count: " + p.people;
                 // Make a copy of the color frame for displaying.
                 var haveNewFormat = this.currentColorImageFormat != colorImageFrame.Format;
                 if (haveNewFormat)
@@ -779,6 +780,7 @@ namespace KinectVision360
 
                 Faces p2 = new Faces();
                 pcount2.Content = "Count: " + p2.people2;
+                pcount2_Field.Content = "Count: " + p2.people2;
                 // Make a copy of the color frame for displaying.
                 var haveNewFormat = this.currentColorImageFormat2 != colorImageFrame.Format;
                 if (haveNewFormat)
@@ -810,8 +812,10 @@ namespace KinectVision360
                 Faces p3 = new Faces();
 
                 pcount3.Content = "Count: " + p3.people3;
+                pcount3_Field.Content = "Count: " + p3.people3;
                 int totalPeople = p3.people + p3.people2 + p3.people3;
                 pcount_tot.Content = "Total Count: " + totalPeople;
+                pcount_tot_Field.Content = "Total Count: " + totalPeople;
                 // Make a copy of the color frame for displaying.
                 var haveNewFormat = this.currentColorImageFormat3 != colorImageFrame.Format;
                 if (haveNewFormat)
