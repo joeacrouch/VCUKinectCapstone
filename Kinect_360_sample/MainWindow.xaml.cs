@@ -767,6 +767,7 @@ namespace KinectVision360
                 //pcount1.Content= "newFace: " + fMap.newFace + "  oldFace: " + fMap.oldFace;
                 pcount1.Content = "Count: " + p.people;
                 pcount1_Field.Content = "Count: " + p.people;
+                pcount1_depth.Content = "Count: " + p.people;
                 // Make a copy of the color frame for displaying.
                 var haveNewFormat = this.currentColorImageFormat != colorImageFrame.Format;
                 if (haveNewFormat)
@@ -799,6 +800,7 @@ namespace KinectVision360
                 Faces p2 = new Faces();
                 pcount2.Content = "Count: " + p2.people2;
                 pcount2_Field.Content = "Count: " + p2.people2;
+                pcount2_depth.Content = "Count: " + p2.people2;
                 // Make a copy of the color frame for displaying.
                 var haveNewFormat = this.currentColorImageFormat2 != colorImageFrame.Format;
                 if (haveNewFormat)
@@ -831,9 +833,11 @@ namespace KinectVision360
 
                 pcount3.Content = "Count: " + p3.people3;
                 pcount3_Field.Content = "Count: " + p3.people3;
+                pcount3_depth.Content = "Count: " + p3.people3;
                 int totalPeople = p3.people + p3.people2 + p3.people3;
                 pcount_tot.Content = "Total Count: " + totalPeople;
                 pcount_tot_Field.Content = "Total Count: " + totalPeople;
+                pcount_tot_depth.Content = "Total Count: " + totalPeople;
                 // Make a copy of the color frame for displaying.
                 var haveNewFormat = this.currentColorImageFormat3 != colorImageFrame.Format;
                 if (haveNewFormat)
@@ -871,9 +875,9 @@ namespace KinectVision360
                     newSensor1.AllFramesReady -= this.KinectSensorOnAllFramesReady;
                     newSensor2.AllFramesReady -= this.KinectSensorOnAllFramesReady2;
                     newSensor3.AllFramesReady -= this.KinectSensorOnAllFramesReady3;
-                    newSensor1.SkeletonStream.Disable();
-                    newSensor2.SkeletonStream.Disable();
-                    newSensor3.SkeletonStream.Disable();
+                    //newSensor1.SkeletonStream.Disable();
+                    //newSensor2.SkeletonStream.Disable();
+                    //newSensor3.SkeletonStream.Disable();
 
 
                     // Allocate space to put the depth pixels we'll receive
