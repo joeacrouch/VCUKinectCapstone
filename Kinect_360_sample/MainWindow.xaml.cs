@@ -75,7 +75,8 @@ namespace KinectVision360
         private WriteableBitmap colorImageWritableBitmap3;
         private byte[] colorImageData3;
         private ColorImageFormat currentColorImageFormat3 = ColorImageFormat.Undefined;
-        /* skeletal intialize
+        
+        //skeletal intialize
         private const float RenderWidth = 640.0f;
         private const float RenderHeight = 480.0f;
         private const double JointThickness = 3;
@@ -85,10 +86,14 @@ namespace KinectVision360
         private readonly Brush trackedJointBrush = new SolidColorBrush(Color.FromArgb(255, 68, 192, 68));
         private readonly Brush inferredJointBrush = Brushes.Yellow;
         private readonly Pen trackedBonePen = new Pen(Brushes.Green, 6);
-        private readonly Pen inferredBonePen = new Pen(Brushes.Gray, 1); */
+        private readonly Pen inferredBonePen = new Pen(Brushes.Gray, 1); 
+        private DrawingGroup drawingGroup;
+        private DrawingImage imageSource;
+        private DrawingGroup drawingGroup2;
+        private DrawingImage imageSource2;
+        private DrawingGroup drawingGroup3;
+        private DrawingImage imageSource3;
 
-        // private DrawingGroup drawingGroup;
-        // private DrawingImage imageSource;
         private Boolean onDepth = false;
         TextWriter _writer = null;
         KinectSensor newSensor1;
@@ -166,6 +171,516 @@ namespace KinectVision360
             sensorChooser3.Start();
 
         }
+
+        /// <summary>
+        /// Draws indicators to show which edges are clipping skeleton data
+        /// </summary>
+        /// <param name="skeleton">skeleton to draw clipping information for</param>
+        /// <param name="drawingContext">drawing context to draw to</param>
+        private static void RenderClippedEdges(Skeleton skeleton, DrawingContext drawingContext)
+        {
+ /*           
+            if (skeleton.ClippedEdges.HasFlag(FrameEdges.Bottom))
+            {
+                drawingContext.DrawRectangle(
+                    Brushes.Red,
+                    null,
+                    new System.Windows.Rect(0, RenderHeight - ClipBoundsThickness, RenderWidth, ClipBoundsThickness));
+            }
+
+            if (skeleton.ClippedEdges.HasFlag(FrameEdges.Top))
+            {
+                drawingContext.DrawRectangle(
+                    Brushes.Red,
+                    null,
+                    new System.Windows.Rect(0, 0, RenderWidth, ClipBoundsThickness));
+            }
+
+            if (skeleton.ClippedEdges.HasFlag(FrameEdges.Left))
+            {
+                drawingContext.DrawRectangle(
+                    Brushes.Red,
+                    null,
+                    new System.Windows.Rect(0, 0, ClipBoundsThickness, RenderHeight));
+            }
+
+            if (skeleton.ClippedEdges.HasFlag(FrameEdges.Right))
+            {
+                drawingContext.DrawRectangle(
+                    Brushes.Red,
+                    null,
+                    new System.Windows.Rect(RenderWidth - ClipBoundsThickness, 0, ClipBoundsThickness, RenderHeight));
+            }*/
+        }
+
+
+        /// <summary>
+        /// Event handler for Kinect sensor's SkeletonFrameReady event
+        /// </summary>
+        /// <param name="sender">object sending the event</param>
+        /// <param name="e">event arguments</param>
+        private void SensorSkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
+        {
+            Skeleton[] skeletons = new Skeleton[0];
+
+            using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
+            {
+                if (skeletonFrame != null)
+                {
+                    skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
+                    skeletonFrame.CopySkeletonDataTo(skeletons);
+                }
+            }
+
+            using (DrawingContext dc = this.drawingGroup.Open())
+            {
+                // Draw a transparent background to set the render size
+                dc.DrawRectangle(Brushes.Transparent, null, new System.Windows.Rect(0.0, 0.0, RenderWidth, RenderHeight));
+
+                if (skeletons.Length != 0)
+                {
+                    foreach (Skeleton skel in skeletons)
+                    {
+                        RenderClippedEdges(skel, dc);
+
+                        if (skel.TrackingState == SkeletonTrackingState.Tracked)
+                        {
+                            this.DrawBonesAndJoints(skel, dc);
+                        }
+                        else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
+                        {
+                            dc.DrawEllipse(
+                            this.centerPointBrush,
+                            null,
+                            this.SkeletonPointToScreen(skel.Position),
+                            BodyCenterThickness,
+                            BodyCenterThickness);
+                        }
+                    }
+                }
+
+                // prevent drawing outside of our render area
+                this.drawingGroup.ClipGeometry = new RectangleGeometry(new System.Windows.Rect(0.0, 0.0, RenderWidth, RenderHeight));
+            }
+        }
+
+        /// <summary>
+        /// Event handler for Kinect sensor's SkeletonFrameReady event
+        /// </summary>
+        /// <param name="sender">object sending the event</param>
+        /// <param name="e">event arguments</param>
+        private void SensorSkeletonFrameReady2(object sender, SkeletonFrameReadyEventArgs e)
+        {
+            Skeleton[] skeletons = new Skeleton[0];
+
+            using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
+            {
+                if (skeletonFrame != null)
+                {
+                    skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
+                    skeletonFrame.CopySkeletonDataTo(skeletons);
+                }
+            }
+
+            using (DrawingContext dc = this.drawingGroup2.Open())
+            {
+                // Draw a transparent background to set the render size
+                dc.DrawRectangle(Brushes.Transparent, null, new System.Windows.Rect(0.0, 0.0, RenderWidth, RenderHeight));
+
+                if (skeletons.Length != 0)
+                {
+                    foreach (Skeleton skel in skeletons)
+                    {
+                        RenderClippedEdges(skel, dc);
+
+                        if (skel.TrackingState == SkeletonTrackingState.Tracked)
+                        {
+                            this.DrawBonesAndJoints2(skel, dc);
+                        }
+                        else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
+                        {
+                            dc.DrawEllipse(
+                            this.centerPointBrush,
+                            null,
+                            this.SkeletonPointToScreen2(skel.Position),
+                            BodyCenterThickness,
+                            BodyCenterThickness);
+                        }
+                    }
+                }
+
+                // prevent drawing outside of our render area
+                this.drawingGroup2.ClipGeometry = new RectangleGeometry(new System.Windows.Rect(0.0, 0.0, RenderWidth, RenderHeight));
+            }
+        }
+
+        /// <summary>
+        /// Event handler for Kinect sensor's SkeletonFrameReady event
+        /// </summary>
+        /// <param name="sender">object sending the event</param>
+        /// <param name="e">event arguments</param>
+        private void SensorSkeletonFrameReady3(object sender, SkeletonFrameReadyEventArgs e)
+        {
+            Skeleton[] skeletons = new Skeleton[0];
+
+            using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
+            {
+                if (skeletonFrame != null)
+                {
+                    skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
+                    skeletonFrame.CopySkeletonDataTo(skeletons);
+                }
+            }
+
+            using (DrawingContext dc = this.drawingGroup3.Open())
+            {
+                // Draw a transparent background to set the render size
+                dc.DrawRectangle(Brushes.Transparent, null, new System.Windows.Rect(0.0, 0.0, RenderWidth, RenderHeight));
+
+                if (skeletons.Length != 0)
+                {
+                    foreach (Skeleton skel in skeletons)
+                    {
+                        RenderClippedEdges(skel, dc);
+
+                        if (skel.TrackingState == SkeletonTrackingState.Tracked)
+                        {
+                            this.DrawBonesAndJoints3(skel, dc);
+                        }
+                        else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
+                        {
+                            dc.DrawEllipse(
+                            this.centerPointBrush,
+                            null,
+                            this.SkeletonPointToScreen3(skel.Position),
+                            BodyCenterThickness,
+                            BodyCenterThickness);
+                        }
+                    }
+                }
+
+                // prevent drawing outside of our render area
+                this.drawingGroup3.ClipGeometry = new RectangleGeometry(new System.Windows.Rect(0.0, 0.0, RenderWidth, RenderHeight));
+            }
+        }
+        /// <summary>
+        /// Draws a skeleton's bones and joints
+        /// </summary>
+        /// <param name="skeleton">skeleton to draw</param>
+        /// <param name="drawingContext">drawing context to draw to</param>
+        private void DrawBonesAndJoints(Skeleton skeleton, DrawingContext drawingContext)
+        {
+            // Render Torso
+            this.DrawBone(skeleton, drawingContext, JointType.Head, JointType.ShoulderCenter);
+            this.DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.ShoulderLeft);
+            this.DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.ShoulderRight);
+            this.DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.Spine);
+            this.DrawBone(skeleton, drawingContext, JointType.Spine, JointType.HipCenter);
+            this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipLeft);
+            this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipRight);
+
+            // Left Arm
+            this.DrawBone(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft);
+            this.DrawBone(skeleton, drawingContext, JointType.ElbowLeft, JointType.WristLeft);
+            this.DrawBone(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft);
+
+            // Right Arm
+            this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight);
+            this.DrawBone(skeleton, drawingContext, JointType.ElbowRight, JointType.WristRight);
+            this.DrawBone(skeleton, drawingContext, JointType.WristRight, JointType.HandRight);
+
+            // Left Leg
+            this.DrawBone(skeleton, drawingContext, JointType.HipLeft, JointType.KneeLeft);
+            this.DrawBone(skeleton, drawingContext, JointType.KneeLeft, JointType.AnkleLeft);
+            this.DrawBone(skeleton, drawingContext, JointType.AnkleLeft, JointType.FootLeft);
+
+            // Right Leg
+            this.DrawBone(skeleton, drawingContext, JointType.HipRight, JointType.KneeRight);
+            this.DrawBone(skeleton, drawingContext, JointType.KneeRight, JointType.AnkleRight);
+            this.DrawBone(skeleton, drawingContext, JointType.AnkleRight, JointType.FootRight);
+
+            // Render Joints
+            foreach (Joint joint in skeleton.Joints)
+            {
+                Brush drawBrush = null;
+
+                if (joint.TrackingState == JointTrackingState.Tracked)
+                {
+                    drawBrush = this.trackedJointBrush;
+                }
+                else if (joint.TrackingState == JointTrackingState.Inferred)
+                {
+                    drawBrush = this.inferredJointBrush;
+                }
+
+                if (drawBrush != null)
+                {
+                    drawingContext.DrawEllipse(drawBrush, null, this.SkeletonPointToScreen(joint.Position), JointThickness, JointThickness);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Draws a skeleton's bones and joints
+        /// </summary>
+        /// <param name="skeleton">skeleton to draw</param>
+        /// <param name="drawingContext">drawing context to draw to</param>
+        private void DrawBonesAndJoints2(Skeleton skeleton, DrawingContext drawingContext)
+        {
+            // Render Torso
+            this.DrawBone2(skeleton, drawingContext, JointType.Head, JointType.ShoulderCenter);
+            this.DrawBone2(skeleton, drawingContext, JointType.ShoulderCenter, JointType.ShoulderLeft);
+            this.DrawBone2(skeleton, drawingContext, JointType.ShoulderCenter, JointType.ShoulderRight);
+            this.DrawBone2(skeleton, drawingContext, JointType.ShoulderCenter, JointType.Spine);
+            this.DrawBone2(skeleton, drawingContext, JointType.Spine, JointType.HipCenter);
+            this.DrawBone2(skeleton, drawingContext, JointType.HipCenter, JointType.HipLeft);
+            this.DrawBone2(skeleton, drawingContext, JointType.HipCenter, JointType.HipRight);
+
+            // Left Arm
+            this.DrawBone2(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft);
+            this.DrawBone2(skeleton, drawingContext, JointType.ElbowLeft, JointType.WristLeft);
+            this.DrawBone2(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft);
+
+            // Right Arm
+            this.DrawBone2(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight);
+            this.DrawBone2(skeleton, drawingContext, JointType.ElbowRight, JointType.WristRight);
+            this.DrawBone2(skeleton, drawingContext, JointType.WristRight, JointType.HandRight);
+
+            // Left Leg
+            this.DrawBone2(skeleton, drawingContext, JointType.HipLeft, JointType.KneeLeft);
+            this.DrawBone2(skeleton, drawingContext, JointType.KneeLeft, JointType.AnkleLeft);
+            this.DrawBone2(skeleton, drawingContext, JointType.AnkleLeft, JointType.FootLeft);
+
+            // Right Leg
+            this.DrawBone2(skeleton, drawingContext, JointType.HipRight, JointType.KneeRight);
+            this.DrawBone2(skeleton, drawingContext, JointType.KneeRight, JointType.AnkleRight);
+            this.DrawBone2(skeleton, drawingContext, JointType.AnkleRight, JointType.FootRight);
+
+            // Render Joints
+            foreach (Joint joint in skeleton.Joints)
+            {
+                Brush drawBrush = null;
+
+                if (joint.TrackingState == JointTrackingState.Tracked)
+                {
+                    drawBrush = this.trackedJointBrush;
+                }
+                else if (joint.TrackingState == JointTrackingState.Inferred)
+                {
+                    drawBrush = this.inferredJointBrush;
+                }
+
+                if (drawBrush != null)
+                {
+                    drawingContext.DrawEllipse(drawBrush, null, this.SkeletonPointToScreen2(joint.Position), JointThickness, JointThickness);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Draws a skeleton's bones and joints
+        /// </summary>
+        /// <param name="skeleton">skeleton to draw</param>
+        /// <param name="drawingContext">drawing context to draw to</param>
+        private void DrawBonesAndJoints3(Skeleton skeleton, DrawingContext drawingContext)
+        {
+            // Render Torso
+            this.DrawBone3(skeleton, drawingContext, JointType.Head, JointType.ShoulderCenter);
+            this.DrawBone3(skeleton, drawingContext, JointType.ShoulderCenter, JointType.ShoulderLeft);
+            this.DrawBone3(skeleton, drawingContext, JointType.ShoulderCenter, JointType.ShoulderRight);
+            this.DrawBone3(skeleton, drawingContext, JointType.ShoulderCenter, JointType.Spine);
+            this.DrawBone3(skeleton, drawingContext, JointType.Spine, JointType.HipCenter);
+            this.DrawBone3(skeleton, drawingContext, JointType.HipCenter, JointType.HipLeft);
+            this.DrawBone3(skeleton, drawingContext, JointType.HipCenter, JointType.HipRight);
+
+            // Left Arm
+            this.DrawBone3(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft);
+            this.DrawBone3(skeleton, drawingContext, JointType.ElbowLeft, JointType.WristLeft);
+            this.DrawBone3(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft);
+
+            // Right Arm
+            this.DrawBone3(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight);
+            this.DrawBone3(skeleton, drawingContext, JointType.ElbowRight, JointType.WristRight);
+            this.DrawBone3(skeleton, drawingContext, JointType.WristRight, JointType.HandRight);
+
+            // Left Leg
+            this.DrawBone3(skeleton, drawingContext, JointType.HipLeft, JointType.KneeLeft);
+            this.DrawBone3(skeleton, drawingContext, JointType.KneeLeft, JointType.AnkleLeft);
+            this.DrawBone3(skeleton, drawingContext, JointType.AnkleLeft, JointType.FootLeft);
+
+            // Right Leg
+            this.DrawBone3(skeleton, drawingContext, JointType.HipRight, JointType.KneeRight);
+            this.DrawBone3(skeleton, drawingContext, JointType.KneeRight, JointType.AnkleRight);
+            this.DrawBone3(skeleton, drawingContext, JointType.AnkleRight, JointType.FootRight);
+
+            // Render Joints
+            foreach (Joint joint in skeleton.Joints)
+            {
+                Brush drawBrush = null;
+
+                if (joint.TrackingState == JointTrackingState.Tracked)
+                {
+                    drawBrush = this.trackedJointBrush;
+                }
+                else if (joint.TrackingState == JointTrackingState.Inferred)
+                {
+                    drawBrush = this.inferredJointBrush;
+                }
+
+                if (drawBrush != null)
+                {
+                    drawingContext.DrawEllipse(drawBrush, null, this.SkeletonPointToScreen3(joint.Position), JointThickness, JointThickness);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maps a SkeletonPoint to lie within our render space and converts to Point
+        /// </summary>
+        /// <param name="skelpoint">point to map</param>
+        /// <returns>mapped point</returns>
+        private Point SkeletonPointToScreen(SkeletonPoint skelpoint)
+        {
+            // Convert point to depth space.  
+            // We are not using depth directly, but we do want the points in our 640x480 output resolution.
+            DepthImagePoint depthPoint = newSensor1.CoordinateMapper.MapSkeletonPointToDepthPoint(skelpoint, DepthImageFormat.Resolution640x480Fps30);
+            return new Point(depthPoint.X, depthPoint.Y);
+        }
+
+        /// <summary>
+        /// Maps a SkeletonPoint to lie within our render space and converts to Point
+        /// </summary>
+        /// <param name="skelpoint">point to map</param>
+        /// <returns>mapped point</returns>
+        private Point SkeletonPointToScreen2(SkeletonPoint skelpoint)
+        {
+            // Convert point to depth space.  
+            // We are not using depth directly, but we do want the points in our 640x480 output resolution.
+            DepthImagePoint depthPoint = newSensor2.CoordinateMapper.MapSkeletonPointToDepthPoint(skelpoint, DepthImageFormat.Resolution640x480Fps30);
+            return new Point(depthPoint.X, depthPoint.Y);
+        }
+
+                /// <summary>
+        /// Maps a SkeletonPoint to lie within our render space and converts to Point
+        /// </summary>
+        /// <param name="skelpoint">point to map</param>
+        /// <returns>mapped point</returns>
+        private Point SkeletonPointToScreen3(SkeletonPoint skelpoint)
+        {
+            // Convert point to depth space.  
+            // We are not using depth directly, but we do want the points in our 640x480 output resolution.
+            DepthImagePoint depthPoint = newSensor3.CoordinateMapper.MapSkeletonPointToDepthPoint(skelpoint, DepthImageFormat.Resolution640x480Fps30);
+            return new Point(depthPoint.X, depthPoint.Y);
+        }
+
+        /// <summary>
+        /// Draws a bone line between two joints
+        /// </summary>
+        /// <param name="skeleton">skeleton to draw bones from</param>
+        /// <param name="drawingContext">drawing context to draw to</param>
+        /// <param name="jointType0">joint to start drawing from</param>
+        /// <param name="jointType1">joint to end drawing at</param>
+        private void DrawBone(Skeleton skeleton, DrawingContext drawingContext, JointType jointType0, JointType jointType1)
+        {
+            Joint joint0 = skeleton.Joints[jointType0];
+            Joint joint1 = skeleton.Joints[jointType1];
+
+            // If we can't find either of these joints, exit
+            if (joint0.TrackingState == JointTrackingState.NotTracked ||
+                joint1.TrackingState == JointTrackingState.NotTracked)
+            {
+                return;
+            }
+
+            // Don't draw if both points are inferred
+            if (joint0.TrackingState == JointTrackingState.Inferred &&
+                joint1.TrackingState == JointTrackingState.Inferred)
+            {
+                return;
+            }
+
+            // We assume all drawn bones are inferred unless BOTH joints are tracked
+            Pen drawPen = this.inferredBonePen;
+            if (joint0.TrackingState == JointTrackingState.Tracked && joint1.TrackingState == JointTrackingState.Tracked)
+            {
+                drawPen = this.trackedBonePen;
+            }
+
+            drawingContext.DrawLine(drawPen, this.SkeletonPointToScreen(joint0.Position), this.SkeletonPointToScreen(joint1.Position));
+        }
+
+        /// <summary>
+        /// Draws a bone line between two joints
+        /// </summary>
+        /// <param name="skeleton">skeleton to draw bones from</param>
+        /// <param name="drawingContext">drawing context to draw to</param>
+        /// <param name="jointType0">joint to start drawing from</param>
+        /// <param name="jointType1">joint to end drawing at</param>
+        private void DrawBone2(Skeleton skeleton, DrawingContext drawingContext, JointType jointType0, JointType jointType1)
+        {
+            Joint joint0 = skeleton.Joints[jointType0];
+            Joint joint1 = skeleton.Joints[jointType1];
+
+            // If we can't find either of these joints, exit
+            if (joint0.TrackingState == JointTrackingState.NotTracked ||
+                joint1.TrackingState == JointTrackingState.NotTracked)
+            {
+                return;
+            }
+
+            // Don't draw if both points are inferred
+            if (joint0.TrackingState == JointTrackingState.Inferred &&
+                joint1.TrackingState == JointTrackingState.Inferred)
+            {
+                return;
+            }
+
+            // We assume all drawn bones are inferred unless BOTH joints are tracked
+            Pen drawPen = this.inferredBonePen;
+            if (joint0.TrackingState == JointTrackingState.Tracked && joint1.TrackingState == JointTrackingState.Tracked)
+            {
+                drawPen = this.trackedBonePen;
+            }
+
+            drawingContext.DrawLine(drawPen, this.SkeletonPointToScreen2(joint0.Position), this.SkeletonPointToScreen2(joint1.Position));
+        }
+
+        /// <summary>
+        /// Draws a bone line between two joints
+        /// </summary>
+        /// <param name="skeleton">skeleton to draw bones from</param>
+        /// <param name="drawingContext">drawing context to draw to</param>
+        /// <param name="jointType0">joint to start drawing from</param>
+        /// <param name="jointType1">joint to end drawing at</param>
+        private void DrawBone3(Skeleton skeleton, DrawingContext drawingContext, JointType jointType0, JointType jointType1)
+        {
+            Joint joint0 = skeleton.Joints[jointType0];
+            Joint joint1 = skeleton.Joints[jointType1];
+
+            // If we can't find either of these joints, exit
+            if (joint0.TrackingState == JointTrackingState.NotTracked ||
+                joint1.TrackingState == JointTrackingState.NotTracked)
+            {
+                return;
+            }
+
+            // Don't draw if both points are inferred
+            if (joint0.TrackingState == JointTrackingState.Inferred &&
+                joint1.TrackingState == JointTrackingState.Inferred)
+            {
+                return;
+            }
+
+            // We assume all drawn bones are inferred unless BOTH joints are tracked
+            Pen drawPen = this.inferredBonePen;
+            if (joint0.TrackingState == JointTrackingState.Tracked && joint1.TrackingState == JointTrackingState.Tracked)
+            {
+                drawPen = this.trackedBonePen;
+            }
+
+            drawingContext.DrawLine(drawPen, this.SkeletonPointToScreen3(joint0.Position), this.SkeletonPointToScreen3(joint1.Position));
+        }
+
 
         private void SensorChooserOnKinectChanged(object sender, KinectChangedEventArgs kinectChangedEventArgs)
         {
@@ -368,141 +883,6 @@ namespace KinectVision360
             startTime = DateTime.Now;
         }
  
-
-        //private void SwitchRGBtoIR1(object sender, RoutedEventArgs e)
-        //{
-        //    if (null != this.sensor)
-        //    {
-        //        if (this.checkIR1Mode.IsChecked.GetValueOrDefault())
-        //        {
-
-        //            // Turn on the color stream to receive color frames
-        //            this.sensor.ColorStream.Enable(ColorImageFormat.InfraredResolution640x480Fps30);
-
-        //            // Allocate space to put the pixels we'll receive
-        //            this.colorPixels = new byte[this.sensor.ColorStream.FramePixelDataLength];
-
-        //            // This is the bitmap we'll display on-screen
-        //            this.colorBitmap = new WriteableBitmap(this.sensor.ColorStream.FrameWidth, this.sensor.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Gray16, null);
-
-        //            // Set the image we display to point to the bitmap where we'll put the image data
-        //            this.colorimage.Source = this.colorBitmap;
-
-        //            // Add an event handler to be called whenever there is new color frame data
-        //            //this.sensor.ColorFrameReady += this.SensorColorFrameReady;
-
-
-
-        //        }
-        //        else
-        //        {
-
-        //            // Turn on the color stream to receive color frames
-        //            this.sensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
-
-        //            // Allocate space to put the pixels we'll receive
-        //            this.colorPixels = new byte[this.sensor.ColorStream.FramePixelDataLength];
-
-        //            // This is the bitmap we'll display on-screen
-        //            this.colorBitmap = new WriteableBitmap(this.sensor.ColorStream.FrameWidth, this.sensor.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Bgr32, null);
-
-        //            // Set the image we display to point to the bitmap where we'll put the image data
-        //            this.colorimage.Source = this.colorBitmap;
-
-        //            // Add an event handler to be called whenever there is new color frame data
-        //           // this.sensor.ColorFrameReady += this.SensorColorFrameReady;
-        //        }
-        //    }
-        //}
-        //private void SwitchRGBtoIR2(object sender, RoutedEventArgs e)
-        //{
-        //    if (null != this.sensor2)
-        //    {
-        //        if (this.checkIR2Mode.IsChecked.GetValueOrDefault())
-        //        {
-
-        //            // Turn on the color stream to receive color frames
-        //            this.sensor2.ColorStream.Enable(ColorImageFormat.InfraredResolution640x480Fps30);
-
-        //            // Allocate space to put the pixels we'll receive
-        //            this.colorPixels2 = new byte[this.sensor2.ColorStream.FramePixelDataLength];
-
-        //            // This is the bitmap we'll display on-screen
-        //            this.colorBitmap2 = new WriteableBitmap(this.sensor2.ColorStream.FrameWidth, this.sensor2.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Gray16, null);
-
-        //            // Set the image we display to point to the bitmap where we'll put the image data
-        //            this.colorimage2.Source = this.colorBitmap2;
-
-        //            // Add an event handler to be called whenever there is new color frame data
-        //           // this.sensor2.ColorFrameReady += this.SensorColorFrameReady2;
-
-        //        }
-        //        else
-        //        {
-
-        //            // Turn on the color stream to receive color frames
-        //            this.sensor2.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
-
-        //            // Allocate space to put the pixels we'll receive
-        //            this.colorPixels2 = new byte[this.sensor2.ColorStream.FramePixelDataLength];
-
-        //            // This is the bitmap we'll display on-screen
-        //            this.colorBitmap2 = new WriteableBitmap(this.sensor2.ColorStream.FrameWidth, this.sensor2.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Bgr32, null);
-
-        //            // Set the image we display to point to the bitmap where we'll put the image data
-        //            this.colorimage2.Source = this.colorBitmap2;
-
-        //            // Add an event handler to be called whenever there is new color frame data
-        //            //this.sensor2.ColorFrameReady += this.SensorColorFrameReady2;
-        //        }
-        //    }
-        //}
-        //private void SwitchRGBtoIR3(object sender, RoutedEventArgs e)
-        //{
-        //    if (this.checkIR3Mode.IsChecked.GetValueOrDefault())
-        //    {
-        //        if (null != this.sensor3)
-        //        {
-        //            // Turn on the color stream to receive color frames
-        //            this.sensor3.ColorStream.Enable(ColorImageFormat.InfraredResolution640x480Fps30);
-
-        //            // Allocate space to put the pixels we'll receive
-        //            this.colorPixels3 = new byte[this.sensor3.ColorStream.FramePixelDataLength];
-
-        //            // This is the bitmap we'll display on-screen
-        //            this.colorBitmap3 = new WriteableBitmap(this.sensor3.ColorStream.FrameWidth, this.sensor3.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Gray16, null);
-
-        //            // Set the image we display to point to the bitmap where we'll put the image data
-        //            this.colorimage3.Source = this.colorBitmap3;
-
-        //            // Add an event handler to be called whenever there is new color frame data
-        //            //this.sensor3.ColorFrameReady += this.SensorColorFrameReady3;
-
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (null != this.sensor3)
-        //        {
-        //            // Turn on the color stream to receive color frames
-        //            this.sensor3.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
-
-        //            // Allocate space to put the pixels we'll receive
-        //            this.colorPixels3 = new byte[this.sensor3.ColorStream.FramePixelDataLength];
-
-        //            // This is the bitmap we'll display on-screen
-        //            this.colorBitmap3 = new WriteableBitmap(this.sensor3.ColorStream.FrameWidth, this.sensor3.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Bgr32, null);
-
-        //            // Set the image we display to point to the bitmap where we'll put the image data
-        //            this.colorimage3.Source = this.colorBitmap3;
-
-        //            // Add an event handler to be called whenever there is new color frame data
-        //           // this.sensor3.ColorFrameReady += this.SensorColorFrameReady3;
-        //        }
-        //    }
-        //}
-
-
 
         private void SensorDepthFrameReady(object sender, DepthImageFrameReadyEventArgs e)
         {
@@ -875,9 +1255,6 @@ namespace KinectVision360
                     newSensor1.AllFramesReady -= this.KinectSensorOnAllFramesReady;
                     newSensor2.AllFramesReady -= this.KinectSensorOnAllFramesReady2;
                     newSensor3.AllFramesReady -= this.KinectSensorOnAllFramesReady3;
-                    //newSensor1.SkeletonStream.Disable();
-                    //newSensor2.SkeletonStream.Disable();
-                    //newSensor3.SkeletonStream.Disable();
 
 
                     // Allocate space to put the depth pixels we'll receive
@@ -923,9 +1300,93 @@ namespace KinectVision360
                     newSensor2.DepthFrameReady += this.SensorDepthFrameReady2;
                     newSensor3.DepthFrameReady += this.SensorDepthFrameReady3;
 
+                    // Create the drawing group we'll use for drawing
+                    this.drawingGroup = new DrawingGroup();
+
+                    // Create an image source that we can use in our image control
+                    this.imageSource = new DrawingImage(this.drawingGroup);
+
+                    // Display the drawing using our image control
+                    skeletonimage.Source = this.imageSource;
+
+                    // Create the drawing group we'll use for drawing
+                    this.drawingGroup2 = new DrawingGroup();
+
+                    // Create an image source that we can use in our image control
+                    this.imageSource2 = new DrawingImage(this.drawingGroup2);
+
+                    // Display the drawing using our image control
+                    skeletonimage2.Source = this.imageSource2;
+
+                    // Create the drawing group we'll use for drawing
+                    this.drawingGroup3 = new DrawingGroup();
+
+                    // Create an image source that we can use in our image control
+                    this.imageSource3 = new DrawingImage(this.drawingGroup3);
+
+                    // Display the drawing using our image control
+                    skeletonimage3.Source = this.imageSource3;
 
 
+                    if (null != newSensor1)
+                    {
+                        // Turn on the skeleton stream to receive skeleton frames
+                        newSensor1.SkeletonStream.Enable();
 
+                        // Add an event handler to be called whenever there is new color frame data
+                        newSensor1.SkeletonFrameReady += this.SensorSkeletonFrameReady;
+
+                        newSensor1.SkeletonStream.TrackingMode = SkeletonTrackingMode.Default;
+                        // Start the sensor!
+                        try
+                        {
+                            newSensor1.Start();
+                        }
+                        catch (IOException)
+                        {
+                            newSensor1 = null;
+                        }
+                    }
+
+                    if (null != newSensor2)
+                    {
+                        // Turn on the skeleton stream to receive skeleton frames
+                        newSensor2.SkeletonStream.Enable();
+
+                        // Add an event handler to be called whenever there is new color frame data
+                        newSensor2.SkeletonFrameReady += this.SensorSkeletonFrameReady2;
+
+                        newSensor2.SkeletonStream.TrackingMode = SkeletonTrackingMode.Default;
+                        // Start the sensor!
+                        try
+                        {
+                            newSensor2.Start();
+                        }
+                        catch (IOException)
+                        {
+                            newSensor2 = null;
+                        }
+                    }
+
+                    if (null != newSensor3)
+                    {
+                        // Turn on the skeleton stream to receive skeleton frames
+                        newSensor3.SkeletonStream.Enable();
+
+                        // Add an event handler to be called whenever there is new color frame data
+                        newSensor3.SkeletonFrameReady += this.SensorSkeletonFrameReady3;
+
+                        newSensor3.SkeletonStream.TrackingMode = SkeletonTrackingMode.Default;
+                        // Start the sensor!
+                        try
+                        {
+                            newSensor3.Start();
+                        }
+                        catch (IOException)
+                        {
+                            newSensor3 = null;
+                        }
+                    }
 
                 }
                 else if (tab1.IsSelected)

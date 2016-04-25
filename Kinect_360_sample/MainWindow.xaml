@@ -68,11 +68,14 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Image Grid.Column="0"  Name="depthimage" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-                <Image Grid.Column="1" Grid.Row="0" Name="depthimage2" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-                <Image Grid.Column="2" Grid.Row="0" Name="depthimage3" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-
-                <Image Grid.Column="2" Grid.Row="0" Name="kinectlogo2" Source="Resources/kinectvision360_trans.png" HorizontalAlignment="Right" VerticalAlignment="Top" Width="200" Height="70"/>
+                <Image Grid.Column="0" Name="depthimage" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                <Image Grid.Column="1" Name="depthimage2" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                <Image Grid.Column="2" Name="depthimage3" Width="auto" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                <Image Grid.Column="0" Name="skeletonimage" Width="auto" Height="auto" VerticalAlignment="Center"/>
+                <Image Grid.Column="1" Name="skeletonimage2" Width="auto" Height="auto" VerticalAlignment="Center"/>
+                <Image Grid.Column="2" Name="skeletonimage3" Width="auto" Height="auto" VerticalAlignment="Center"/>
+                
+                <Image Grid.Column="2" Name="kinectlogo2" Source="Resources/kinectvision360_trans.png" HorizontalAlignment="Right" VerticalAlignment="Top" Width="200" Height="70"/>
                 <Label Name="pcount_tot_depth" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="55" Foreground="White" Content="Total Count:" FontFamily="X360 by Redge" />
                 <Label Name="pcount1_depth" Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="50" Foreground="White" Content="Count:" FontFamily="X360 by Redge" />
                 <Label Name="pcount2_depth" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="50" Foreground="White" Content="Count:" FontFamily="X360 by Redge"/>
