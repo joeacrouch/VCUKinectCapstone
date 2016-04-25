@@ -79,13 +79,13 @@ namespace KinectVision360
         //skeletal intialize
         private const float RenderWidth = 640.0f;
         private const float RenderHeight = 480.0f;
-        private const double JointThickness = 3;
+        private const double JointThickness = 6;
         private const double BodyCenterThickness = 10;
         private const double ClipBoundsThickness = 10;
         private readonly Brush centerPointBrush = Brushes.Blue;
         private readonly Brush trackedJointBrush = new SolidColorBrush(Color.FromArgb(255, 68, 192, 68));
         private readonly Brush inferredJointBrush = Brushes.Yellow;
-        private readonly Pen trackedBonePen = new Pen(Brushes.Green, 6);
+        private readonly Pen trackedBonePen = new Pen(Brushes.Green, 12);
         private readonly Pen inferredBonePen = new Pen(Brushes.Gray, 1); 
         private DrawingGroup drawingGroup;
         private DrawingImage imageSource;
